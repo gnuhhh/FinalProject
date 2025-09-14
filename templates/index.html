@@ -1,0 +1,586 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Trang Thông Tin Tuyển Sinh - Cổng thông tin tuyển sinh Toàn Quốc</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    {% include 'components/links.html' %}
+</head>
+
+<body class="index-page">
+  {% include 'components/navbar-top.html' %}
+  <main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section dark-background">
+      <img src="{% static 'assets/img/background-1.jpg' %}" alt="" data-aos="fade-in">
+      <div class="container">
+        {% if user.is_authenticated %}
+        <h2 data-aos="fade-up" data-aos-delay="100">Cổng thông tin tuyển sinh toàn quốc</h2>
+        {% else %}
+        <h2 data-aos="fade-up" data-aos-delay="100">Cổng thông tin tuyển sinh toàn quốc</h2>
+        <p data-aos="fade-up" data-aos-delay="200">Đăng ký ngay để nhận tư vấn từ các chuyên gia</p>
+        <div class="d-flex mt-4" data-aos="fade-up" data-aos-delay="300">
+          <a href="{% url 'register' %}" class="btn-get-started">Đăng ký</a>
+        </div>
+        {% endif %}
+      </div>
+    </section><!-- /Hero Section -->
+
+    <!-- About Section -->
+    <section id="about" class="about section">
+
+      <div class="container">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-6 order-1 order-lg-2" data-aos="fade-up" data-aos-delay="100">
+            <img src="{{ new.image.url }}" class="img-fluid" alt="">
+          </div>
+
+          <div class="col-lg-6 order-2 order-lg-1 content" data-aos="fade-up" data-aos-delay="200">
+            <h3>{{ new.title }}</h3>
+            <p class="fst-italic">
+              {{ new.content|truncatewords:98 }}
+            </p>
+            <a href="{% url 'news_detail' new.slug%}" class="read-more"><span>Đọc thêm</span><i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+
+      </div>
+
+    </section><!-- /About Section -->
+
+    <section id="about" class="about section">
+
+      <div class="container">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-6 order-1 order-lg-2" data-aos="fade-up" data-aos-delay="100">
+            <img src="{{ new1.image.url }}" class="img-fluid" alt="">
+          </div>
+
+          <div class="col-lg-6 order-2 order-lg-1 content" data-aos="fade-up" data-aos-delay="200">
+            <h3>{{ new1.title }}</h3>
+            <p class="fst-italic">
+              {{ new1.content|truncatewords:98 }}
+            </p>
+            <a href="{% url 'news_detail' new1.slug%}" class="read-more"><span>Đọc thêm</span><i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+    <!-- Counts Section -->
+    <section id="counts" class="section counts light-background">
+
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+    <div class="row gy-4">
+
+      <div class="col-lg-3 col-md-6">
+        <div class="stats-item text-center w-100 h-100">
+          <span data-purecounter-start="0" data-purecounter-end="25000" data-purecounter-duration="1" class="purecounter"></span>
+          <p>Học sinh tư vấn</p>
+        </div>
+      </div><!-- End Stats Item -->
+
+      <div class="col-lg-3 col-md-6">
+        <div class="stats-item text-center w-100 h-100">
+          <span data-purecounter-start="0" data-purecounter-end="120" data-purecounter-duration="1" class="purecounter"></span>
+          <p>Trường đại học - cao đẳng</p>
+        </div>
+      </div><!-- End Stats Item -->
+
+      <div class="col-lg-3 col-md-6">
+        <div class="stats-item text-center w-100 h-100">
+          <span data-purecounter-start="0" data-purecounter-end="350" data-purecounter-duration="1" class="purecounter"></span>
+          <p>Ngành học đa dạng</p>
+        </div>
+      </div><!-- End Stats Item -->
+
+      <div class="col-lg-3 col-md-6">
+        <div class="stats-item text-center w-100 h-100">
+          <span data-purecounter-start="0" data-purecounter-end="50" data-purecounter-duration="1" class="purecounter"></span>
+          <p>Chuyên gia tư vấn</p>
+        </div>
+      </div><!-- End Stats Item -->
+
+    </div>
+
+  </div>
+
+    </section><!-- /Counts Section -->
+
+    <!-- Why Us Section -->
+    <section id="why-us" class="section why-us">
+
+      <div class="container">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="why-box">
+              <h3>Tại sao chọn chúng tôi?</h3>
+              <p>
+                Chúng tôi là nền tảng tư vấn tuyển sinh đáng tin cậy, cung cấp thông tin chính xác, lộ trình học tập phù hợp và hỗ trợ đồng hành cùng bạn trên hành trình chọn ngành - chọn trường.
+              </p>
+              <div class="text-center">
+                <a href="{% url 'advise' %}" class="more-btn"><span>Tìm hiểu thêm</span> <i class="bi bi-chevron-right"></i></a>
+            </div>
+            </div>
+          </div><!-- End Why Box -->
+
+      <div class="col-lg-8 d-flex align-items-stretch">
+        <div class="row gy-4" data-aos="fade-up" data-aos-delay="200">
+
+          <div class="col-xl-4">
+            <div class="icon-box d-flex flex-column justify-content-center align-items-center">
+              <i class="bi bi-bar-chart-line"></i>
+              <h4>Thông tin tuyển sinh chính xác</h4>
+              <p>Cập nhật điểm chuẩn, chỉ tiêu, tổ hợp môn từ hàng trăm trường đại học – cao đẳng trên toàn quốc.</p>
+            </div>
+          </div><!-- End Icon Box -->
+
+          <div class="col-xl-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="icon-box d-flex flex-column justify-content-center align-items-center">
+              <i class="bi bi-person-check"></i>
+              <h4>Tư vấn cá nhân hóa</h4>
+              <p>Lộ trình chọn ngành – chọn trường phù hợp với sở thích, năng lực và nguyện vọng của bạn.</p>
+            </div>
+          </div><!-- End Icon Box -->
+
+          <div class="col-xl-4" data-aos="fade-up" data-aos-delay="400">
+            <div class="icon-box d-flex flex-column justify-content-center align-items-center">
+              <i class="bi bi-people"></i>
+              <h4>Đội ngũ hỗ trợ tận tâm</h4>
+              <p>Chuyên gia tư vấn giàu kinh nghiệm luôn sẵn sàng giải đáp thắc mắc và hỗ trợ 24/7.</p>
+            </div>
+          </div><!-- End Icon Box -->
+
+        </div>
+      </div>
+
+        </div>
+
+      </div>
+
+    </section>
+<!-- /Why Us Section -->
+
+    <!-- Trainers Index Section -->
+    <section id="trainers-index" class="section trainers-index">
+      <div class="container section-title" data-aos="fade-up">
+        <p>Đội ngũ chuyên gia</p>
+      </div>
+
+      <div class="container">
+
+        <div class="row">
+          {% for expert in experts %}
+          <div class="col-lg-4 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="100">
+            <div class="member">
+              <img src="{{ expert.expert_image.url }}" class="img-fluid" alt="">
+              <div class="member-content">
+                <h4>{{ expert.expert_first_name}} {{expert.expert_last_name}}</h4>
+                <p>
+                  {{ expert.expert_description }}
+                </p>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+      </div>
+
+    </section><!-- /Trainers Index Section -->
+
+    <!-- News Section -->
+    <section id="news" class="section news">
+      <div class="container section-title" data-aos="fade-up">
+        <p>Tin tức</p>
+      </div>
+      <div class="container">
+        <!-- <div class="row">
+          <div class="col-lg-12 text-center mb-5">
+            <h2 class="section-title" data-aos="fade-up">Tin tức tuyển sinh</h2>
+            <p class="section-description" data-aos="fade-up" data-aos-delay="100">Cập nhật thông tin mới nhất về kỳ thi và tuyển sinh đại học</p>
+          </div>
+        </div> -->
+
+        <div class="swiper news-slider">
+          <div class="swiper-wrapper">
+            {% for new in news %}
+            <div class="swiper-slide">
+              <div class="news-card">
+                <div class="news-image">
+                  <a href="{% url 'news_detail' new.slug%}"><img src="{{ new.image.url }}" alt="Tin tức 1" class="img-fluid"></a>
+                  <div class="news-date">
+                    <span class="day">{{ new.created_at.day }}</span>
+                    <span class="month">Th{{ new.created_at.month }}</span>
+                  </div>
+                </div>
+                <div class="news-content">
+                  <!-- <div class="news-category">Tuyển sinh</div> -->
+                  <h3 class="news-title">
+                    <a href="{% url 'news_detail' new.slug%}">{{ new.title }}</a>
+                  </h3>
+                  <p class="news-excerpt">
+                    {{ new.content|truncatewords:20}}
+                  </p>
+                  <div class="news-meta">
+                    <!-- <span><i class="bi bi-person"></i> Admin</span> -->
+                    <!-- <span><i class="bi bi-eye"></i> 1,234 lượt xem</span> -->
+                  </div>
+                  <!-- <a href="#" class="read-more">Đọc thêm <i class="bi bi-arrow-right"></i></a> -->
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+
+          </div>
+          <!-- Add Navigation -->
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-pagination"></div>
+        </div>
+
+        <div class="text-center mt-4">
+          <a href="#" class="btn-view-all" data-aos="fade-up">
+            Xem tất cả tin tức <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  {% include 'components/footer.html' %}
+  </body>
+  
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <!-- <div id="preloader"></div> -->
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/php-email-form/validate.js' %}"></script>
+  <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/purecounter/purecounter_vanilla.js' %}"></script>
+  <script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
+
+  <!-- Main JS File -->
+  <script src="{% static 'assets/js/main.js' %}"></script>
+  
+</body>
+
+</html>
+
+<style>
+  /* News Section Styles */
+  .news {
+    padding: 80px 0;
+    background: #f8f9fa;
+  }
+
+  .section-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #2c384e;
+    margin-bottom: 15px;
+  }
+
+  .section-description {
+    color: #6c757d;
+    font-size: 18px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .news-card {
+    background: #fff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .news-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 30px rgba(0, 114, 188, 0.15);
+  }
+
+  .news-image {
+    position: relative;
+    overflow: hidden;
+    height: 220px;
+  }
+
+  .news-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.5s ease;
+  }
+
+  .news-card:hover .news-image img {
+    transform: scale(1.1);
+  }
+
+  .news-date {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(0, 114, 188, 0.9);
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .news-date .day {
+    display: block;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .news-date .month {
+    display: block;
+    font-size: 14px;
+    margin-top: 2px;
+  }
+
+  .news-content {
+    padding: 25px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .news-category {
+    display: inline-block;
+    padding: 5px 15px;
+    background: rgba(0, 114, 188, 0.1);
+    color: #0072bc;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 15px;
+  }
+
+  .news-title {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 15px;
+  }
+
+  .news-title a {
+    color: #2c384e;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .news-title a:hover {
+    color: #0072bc;
+  }
+
+  .news-excerpt {
+    color: #6c757d;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .news-meta {
+    display: flex;
+    gap: 20px;
+    color: #6c757d;
+    font-size: 14px;
+    margin-bottom: 20px;
+    margin-top: auto;
+  }
+
+  .news-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #0072bc;
+    font-weight: 500;
+    text-decoration: none;
+    transition: gap 0.3s;
+  }
+
+  .read-more:hover {
+    gap: 10px;
+    color: #005a99;
+  }
+
+  .empty-news {
+    padding: 50px 0;
+  }
+
+  .empty-news i {
+    font-size: 48px;
+    color: #ccc;
+    margin-bottom: 20px;
+  }
+
+  .empty-news h3 {
+    color: #2c384e;
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .empty-news p {
+    color: #6c757d;
+    font-size: 16px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .btn-view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 30px;
+    background: #0072bc;
+    color: #fff;
+    border-radius: 50px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+
+  .btn-view-all:hover {
+    background: #005a99;
+    gap: 15px;
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    .section-title {
+      font-size: 28px;
+    }
+
+    .section-description {
+      font-size: 16px;
+    }
+
+    .news-card {
+      margin-bottom: 30px;
+    }
+  }
+
+  /* News Slider Styles */
+  .news-slider {
+    padding: 20px 0;
+    position: relative;
+  }
+
+  .news-slider .swiper-button-next,
+  .news-slider .swiper-button-prev {
+    color: #0072bc;
+    background: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .news-slider:hover .swiper-button-next,
+  .news-slider:hover .swiper-button-prev {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .news-slider .swiper-button-next:after,
+  .news-slider .swiper-button-prev:after {
+    font-size: 16px;
+  }
+
+  .news-slider .swiper-button-next:hover,
+  .news-slider .swiper-button-prev:hover {
+    background: #0072bc;
+    color: #fff;
+  }
+
+  .news-slider .swiper-pagination {
+    position: relative;
+    margin-top: 20px;
+  }
+
+  .news-slider .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: #ccc;
+    opacity: 1;
+  }
+
+  .news-slider .swiper-pagination-bullet-active {
+    background: #0072bc;
+  }
+
+  @media (max-width: 768px) {
+    .news-slider .swiper-button-next,
+    .news-slider .swiper-button-prev {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    new Swiper('.news-slider', {
+      slidesPerView: 1,
+      spaceBetween: 30,
+      loop: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: 1,
+        },
+        768: {
+          slidesPerView: 2,
+        },
+        1024: {
+          slidesPerView: 3,
+        },
+      },
+    });
+  });
+</script>
+</script>

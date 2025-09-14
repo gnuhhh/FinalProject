@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Hệ đại học | Thông tin tuyển sinh</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    {% include 'components/links.html' %}
+</head>
+<body>
+    {% include 'components/navbar-top.html' %}
+    <div class="school-container">
+        <div class="container">
+            <!-- <h1 class="text-center mb-5">Danh sách trường đại học</h1> -->
+            <div class="search-box">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Tìm kiếm trường đại học..." id="searchInput">
+            </div>
+
+            <div class="school-table" data-aos="fade-up">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Mã trường</th>
+                            <th>Tên trường</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for university in universities %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><span class="school-code">{{ university.schoolId }}</span></td>
+                            <td><a href="/university/university-{{ university.id }}" class="school-name">{{ university.schoolName }}</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="no-results">Không tìm thấy kết quả phù hợp</div>
+            </div>
+        </div>
+    </div>
+    {% include 'components/footer.html' %}
+
+    <!-- Vendor JS Files -->
+    <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+    <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
+
+    <!-- Main JS File -->
+    <script src="{% static 'assets/js/main.css' %}"></script>
+
+    <script>
+        // Khởi tạo AOS animation
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
+        // Xử lý tìm kiếm
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            var input = this.value.toLowerCase();
+            var rows = document.querySelectorAll('.table tbody tr');
+            var hasResults = false;
+
+            rows.forEach(function(row) {
+                var text = row.textContent.toLowerCase();
+                if(text.includes(input)) {
+                    row.style.display = '';
+                    hasResults = true;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Hiển thị thông báo không có kết quả
+            document.querySelector('.no-results').style.display = hasResults ? 'none' : 'block';
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,57 @@
+{% load static %}
+<header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+      <a href="{% url 'index' %}" class="logo d-flex align-items-center me-auto">
+        <h1 class="sitename">thông tin tuyển sinh</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="{% url 'index' %}" class="{% if request.path == '/'%}active{% endif %}">Trang chủ<br></a></li>
+          <li class="dropdown"><a href="{% url 'university' %}" class="{% if request.path == '/university' or request.path == '/university/ha-noi' or request.path == '/university/tp-hcm'%}active{% endif %}"><span>Hệ đại học</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="{% url 'universityHaNoi' %}">Hà Nội</a></li>
+              <li><a href="{% url 'universityTphcm' %}">TP. HCM</a></li>
+            </ul>
+          </li>
+          <li class="dropdown"><a href="{% url 'college' %}" class="{% if request.path == '/college' or request.path == '/college/ha-noi' or request.path == '/college/tp-hcm'%}active{% endif %}"><span>Hệ cao đẳng</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="{% url 'collegeHaNoi' %}">Hà Nội</a></li>
+              <li><a href="{% url 'collegeTphcm' %}">TP. HCM</a></li>
+            </ul>
+          </li>
+          <li><a href="{% url 'question' %}" class="{% if request.path == '/question'%}active{% endif %}">Câu hỏi định hướng</a></li>
+          <li><a href="{% url 'advise' %}" class="{% if request.path == '/advise'%}active{% endif %}">Tư vấn</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+      {% if user.is_authenticated %}
+      <div class="dropdown text-end">
+        <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person-fill"></i>
+          {{ user.last_name }}
+        </a>
+        <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser">
+          <li><a class="dropdown-item" href="{% url 'user_profile' %}">
+            <i class="bi bi-person-circle"></i>
+            Thông tin tài khoản</a>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <form method="POST" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="dropdown-item">
+                <i class="bi bi-box-arrow-right"></i>
+                Đăng xuất
+              </button>
+            </form>
+          </li>
+        </ul>
+      </div>
+      {% else %}
+      <a class="btn-getstarted" href="{% url 'login' %}">Đăng nhập</a>
+      {% endif %}
+      <!-- <a class="btn-getstarted" href="{% url 'login' %}">Đăng nhập</a> -->
+    </div>
+  </header>

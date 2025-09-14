@@ -1,0 +1,255 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Câu hỏi định hướng | Thông tin tuyển sinh</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    {% include 'components/links.html' %}
+
+  <style>
+        .question-container {
+            padding: 40px 0;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        .question-card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: none;
+        }
+        .question-card.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .question-number {
+            font-size: 24px;
+            font-weight: 600;
+            color: #0072bc;
+            margin-bottom: 15px;
+        }
+        .question-content {
+            font-size: 18px;
+            color: #2c384e;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .answer-option {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+      cursor: pointer;
+            transition: all 0.3s ease;
+    }
+        .answer-option:hover {
+            background: #f0f8ff;
+      border-color: #0072bc;
+    }
+        .answer-option input[type="radio"] {
+            margin-right: 15px;
+        }
+        .answer-label {
+            font-size: 16px;
+            color: #2c384e;
+            margin: 0;
+        }
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        .nav-btn {
+            background: #0072bc;
+      color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .nav-btn:hover {
+            background: #005a94;
+            transform: translateY(-2px);
+        }
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .progress-container {
+            margin-bottom: 30px;
+        }
+    .progress-bar {
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background: #0072bc;
+            transition: width 0.3s ease;
+        }
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            color: #6c757d;
+            font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+    {% include 'components/navbar-top.html' %}
+    <div class="question-container">
+        <div class="container">
+            <h1 class="text-center mb-5">Câu hỏi trắc nghiệm</h1>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress" id="progressBar" style="width: 0%"></div>
+                </div>
+                <div class="progress-text" id="progressText">Câu 1/{{ quests|length }}</div>
+            </div>
+
+            <form method="POST" id="quizForm" action="result">
+                {% csrf_token %}
+                {% for quest in quests %}
+                <div class="question-card" id="question-{{ forloop.counter }}">
+                    <div class="question-number">Câu {{ forloop.counter }}</div>
+                    <div class="question-content">{{ quest.content }}</div>
+                    <div class="answer-options">
+                        <label class="answer-option">
+                            <input type="radio" name="question_{{ quest.id }}" value="0" required>
+                            <span class="answer-label">{{ quest.answer1 }}</span>
+                        </label>
+                        <label class="answer-option">
+                            <input type="radio" name="question_{{ quest.id }}" value="1" required>
+                            <span class="answer-label">{{ quest.answer2 }}</span>
+                        </label>
+                        <label class="answer-option">
+                            <input type="radio" name="question_{{ quest.id }}" value="2" required>
+                            <span class="answer-label">{{ quest.answer3 }}</span>
+                        </label>
+                        <label class="answer-option">
+                            <input type="radio" name="question_{{ quest.id }}" value="3" required>
+                            <span class="answer-label">{{ quest.answer4 }}</span>
+                        </label>
+          </div>
+        </div>
+                {% endfor %}
+
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn" id="prevBtn" disabled>Quay lại</button>
+                    <button type="button" class="nav-btn" id="nextBtn">Tiếp theo</button>
+                    <button type="submit" class="nav-btn" id="submitBtn" style="display: none;">Xác nhận</button>
+        </div>
+            </form>
+      </div>
+    </div>
+    {% include 'components/footer.html' %}
+
+    <!-- Vendor JS Files -->
+    <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+    <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
+
+    <!-- Main JS File -->
+    <script src="{% static 'assets/js/main.js' %}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const questions = document.querySelectorAll('.question-card');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            let currentQuestion = 0;
+            const totalQuestions = questions.length;
+
+            // Hiển thị câu hỏi đầu tiên
+            questions[0].classList.add('active');
+
+            // Cập nhật thanh tiến trình
+            function updateProgress() {
+                const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+                progressBar.style.width = progress + '%';
+                progressText.textContent = `Câu ${currentQuestion + 1}/${totalQuestions}`;
+            }
+
+            // Kiểm tra đáp án đã chọn
+            function checkAnswer() {
+                const currentQuestionCard = questions[currentQuestion];
+                const selectedAnswer = currentQuestionCard.querySelector('input[type="radio"]:checked');
+                return selectedAnswer !== null;
+            }
+
+            // Xử lý nút Tiếp theo
+            nextBtn.addEventListener('click', function() {
+                if (checkAnswer()) {
+                    questions[currentQuestion].classList.remove('active');
+      currentQuestion++;
+                    questions[currentQuestion].classList.add('active');
+                    
+                    // Cập nhật trạng thái nút
+                    prevBtn.disabled = currentQuestion === 0;
+                    nextBtn.style.display = currentQuestion === totalQuestions - 1 ? 'none' : 'block';
+                    submitBtn.style.display = currentQuestion === totalQuestions - 1 ? 'block' : 'none';
+                    
+                    updateProgress();
+                } else {
+                    alert('Vui lòng chọn một đáp án!');
+                }
+            });
+
+            // Xử lý nút Quay lại
+            prevBtn.addEventListener('click', function() {
+                questions[currentQuestion].classList.remove('active');
+                currentQuestion--;
+                questions[currentQuestion].classList.add('active');
+                
+                // Cập nhật trạng thái nút
+                prevBtn.disabled = currentQuestion === 0;
+                nextBtn.style.display = 'block';
+                submitBtn.style.display = 'none';
+                
+                updateProgress();
+            });
+
+            // Thêm hiệu ứng khi chọn đáp án
+            document.querySelectorAll('.answer-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionCard = this.closest('.question-card');
+                    questionCard.querySelectorAll('.answer-option').forEach(opt => {
+                        opt.style.background = 'white';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    
+                    this.style.background = '#f0f8ff';
+                    this.style.borderColor = '#0072bc';
+                });
+            });
+
+            // Khởi tạo AOS animation
+            AOS.init({
+                duration: 1000,
+                once: true
+            });
+        });
+  </script>
+</body>
+</html>
