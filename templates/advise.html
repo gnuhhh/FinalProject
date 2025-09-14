@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đặt lịch tư vấn tuyển sinh</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9fafb;
+      margin: 0;
+      padding: 20px;
+    }
+    .booking-container {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #0072bc;
+    }
+    .section-title {
+      font-weight: bold;
+      margin: 20px 0 10px;
+      color: #374151;
+    }
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .option-box {
+      flex: 1 1 calc(33.33% - 12px);
+      min-width: 120px;
+      padding: 16px;
+      background: #f9fafb;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .option-box:hover {
+      border-color: #0072bc;
+      background: #f0f9ff;
+    }
+    .option-box.active {
+      border-color: #0072bc;
+      background: #e0f2fe;
+      font-weight: bold;
+      color: #0072bc;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background: #0072bc;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background: #005b94;
+    }
+    .hidden { display: none; }
+    .success {
+      margin-top: 20px;
+      padding: 12px;
+      background: #d1fae5;
+      border: 1px solid #10b981;
+      border-radius: 8px;
+      color: #065f46;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="booking-container">
+    <h1>Đặt lịch tư vấn tuyển sinh</h1>
+
+    <div>
+      <div class="section-title">1. Chọn chuyên gia</div>
+      <div id="advisor-options" class="options">
+        <div class="option-box" onclick="selectAdvisor('nguyenvana', this)">Nguyễn Văn A<br><small>Tư vấn CNTT</small></div>
+        <div class="option-box" onclick="selectAdvisor('tranthib', this)">Trần Thị B<br><small>Tư vấn Kinh tế</small></div>
+        <div class="option-box" onclick="selectAdvisor('phamvanc', this)">Phạm Văn C<br><small>Tư vấn Y dược</small></div>
+      </div>
+    </div>
+
+    <div id="date-section" class="hidden">
+      <div class="section-title">2. Chọn ngày</div>
+      <div id="date-options" class="options"></div>
+    </div>
+
+    <div id="time-section" class="hidden">
+      <div class="section-title">3. Chọn giờ</div>
+      <div id="time-options" class="options"></div>
+    </div>
+
+    <button id="book-btn" class="hidden" onclick="bookAppointment()">Đặt lịch</button>
+
+    <div id="success-message" class="success hidden">
+      ✅ Bạn đã đặt lịch thành công!
+    </div>
+  </div>
+
+  <script>
+    const advisorSchedules = {
+      nguyenvana: {
+        "2025-09-20": ["09:00", "10:00", "14:00"],
+        "2025-09-21": ["08:30", "13:30", "15:00"]
+      },
+      tranthib: {
+        "2025-09-22": ["09:00", "11:00", "16:00"],
+        "2025-09-23": ["10:30", "14:30"]
+      },
+      phamvanc: {
+        "2025-09-24": ["08:00", "09:30", "15:30"],
+        "2025-09-25": ["10:00", "13:00", "16:00"]
+      }
+    };
+
+    let selectedAdvisor = null;
+    let selectedDate = null;
+    let selectedTime = null;
+
+    function selectAdvisor(advisor, element) {
+      selectedAdvisor = advisor;
+      selectedDate = null;
+      selectedTime = null;
+
+      document.querySelectorAll("#advisor-options .option-box").forEach(el => el.classList.remove("active"));
+      element.classList.add("active");
+
+      const dateOptions = document.getElementById("date-options");
+      dateOptions.innerHTML = "";
+      Object.keys(advisorSchedules[advisor]).forEach(date => {
+        const box = document.createElement("div");
+        box.className = "option-box";
+        box.innerText = date;
+        box.onclick = () => selectDate(date, box);
+        dateOptions.appendChild(box);
+      });
+
+      document.getElementById("date-section").classList.remove("hidden");
+      document.getElementById("time-section").classList.add("hidden");
+      document.getElementById("book-btn").classList.add("hidden");
+    }
+
+    function selectDate(date, element) {
+      selectedDate = date;
+      selectedTime = null;
+
+      document.querySelectorAll("#date-options .option-box").forEach(el => el.classList.remove("active"));
+      element.classList.add("active");
+
+      const timeOptions = document.getElementById("time-options");
+      timeOptions.innerHTML = "";
+      advisorSchedules[selectedAdvisor][date].forEach(time => {
+        const box = document.createElement("div");
+        box.className = "option-box";
+        box.innerText = time;
+        box.onclick = () => selectTime(time, box);
+        timeOptions.appendChild(box);
+      });
+
+      document.getElementById("time-section").classList.remove("hidden");
+      document.getElementById("book-btn").classList.add("hidden");
+    }
+
+    function selectTime(time, element) {
+      selectedTime = time;
+
+      document.querySelectorAll("#time-options .option-box").forEach(el => el.classList.remove("active"));
+      element.classList.add("active");
+
+      document.getElementById("book-btn").classList.remove("hidden");
+    }
+
+    function bookAppointment() {
+      if (!selectedAdvisor || !selectedDate || !selectedTime) {
+        alert("Vui lòng chọn đầy đủ thông tin!");
+        return;
+      }
+      document.getElementById("success-message").classList.remove("hidden");
+    }
+  </script>
+</body>
+</html>

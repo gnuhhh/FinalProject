@@ -1,17 +1,17 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  {% include 'components/links.html' %}
   <title>Thông tin cá nhân</title>
   <style>
     body {
+      font-family: Arial, sans-serif;
       background-color: #f9fafb;
       margin: 0;
+      padding: 20px;
     }
-    .profile-container {
+    .container {
       max-width: 900px;
       margin: auto;
       background: #fff;
@@ -19,11 +19,11 @@
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    .profile-title {
+    h1 {
       margin: 0 0 20px;
       font-size: 24px;
     }
-    .profile-tabs button {
+    .tabs button {
       padding: 10px 20px;
       border-radius: 8px;
       border: 1px solid #e5e7eb;
@@ -32,14 +32,14 @@
       margin-right: 10px;
       font-weight: 600;
     }
-    .profile-tabs button.active {
+    .tabs button.active {
       background: #0072bc;
       color: #fff;
       border: none;
       box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
-    .profile-section, .appointments-section { display: none; }
-    .profile-section.active, .appointments-section.active { display: block; margin-top: 20px; }
+    .profile, .appointments { display: none; }
+    .profile.active, .appointments.active { display: block; margin-top: 20px; }
 
     .profile-box {
       border: 1px solid #e5e7eb;
@@ -58,7 +58,7 @@
       display: block;
       color: #111827;
     }
-    .profile-buttons button {
+    .buttons button {
       padding: 8px 16px;
       border-radius: 6px;
       border: 1px solid #0072bc;
@@ -68,29 +68,29 @@
       cursor: pointer;
       margin-right: 6px;
     }
-    .profile-buttons .primary {
+    .buttons .primary {
       background: #0072bc;
       color: #fff;
       border: none;
     }
-    .appointments-table {
+    table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
     }
-    .appointments-table th, .appointments-table td {
+    th, td {
       border: 1px solid #e5e7eb;
       padding: 12px;
       text-align: left;
     }
-    .appointments-table th {
+    th {
       background: #0072bc;
       color: #fff;
     }
-    .appointments-table tr:nth-child(even) {
+    tr:nth-child(even) {
       background: #f9fafb;
     }
-    .profile-modal {
+    .modal {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.3);
@@ -99,8 +99,8 @@
       justify-content: center;
       display: none;
     }
-    .profile-modal.active { display: flex; }
-    .profile-modal-content {
+    .modal.active { display: flex; }
+    .modal-content {
       background: #fff;
       border-radius: 10px;
       padding: 20px;
@@ -110,38 +110,37 @@
   </style>
 </head>
 <body>
-    {% include 'components/navbar-top.html' %}
-  <div class="profile-container">
-    <h1 class="profile-title">Thông tin cá nhân</h1>
-    <div class="profile-tabs">
-      <button class="active" onclick="showTab('profile-section', event)">Xem thông tin</button>
-      <button onclick="showTab('appointments-section', event)">Lịch hẹn</button>
+  <div class="container">
+    <h1>Thông tin cá nhân</h1>
+    <div class="tabs">
+      <button class="active" onclick="showTab('profile')">Xem thông tin</button>
+      <button onclick="showTab('appointments')">Lịch hẹn</button>
     </div>
 
-    <div id="profile-section" class="profile-section active">
+    <div id="profile" class="profile active">
       <div class="profile-box">
         <label>Họ và tên</label>
-        <span id="profile-name">Nguyễn Văn A</span>
+        <span id="name">Nguyễn Văn A</span>
       </div>
       <div class="profile-box">
         <label>Email</label>
-        <span id="profile-email">nguyenvana@example.com</span>
+        <span id="email">nguyenvana@example.com</span>
       </div>
       <div class="profile-box">
         <label>Số điện thoại</label>
-        <span id="profile-phone">+84 912 345 678</span>
+        <span id="phone">+84 912 345 678</span>
       </div>
       <div class="profile-box">
         <label>Địa chỉ</label>
-        <span id="profile-address">Hà Nội, Việt Nam</span>
+        <span id="address">Hà Nội, Việt Nam</span>
       </div>
-      <div class="profile-buttons">
+      <div class="buttons">
         <button onclick="editProfile()">Sửa thông tin</button>
       </div>
     </div>
 
-    <div id="appointments-section" class="appointments-section">
-      <table class="appointments-table">
+    <div id="appointments" class="appointments">
+      <table>
         <thead>
           <tr>
             <th>Ngày</th>
@@ -168,11 +167,11 @@
     </div>
   </div>
 
-  <div id="profile-modal" class="profile-modal">
-    <div class="profile-modal-content">
+  <div id="modal" class="modal">
+    <div class="modal-content">
       <h3>Xác nhận hủy lịch</h3>
       <p>Bạn có chắc muốn hủy lịch hẹn này?</p>
-      <div class="profile-buttons" style="margin-top:10px; text-align:right;">
+      <div class="buttons" style="margin-top:10px; text-align:right;">
         <button onclick="closeModal()">Trở lại</button>
         <button class="primary" onclick="closeModal()">Hủy lịch</button>
       </div>
@@ -180,20 +179,19 @@
   </div>
 
   <script>
-    function showTab(tabId, event) {
-      document.querySelectorAll('.profile-tabs button').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.profile-section, .appointments-section').forEach(sec => sec.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
+    function showTab(tab) {
+      document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.profile, .appointments').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(tab).classList.add('active');
       event.target.classList.add('active');
     }
     function confirmCancel() {
-      document.getElementById('profile-modal').classList.add('active');
+      document.getElementById('modal').classList.add('active');
     }
     function closeModal() {
-      document.getElementById('profile-modal').classList.remove('active');
+      document.getElementById('modal').classList.remove('active');
     }
     function editProfile() { alert('Chức năng sửa thông tin'); }
   </script>
-  {% include 'components/footer.html' %}
 </body>
 </html>
