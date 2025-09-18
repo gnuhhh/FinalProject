@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
+from user_profile.models import Member
 
 # Create your views here.
 def register(request):
@@ -25,8 +26,8 @@ def register(request):
             return redirect('register')
             
         try:
-            user = User.objects.create_user(username=username, email=email, password=password, first_name = firstname, last_name = lastname)
-            user.save()
+            member = Member.objects.create_user(username=username, email=email, password=password, first_name = firstname, last_name = lastname)
+            member.save()
             messages.success(request, 'Đăng ký thành công!')
             return redirect('login')  
             

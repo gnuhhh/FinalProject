@@ -2,198 +2,264 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  {% include 'components/links.html' %}
-  <title>Thông tin cá nhân</title>
-  <style>
-    body {
-      background-color: #f9fafb;
-      margin: 0;
-    }
-    .profile-container {
-      max-width: 900px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .profile-title {
-      margin: 0 0 20px;
-      font-size: 24px;
-    }
-    .profile-tabs button {
-      padding: 10px 20px;
-      border-radius: 8px;
-      border: 1px solid #e5e7eb;
-      background: #fff;
-      cursor: pointer;
-      margin-right: 10px;
-      font-weight: 600;
-    }
-    .profile-tabs button.active {
-      background: #0072bc;
-      color: #fff;
-      border: none;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-    .profile-section, .appointments-section { display: none; }
-    .profile-section.active, .appointments-section.active { display: block; margin-top: 20px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Hồ sơ cá nhân</title>
+    {% include 'components/links.html' %}
 
-    .profile-box {
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 12px;
-      background: #f9fafb;
-    }
-    .profile-box label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 4px;
-      color: #374151;
-    }
-    .profile-box span {
-      display: block;
-      color: #111827;
-    }
-    .profile-buttons button {
-      padding: 8px 16px;
-      border-radius: 6px;
-      border: 1px solid #0072bc;
-      background: #fff;
-      color: #0072bc;
-      font-weight: 600;
-      cursor: pointer;
-      margin-right: 6px;
-    }
-    .profile-buttons .primary {
-      background: #0072bc;
-      color: #fff;
-      border: none;
-    }
-    .appointments-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    .appointments-table th, .appointments-table td {
-      border: 1px solid #e5e7eb;
-      padding: 12px;
-      text-align: left;
-    }
-    .appointments-table th {
-      background: #0072bc;
-      color: #fff;
-    }
-    .appointments-table tr:nth-child(even) {
-      background: #f9fafb;
-    }
-    .profile-modal {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      display: none;
-    }
-    .profile-modal.active { display: flex; }
-    .profile-modal-content {
-      background: #fff;
-      border-radius: 10px;
-      padding: 20px;
-      max-width: 400px;
-      width: 100%;
-    }
-  </style>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        :root { --primary-color: #0072bc; --text-color: #2c384e; --border-color: #e9ecef; --hover-color: #f8f9fa; --card-shadow: 0 5px 25px rgba(0, 0, 0, 0.1); }
+        body { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); min-height: 100vh; overflow-x: hidden; }
+        .container { display: flex; min-height: 100vh; width: 100%; max-width: 100%; padding: 0; margin: 0; }
+        .sidebar { width: 260px; background: white; padding: 24px; display: flex; flex-direction: column; border-right: 1px solid var(--border-color); box-shadow: var(--card-shadow); flex-shrink: 0; }
+        .logo { display: flex; align-items: center; gap: 12px; padding: 12px; margin-bottom: 24px; }
+        .logo img { width: 40px; height: 40px; }
+        .logo span { font-size: 24px; font-weight: 600; color: var(--primary-color); }
+        .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px; color: var(--text-color); text-decoration: none; border-radius: 8px; margin-bottom: 8px; transition: all 0.3s ease; width: 100%; cursor: pointer; }
+        .menu-item:hover, .menu-item.active { background: rgba(0, 114, 188, 0.1); color: var(--primary-color); transform: translateX(5px); }
+        .menu-item i { font-size: 20px; }
+        .main-content { flex: 1; padding: 30px; width: calc(100% - 260px); }
+        .header { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 30px; background: white; padding: 15px 20px; border-radius: 15px; box-shadow: var(--card-shadow); }
+        .data-table-container { background: white; border-radius: 15px; padding: 30px; box-shadow: var(--card-shadow); margin-bottom: 30px; width: 100%; }
+        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid var(--border-color); padding-bottom: 20px; position: relative; }
+        .table-header:after { content: ''; position: absolute; bottom: -2px; left: 0; width: 60px; height: 2px; background: var(--primary-color); }
+        .table-title { font-size: 22px; font-weight: 600; color: var(--primary-color); }
+        .avatar-wrapper { width: 120px; height: 120px; border-radius: 50%; overflow: hidden; border: 1px solid #dee2e6; }
+        .avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .status-badge { padding: 5px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: 500; display: inline-block; }
+        @media (max-width: 992px) { .container { flex-direction: column; } .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); } }
+    </style>
 </head>
 <body>
-    {% include 'components/navbar-top.html' %}
-  <div class="profile-container">
-    <h1 class="profile-title">Thông tin cá nhân</h1>
-    <div class="profile-tabs">
-      <button class="active" onclick="showTab('profile-section', event)">Xem thông tin</button>
-      <button onclick="showTab('appointments-section', event)">Lịch hẹn</button>
+    <div class="container">
+        <!-- Sidebar (custom cho trang hồ sơ) -->
+        <aside class="sidebar">
+            <a class="menu-item" id="menu-home" href="{% url 'index' %}">
+                <i class="bi bi-arrow-left"></i>
+                <span>Trang chủ</span>
+            </a>
+            <a class="menu-item active" id="menu-profile" href="#">
+                <i class="bi bi-person"></i>
+                <span>Thông tin cá nhân</span>
+            </a>
+            <a class="menu-item" id="menu-appointments" href="#">
+                <i class="bi bi-calendar-event"></i>
+                <span>Lịch hẹn</span>
+            </a>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            {% include 'admin/components/header.html' %}
+
+            <!-- Thông tin cá nhân -->
+            <section id="panel-profile" class="data-table-container">
+                <div class="table-header">
+                    <div class="table-title">Thông tin cá nhân</div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <div class="avatar-wrapper">
+                        <img id="avatarPreview" src="{% if member.avatar %}{{ member.avatar.url }}{% else %}{% static 'assets/img/default-avatar.png' %}{% endif %}" alt="Avatar">
+                    </div>
+                    <div class="fw-semibold">
+                        <div>{{ member.first_name }} {{ member.last_name }}</div>
+                    </div>
+                </div>
+
+                <form method="post" enctype="multipart/form-data" action="">
+                    {% csrf_token %}
+                    <div class="row g-3 align-items-center mb-3">
+                        <div class="col-md-6">
+                            <label for="avatar" class="form-label">Hình ảnh</label>
+                            <input class="form-control" type="file" id="avatar" name="avatar" accept="image/*">
+                            <div class="form-text">Dung lượng tối đa 2MB. Định dạng: JPG, PNG.</div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="last_name" class="form-label">Họ</label>
+                            <input type="text" id="last_name" name="first_name" class="form-control" value="{{ member.first_name }}" placeholder="Nhập họ">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="first_name" class="form-label">Tên</label>
+                            <input type="text" id="first_name" name="last_name" class="form-control" value="{{ member.last_name }}" placeholder="Nhập tên">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" id="email" name="email" class="form-control" value="{{ member.email }}" placeholder="email@domain.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">Số điện thoại</label>
+                            <input type="text" id="phone" name="phone" class="form-control" value="{{ member.phone_number }}" placeholder="Nhập số điện thoại">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label d-block">Giới tính</label>
+                            <div class="d-flex gap-3">
+                                {% if member.gender == 'Male' %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_male" value="Male" checked>
+                                    <label class="form-check-label" for="gender_male">Nam</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_female" value="Female">
+                                    <label class="form-check-label" for="gender_female">Nữ</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_other" value="Other">
+                                    <label class="form-check-label" for="gender_other">Khác</label>
+                                </div>
+                                {% elif member.gender == 'Female'%}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_male" value="Male">
+                                    <label class="form-check-label" for="gender_male">Nam</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_female" value="Female" checked>
+                                    <label class="form-check-label" for="gender_female">Nữ</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_other" value="Other">
+                                    <label class="form-check-label" for="gender_other">Khác</label>
+                                </div>
+                                {% else %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_male" value="Male">
+                                    <label class="form-check-label" for="gender_male">Nam</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_female" value="Female">
+                                    <label class="form-check-label" for="gender_female">Nữ</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_other" value="Other">
+                                    <label class="form-check-label" for="gender_other">Khác</label>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="dob" class="form-label">Ngày sinh</label>
+                            <input type="date" id="dob" name="dob" class="form-control" value="{{ member.birthdate|date:'Y-m-d' }}">
+                        </div>
+                    </div>
+
+                    {% if messages %}
+                    <script>
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 3000,            // tự mất sau 3 giây
+                            timerProgressBar: true,
+                        });
+
+                    {% for message in messages %}
+                        Toast.fire({
+                            icon: "{{ message.tags }}",   // success, error, warning, info
+                            title: "{{ message|escapejs }}"
+                        });
+                    {% endfor %}
+                    </script>
+                    {% endif %}
+
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>Lưu thay đổi</button>
+                        <a href="#" class="btn btn-outline-secondary">Hủy</a>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Lịch hẹn -->
+            <section id="panel-appointments" class="data-table-container" style="display:none;">
+                <div class="table-header">
+                    <div class="table-title">Lịch hẹn</div>
+                </div>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th><span title="Tên chuyên gia">STT</span></th>
+                                <th><span title="Tên chuyên gia">Tên chuyên gia</span></th>
+                                <th><span title="Thời gian">Thời gian</span></th>
+                                <th><span title="Trạng thái">Trạng thái</span></th>
+                                <th><span title="Hủy">Hủy</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Chuyên gia Tư vấn 1</td>
+                                <td>09:00 20/09/2025</td>
+                                <td><span class="status-badge status-pending" style="background: rgba(255, 193, 7, 0.1); color: #FFC107;">Chờ xác nhận</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc muốn hủy lịch hẹn này?');">
+                                        <i class="bi bi-x-circle"></i> Hủy
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Chuyên gia Tư vấn 2</td>
+                                <td>14:30 22/09/2025</td>
+                                <td><span class="status-badge" style="background: rgba(34, 197, 94, 0.1); color: #22C55E;">Đã xác nhận</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-secondary" disabled>Hủy</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
     </div>
 
-    <div id="profile-section" class="profile-section active">
-      <div class="profile-box">
-        <label>Họ và tên</label>
-        <span id="profile-name">Nguyễn Văn A</span>
-      </div>
-      <div class="profile-box">
-        <label>Email</label>
-        <span id="profile-email">nguyenvana@example.com</span>
-      </div>
-      <div class="profile-box">
-        <label>Số điện thoại</label>
-        <span id="profile-phone">+84 912 345 678</span>
-      </div>
-      <div class="profile-box">
-        <label>Địa chỉ</label>
-        <span id="profile-address">Hà Nội, Việt Nam</span>
-      </div>
-      <div class="profile-buttons">
-        <button onclick="editProfile()">Sửa thông tin</button>
-      </div>
-    </div>
+    <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+    <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/main.js' %}"></script>
+    <script>
+        // Chuyển đổi panel theo sidebar
+        const menuProfile = document.getElementById('menu-profile');
+        const menuAppointments = document.getElementById('menu-appointments');
+        const panelProfile = document.getElementById('panel-profile');
+        const panelAppointments = document.getElementById('panel-appointments');
 
-    <div id="appointments-section" class="appointments-section">
-      <table class="appointments-table">
-        <thead>
-          <tr>
-            <th>Ngày</th>
-            <th>Tên chuyên gia</th>
-            <th>Giá tiền</th>
-            <th>Hành động</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>2025-09-20</td>
-            <td>Bác sĩ Trần Văn B</td>
-            <td>500,000 VND</td>
-            <td><button onclick="confirmCancel()">Hủy</button></td>
-          </tr>
-          <tr>
-            <td>2025-09-25</td>
-            <td>Chị Nguyễn Thị C</td>
-            <td>300,000 VND</td>
-            <td><button onclick="confirmCancel()">Hủy</button></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+        function setActive(menu) {
+            [menuProfile, menuAppointments].forEach(m => m.classList.remove('active'));
+            menu.classList.add('active');
+        }
 
-  <div id="profile-modal" class="profile-modal">
-    <div class="profile-modal-content">
-      <h3>Xác nhận hủy lịch</h3>
-      <p>Bạn có chắc muốn hủy lịch hẹn này?</p>
-      <div class="profile-buttons" style="margin-top:10px; text-align:right;">
-        <button onclick="closeModal()">Trở lại</button>
-        <button class="primary" onclick="closeModal()">Hủy lịch</button>
-      </div>
-    </div>
-  </div>
+        menuProfile.addEventListener('click', function(e) { e.preventDefault(); setActive(menuProfile); panelProfile.style.display = ''; panelAppointments.style.display = 'none'; });
+        menuAppointments.addEventListener('click', function(e) { e.preventDefault(); setActive(menuAppointments); panelProfile.style.display = 'none'; panelAppointments.style.display = ''; });
 
-  <script>
-    function showTab(tabId, event) {
-      document.querySelectorAll('.profile-tabs button').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.profile-section, .appointments-section').forEach(sec => sec.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      event.target.classList.add('active');
-    }
-    function confirmCancel() {
-      document.getElementById('profile-modal').classList.add('active');
-    }
-    function closeModal() {
-      document.getElementById('profile-modal').classList.remove('active');
-    }
-    function editProfile() { alert('Chức năng sửa thông tin'); }
-  </script>
-  {% include 'components/footer.html' %}
+        // Xem trước ảnh đại diện
+        const inputAvatar = document.getElementById('avatar');
+        const previewImg = document.getElementById('avatarPreview');
+        if (inputAvatar) {
+            inputAvatar.addEventListener('change', function() {
+                const file = this.files && this.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = e => { previewImg.src = e.target.result; };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Tự động ẩn sau 3 giây
+        setTimeout(() => {
+            let alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+            let bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+            });
+        }, 3000); // 3000 ms = 3s
+    </script>
 </body>
 </html>
+
+

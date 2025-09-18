@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     "register",
     "question",
     "school",
-    "news"
+    "news", 
+    "user_profile"
 ]
 
 MIDDLEWARE = [

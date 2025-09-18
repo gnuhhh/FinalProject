@@ -1,20 +1,25 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
+from user_profile.models import Member
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 # Create your views here.
-# def index(request):
-#     if request.method == 'POST':
-#         request.user.email = request.POST['email'].strip()
-#         request.user.first_name = request.POST['firstname'].strip()
-#         request.user.last_name = request.POST['lastname'].strip()
-#         request.user.save()
-#         messages.success(request, 'Cập nhật thành công')
-#         return redirect('user_profile')
-#     else:
-#         return render(request, 'user_profile.html')
-    
-def index(request):
-    return render(request, 'user_profile.html')
+@login_required(login_url='login')
+def show_info(request):
+    member = get_object_or_404(Member, id=request.user.id)
+    if request.method == 'POST':
+        member.avatar = request.FILES['avatar']
+        member.first_name = request.POST['first_name']
+        member.last_name = request.POST['last_name']
+        member.email = request.POST['email']
+        member.phone_number = request.POST['phone']
+        member.gender = request.POST['gender']
+        member.birthdate = request.POST['dob']
+        member.save()
+        messages.success(request, "Thay đổi thành công")
+        return redirect('user_profile')
+    else:
+        return render(request, 'user_profile.html', {'member':member})
 
 
         
