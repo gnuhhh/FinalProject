@@ -22,7 +22,12 @@
             </ul>
           </li>
           <li><a href="{% url 'question' %}" class="{% if request.path == '/question'%}active{% endif %}">Câu hỏi định hướng</a></li>
-          <li><a href="{% url 'advise' %}" class="{% if request.path == '/advise'%}active{% endif %}">Tư vấn</a></li>
+          <li class="dropdown"><a href="{% url 'college' %}" class="{% if request.path == '/college' or request.path == '/college/ha-noi' or request.path == '/college/tp-hcm'%}active{% endif %}"><span>Tư vấn</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="{% url 'advise' %}">Tư vấn với chuyên gia</a></li>
+              <li><a href="{% url 'collegeTphcm' %}">Tư vấn với AI</a></li>
+            </ul>
+          </li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>

@@ -1,198 +1,289 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đặt lịch tư vấn tuyển sinh</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9fafb;
-      margin: 0;
-      padding: 20px;
-    }
-    .booking-container {
-      max-width: 700px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #0072bc;
-    }
-    .section-title {
-      font-weight: bold;
-      margin: 20px 0 10px;
-      color: #374151;
-    }
-    .options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .option-box {
-      flex: 1 1 calc(33.33% - 12px);
-      min-width: 120px;
-      padding: 16px;
-      background: #f9fafb;
-      border: 2px solid #e5e7eb;
-      border-radius: 10px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .option-box:hover {
-      border-color: #0072bc;
-      background: #f0f9ff;
-    }
-    .option-box.active {
-      border-color: #0072bc;
-      background: #e0f2fe;
-      font-weight: bold;
-      color: #0072bc;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      background: #0072bc;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    button:hover {
-      background: #005b94;
-    }
-    .hidden { display: none; }
-    .success {
-      margin-top: 20px;
-      padding: 12px;
-      background: #d1fae5;
-      border: 1px solid #10b981;
-      border-radius: 8px;
-      color: #065f46;
-      font-weight: bold;
-      text-align: center;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt lịch tư vấn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0072bc;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --bg: #ffffff;
+        }
+        * { box-sizing: border-box; }
+        html, body { height: 100%; }
+        body {
+            margin: 0;
+            font-family: 'Open Sans', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji';
+            color: var(--text);
+            background: #f8fafc;
+        }
+        .container { max-width: 880px; margin: 32px auto; padding: 0 16px; }
+        h2 { margin: 0 0 8px; font-weight: 700; }
+        .muted { color: var(--muted); font-size: 14px; }
+
+        .steps-indicator { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 16px 0 20px; }
+        .step-box { text-align: center; }
+        .dot {
+            width: 32px; height: 32px; border-radius: 50%;
+            margin: 0 auto 6px; display: flex; align-items: center; justify-content: center;
+            background: #e9ecef; color: #6c757d; font-weight: 700;
+        }
+        .dot.active { background: var(--primary); color: #fff; }
+        .label { font-size: 12px; color: var(--muted); }
+
+        .card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .step { display: none; }
+        .step.active { display: block; }
+
+        .form-group { margin-bottom: 14px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; }
+        select, input[type="text"], input[type="date"], button {
+            font-family: inherit;
+        }
+        /* Lưới ô lựa chọn */
+        .options-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        @media (min-width: 640px) { .options-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        @media (min-width: 920px) { .options-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+        .option-card {
+            border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; background: #fff; text-align: left;
+            cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+        }
+        .option-card:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,.04); }
+        .option-card.active { border-color: var(--primary); background: rgba(0,114,188,.06); }
+        .option-title { font-weight: 600; margin: 0 0 4px; }
+        .option-sub { color: var(--muted); font-size: 13px; margin: 0; }
+
+        .btn { cursor: pointer; padding: 10px 16px; border: none; border-radius: 8px; font-weight: 600; }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-secondary { background: #94a3b8; color: #fff; }
+        .btn-outline { background: #ffffff; color: var(--primary); border: 1px solid var(--primary); }
+        .btn-outline:hover { background: rgba(0,114,188,0.06); }
+        .btn:disabled { opacity: .6; cursor: not-allowed; }
+
+        .row-actions { display: flex; gap: 10px; justify-content: space-between; align-items: center; }
+        .right { display: flex; gap: 10px; }
+
+        .error { color: #dc3545; font-size: 14px; margin-top: 6px; }
+        .hidden { display: none !important; }
+
+        ul.summary { margin: 8px 0 0; padding-left: 18px; }
+        ul.summary li { margin-bottom: 4px; }
+
+        /* Nút quay lại góc trái trên */
+        .back-top { position: fixed; top: 16px; left: 16px; z-index: 1000; }
+    </style>
+    <!-- Đây chỉ là giao diện tĩnh; chưa tích hợp API -->
+    <!-- Màu chủ đạo: #0072bc; Font: Open Sans -->
 </head>
 <body>
-  <div class="booking-container">
-    <h1>Đặt lịch tư vấn tuyển sinh</h1>
+    <button class="back-top btn btn-outline" id="btnTopBack" type="button">← Quay lại</button>
+    <div class="container">
+        <h2>Đặt lịch tư vấn với chuyên gia</h2>
+        <div class="muted">Hoàn thành từng bước để chuyển tới thanh toán.</div>
 
-    <div>
-      <div class="section-title">1. Chọn chuyên gia</div>
-      <div id="advisor-options" class="options">
-        <div class="option-box" onclick="selectAdvisor('nguyenvana', this)">Nguyễn Văn A<br><small>Tư vấn CNTT</small></div>
-        <div class="option-box" onclick="selectAdvisor('tranthib', this)">Trần Thị B<br><small>Tư vấn Kinh tế</small></div>
-        <div class="option-box" onclick="selectAdvisor('phamvanc', this)">Phạm Văn C<br><small>Tư vấn Y dược</small></div>
-      </div>
+        <div class="steps-indicator">
+            <div class="step-box">
+                <div class="dot active" id="stepDot1">1</div>
+                <div class="label">Chuyên gia</div>
+            </div>
+            <div class="step-box">
+                <div class="dot" id="stepDot2">2</div>
+                <div class="label">Ngày</div>
+            </div>
+            <div class="step-box">
+                <div class="dot" id="stepDot3">3</div>
+                <div class="label">Ca</div>
+            </div>
+            <div class="step-box">
+                <div class="dot" id="stepDot4">4</div>
+                <div class="label">Thanh toán</div>
+            </div>
+        </div>
+
+        <form class="card" id="bookingForm" method="post" action="/advise/checkout/">
+            {% csrf_token %}
+            <input type="hidden" name="expert_id" id="inputExpertId" value="">
+            <input type="hidden" name="date" id="inputDate" value="">
+            <input type="hidden" name="slot" id="inputSlot" value="">
+            <!-- Bước 1: Chọn chuyên gia (tĩnh, ô) -->
+            <div id="step1" class="step active">
+                <div class="form-group">
+                    <label for="expertSelect">Chọn chuyên gia</label>
+                    <div id="expertsGrid" class="options-grid">
+                        {% for e in expert %}
+                        <div class="option-card" data-value="{{ e.id }}">
+                            <p class="option-title">{{ e.expert_first_name }} {{ e.expert_last_name }}</p>
+                            {% if e.sub %}<p class="option-sub">{{ e.sub }}</p>{% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div id="expertError" class="error hidden"></div>
+                </div>
+                <div class="row-actions" style="justify-content: flex-end;">
+                    <div class="right">
+                        <button class="btn btn-primary" id="btnToStep2" disabled>Tiếp tục</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bước 2: Chọn ngày (tĩnh, ô) -->
+            <div id="step2" class="step">
+                <div class="form-group">
+                    <label for="dateSelect">Chọn ngày</label>
+                    <div id="datesGrid" class="options-grid">
+                        {#
+                          Ví dụ server có thể render:
+                          {% for d in dates %}
+                            <div class="option-card" data-value="{{ d.value }}">
+                                <p class="option-title">{{ d.label }}</p>
+                            </div>
+                          {% endfor %}
+                        #}
+                    </div>
+                    <div id="dateError" class="error hidden"></div>
+                </div>
+                <div class="row-actions">
+                    <button class="btn btn-secondary" id="backToStep1">Quay lại</button>
+                    <div class="right">
+                        <button class="btn btn-primary" id="btnToStep3" disabled>Tiếp tục</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bước 3: Chọn ca (tĩnh, ô) -->
+            <div id="step3" class="step">
+                <div class="form-group">
+                    <label for="slotSelect">Chọn ca</label>
+                    <div id="slotsGrid" class="options-grid">
+                        {#
+                          Ví dụ server có thể render:
+                          {% for s in slots %}
+                            <div class="option-card" data-value="{{ s.value }}">
+                                <p class="option-title">{{ s.label }}</p>
+                            </div>
+                          {% endfor %}
+                        #}
+                    </div>
+                    <div id="slotError" class="error hidden"></div>
+                </div>
+                <div class="row-actions">
+                    <button class="btn btn-secondary" id="backToStep2">Quay lại</button>
+                    <div class="right">
+                        <button class="btn btn-primary" id="btnToStep4" disabled>Tiếp tục</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bước 4: Xác nhận (tĩnh) -->
+            <div id="step4" class="step">
+                <div class="form-group">
+                    <div class="muted">Vui lòng kiểm tra thông tin đặt lịch:</div>
+                    <ul class="summary">
+                        <li><strong>Chuyên gia:</strong> <span id="summaryExpert">-</span></li>
+                        <li><strong>Ngày:</strong> <span id="summaryDate">-</span></li>
+                        <li><strong>Ca:</strong> <span id="summarySlot">-</span></li>
+                    </ul>
+                </div>
+                <div class="row-actions">
+                    <button class="btn btn-secondary" id="backToStep3">Quay lại</button>
+                    <div class="right">
+                        <button class="btn btn-primary" id="btnPay" type="submit">Tiếp tục tới thanh toán</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div id="globalError" class="error hidden" style="margin-top:12px;"></div>
     </div>
 
-    <div id="date-section" class="hidden">
-      <div class="section-title">2. Chọn ngày</div>
-      <div id="date-options" class="options"></div>
-    </div>
+    <script>
+        // Điều hướng bước (không lưu biến trạng thái)
+        function setStep(step) {
+            const steps = [
+                document.getElementById('step1'),
+                document.getElementById('step2'),
+                document.getElementById('step3'),
+                document.getElementById('step4')
+            ];
+            const dots = [
+                document.getElementById('stepDot1'),
+                document.getElementById('stepDot2'),
+                document.getElementById('stepDot3'),
+                document.getElementById('stepDot4')
+            ];
+            steps.forEach((s, i) => s.classList.toggle('active', i === step - 1));
+            dots.forEach((d, i) => d.classList.toggle('active', i < step));
+        }
 
-    <div id="time-section" class="hidden">
-      <div class="section-title">3. Chọn giờ</div>
-      <div id="time-options" class="options"></div>
-    </div>
+        // Gắn sự kiện chọn ô
+        function bindCards(containerId, onPick) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const cards = Array.from(container.querySelectorAll('.option-card'));
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    cards.forEach(c => c.classList.remove('active'));
+                    card.classList.add('active');
+                    const value = card.getAttribute('data-value') || '';
+                    const label = card.querySelector('.option-title')?.textContent || '';
+                    onPick(value, label);
+                });
+            });
+        }
 
-    <button id="book-btn" class="hidden" onclick="bookAppointment()">Đặt lịch</button>
+        // Bước 1 → 2
+        bindCards('expertsGrid', (value, label) => {
+            document.getElementById('inputExpertId').value = value;
+            document.getElementById('btnToStep2').disabled = !value;
+        });
+        document.getElementById('btnToStep2').addEventListener('click', (e) => {
+            e.preventDefault();
+            // reset sau
+            document.getElementById('inputDate').value = '';
+            document.getElementById('inputSlot').value = '';
+            document.getElementById('btnToStep3').disabled = true;
+            document.getElementById('btnToStep4').disabled = true;
+            setStep(2);
+        });
+        document.getElementById('backToStep1').addEventListener('click', (e) => { e.preventDefault(); setStep(1); });
 
-    <div id="success-message" class="success hidden">
-      ✅ Bạn đã đặt lịch thành công!
-    </div>
-  </div>
+        // Bước 2 → 3
+        bindCards('datesGrid', (value, label) => {
+            document.getElementById('inputDate').value = value;
+            document.getElementById('btnToStep3').disabled = !value;
+        });
+        document.getElementById('btnToStep3').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('inputSlot').value = '';
+            document.getElementById('btnToStep4').disabled = true;
+            setStep(3);
+        });
+        document.getElementById('backToStep2').addEventListener('click', (e) => { e.preventDefault(); setStep(2); });
 
-  <script>
-    const advisorSchedules = {
-      nguyenvana: {
-        "2025-09-20": ["09:00", "10:00", "14:00"],
-        "2025-09-21": ["08:30", "13:30", "15:00"]
-      },
-      tranthib: {
-        "2025-09-22": ["09:00", "11:00", "16:00"],
-        "2025-09-23": ["10:30", "14:30"]
-      },
-      phamvanc: {
-        "2025-09-24": ["08:00", "09:30", "15:30"],
-        "2025-09-25": ["10:00", "13:00", "16:00"]
-      }
-    };
+        // Bước 3 → 4
+        bindCards('slotsGrid', (value, label) => {
+            document.getElementById('inputSlot').value = value;
+            document.getElementById('btnToStep4').disabled = !value;
+        });
+        document.getElementById('btnToStep4').addEventListener('click', (e) => {
+            e.preventDefault();
+            // Cập nhật tóm tắt từ các ô đã chọn
+            const expertLabel = document.querySelector('#expertsGrid .option-card.active .option-title')?.textContent || '-';
+            const dateLabel = document.querySelector('#datesGrid .option-card.active .option-title')?.textContent || '-';
+            const slotLabel = document.querySelector('#slotsGrid .option-card.active .option-title')?.textContent || '-';
+            document.getElementById('summaryExpert').textContent = expertLabel;
+            document.getElementById('summaryDate').textContent = dateLabel;
+            document.getElementById('summarySlot').textContent = slotLabel;
+            setStep(4);
+        });
+        document.getElementById('backToStep3').addEventListener('click', (e) => { e.preventDefault(); setStep(3); });
 
-    let selectedAdvisor = null;
-    let selectedDate = null;
-    let selectedTime = null;
-
-    function selectAdvisor(advisor, element) {
-      selectedAdvisor = advisor;
-      selectedDate = null;
-      selectedTime = null;
-
-      document.querySelectorAll("#advisor-options .option-box").forEach(el => el.classList.remove("active"));
-      element.classList.add("active");
-
-      const dateOptions = document.getElementById("date-options");
-      dateOptions.innerHTML = "";
-      Object.keys(advisorSchedules[advisor]).forEach(date => {
-        const box = document.createElement("div");
-        box.className = "option-box";
-        box.innerText = date;
-        box.onclick = () => selectDate(date, box);
-        dateOptions.appendChild(box);
-      });
-
-      document.getElementById("date-section").classList.remove("hidden");
-      document.getElementById("time-section").classList.add("hidden");
-      document.getElementById("book-btn").classList.add("hidden");
-    }
-
-    function selectDate(date, element) {
-      selectedDate = date;
-      selectedTime = null;
-
-      document.querySelectorAll("#date-options .option-box").forEach(el => el.classList.remove("active"));
-      element.classList.add("active");
-
-      const timeOptions = document.getElementById("time-options");
-      timeOptions.innerHTML = "";
-      advisorSchedules[selectedAdvisor][date].forEach(time => {
-        const box = document.createElement("div");
-        box.className = "option-box";
-        box.innerText = time;
-        box.onclick = () => selectTime(time, box);
-        timeOptions.appendChild(box);
-      });
-
-      document.getElementById("time-section").classList.remove("hidden");
-      document.getElementById("book-btn").classList.add("hidden");
-    }
-
-    function selectTime(time, element) {
-      selectedTime = time;
-
-      document.querySelectorAll("#time-options .option-box").forEach(el => el.classList.remove("active"));
-      element.classList.add("active");
-
-      document.getElementById("book-btn").classList.remove("hidden");
-    }
-
-    function bookAppointment() {
-      if (!selectedAdvisor || !selectedDate || !selectedTime) {
-        alert("Vui lòng chọn đầy đủ thông tin!");
-        return;
-      }
-      document.getElementById("success-message").classList.remove("hidden");
-    }
-  </script>
+        // Nút quay lại góc trái trên: về trang chủ
+        document.getElementById('btnTopBack').addEventListener('click', () => { window.location.href = '/'; });
+    </script>
 </body>
 </html>
