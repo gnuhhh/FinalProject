@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     "question",
     "school",
     "news", 
-    "user_profile"
+    "user_profile",
+    "advise"
 ]
 
 MIDDLEWARE = [

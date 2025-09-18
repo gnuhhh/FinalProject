@@ -1,12 +1,19 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 # Create your models here.
-class Expert(models.Model):
-    expert_first_name = models.CharField(max_length=50, verbose_name='Họ đệm')
-    expert_last_name = models.CharField(max_length=50, verbose_name='Tên')
-    expert_image = models.ImageField(upload_to='static/assets/img/experts', verbose_name='Hình ảnh')
-    expert_description = models.CharField(max_length=200, verbose_name='Mô tả', null=True)
-    expert_work_day = models.DateField(verbose_name='Ngày vào làm', default=timezone.now)
+class Expert(User):
+    avatar = models.ImageField(upload_to='static/assets/img/experts', blank=True)
+    description = models.CharField(max_length=200, verbose_name='Mô tả', null=True, blank=True)
+    birthdate = models.DateField(null=True, blank=True)
+    gender = models.CharField(
+        max_length=10
+        , blank=True
+        , choices=[('Male', 'Nam'), ('Female', 'Nữ'), ('Other', 'Khác')] 
+        )
+    phone_number = models.CharField(max_length=15, blank=True)
     
     def __str__(self):
-        return self.expert_first_name + ' ' + self.expert_last_name
+        return self.first_name + ' ' + self.last_name
+    class Meta:
+        db_table = "Experts"

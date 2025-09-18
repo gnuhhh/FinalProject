@@ -116,7 +116,7 @@
                     <div id="expertsGrid" class="options-grid">
                         {% for e in expert %}
                         <div class="option-card" data-value="{{ e.id }}">
-                            <p class="option-title">{{ e.expert_first_name }} {{ e.expert_last_name }}</p>
+                            <p class="option-title">{{ e.first_name }} {{ e.last_name }}</p>
                             {% if e.sub %}<p class="option-sub">{{ e.sub }}</p>{% endif %}
                         </div>
                         {% endfor %}

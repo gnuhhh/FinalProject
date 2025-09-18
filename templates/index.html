@@ -186,11 +186,11 @@
           {% for expert in experts %}
           <div class="col-lg-4 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="100">
             <div class="member">
-              <img src="{{ expert.expert_image.url }}" class="img-fluid" alt="">
+              <img src="{{ expert.avatar.url }}" class="img-fluid" alt="">
               <div class="member-content">
-                <h4>{{ expert.expert_first_name}} {{expert.expert_last_name}}</h4>
+                <h4>{{ expert.first_name}} {{expert.last_name}}</h4>
                 <p>
-                  {{ expert.expert_description }}
+                  {{ expert.description }}
                 </p>
               </div>
             </div>
