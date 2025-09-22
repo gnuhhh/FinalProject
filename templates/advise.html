@@ -109,7 +109,7 @@
             <input type="hidden" name="expert_id" id="inputExpertId" value="">
             <input type="hidden" name="date" id="inputDate" value="">
             <input type="hidden" name="slot" id="inputSlot" value="">
-            <!-- Bước 1: Chọn chuyên gia (tĩnh, ô) -->
+            
             <div id="step1" class="step active">
                 <div class="form-group">
                     <label for="expertSelect">Chọn chuyên gia</label>
@@ -130,16 +130,15 @@
                 </div>
             </div>
 
-            <!-- Bước 2: Chọn ngày (tĩnh, ô) -->
             <div id="step2" class="step">
                 <div class="form-group">
                     <label for="dateSelect">Chọn ngày</label>
                     <div id="datesGrid" class="options-grid">
                         {#
                           Ví dụ server có thể render:
-                          {% for d in dates %}
+                          {% for d in date %}
                             <div class="option-card" data-value="{{ d.value }}">
-                                <p class="option-title">{{ d.label }}</p>
+                                <p class="option-title">{{ d.date }}</p>
                             </div>
                           {% endfor %}
                         #}

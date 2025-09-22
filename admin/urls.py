@@ -16,5 +16,6 @@ urlpatterns = [
     path('dashboard/accounts', views.accounts, name='accounts'),
     path('dashboard/accounts/create', views.accounts_create, name='accounts_create'),
     path('dashboard/accounts/delete/<str:id>', views.accounts_delete, name='accounts_delete'),
+    path('dashboard/schedule', views.schedule, name='schedule'),
     path('logout/', LogoutView.as_view(next_page='index'), name = 'logout_admin'),
 ]

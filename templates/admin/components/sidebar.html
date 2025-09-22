@@ -23,17 +23,22 @@
             </ul>
         </li>
 
+        {% if request.user.groups.all.0.name == 'expert' or request.user.groups.all.0.name == 'manager' %}
         <li class="sidebar-item">
-            <a href="#" class="menu-item">
+            <a href="{% url 'schedule' %}" class="menu-item">
                 <i class="bi bi-card-list"></i>
                 <span>Quản lý lịch hẹn</span>
             </a>
         </li>
+        {% endif %}
+        
+        {% if request.user.groups.all.0.name == 'admin' %}
         <li class="sidebar-item">
             <a href="{% url 'accounts' %}" class="menu-item">
                 <i class="bi bi-card-list"></i>
                 <span>Quản lý tài khoản</span>
             </a>
         </li>
+        {% endif %}
     </ul>
 </div>

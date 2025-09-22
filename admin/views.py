@@ -5,6 +5,8 @@ from news.models import News
 from homepage.models import Expert
 from django.utils.html import strip_tags
 from django.contrib.auth.models import User
+from advise.models import WorkShift, WorkSchedule
+from datetime import datetime, date
 
 # Create your views here.
 def loginadmin(request):
@@ -131,3 +133,24 @@ def accounts_delete(request, id):
 
 def accounts_create(request):
     return render(request, 'admin/account/update_create.html')
+
+def schedule(request):
+    if request.method == 'POST':
+        date = request.POST['date']
+        start_time = request.POST['start_time']
+        end_time = request.POST['end_time']
+        try:
+            expert = Expert.objects.get(id = request.user.id)
+            work_shift = WorkShift.objects.get(start_time = start_time, end_time=end_time)
+            schedule_date = datetime.strptime(date, '%Y-%m-%d').date()
+            work_schedule = WorkSchedule.objects.create(expert=expert, work_shift=work_shift, date=schedule_date, is_booked=True
+            )
+            messages.success(request, 'Đăng ký lịch tư vấn thành công!')
+            return redirect('schedule')
+            
+        except Exception as e:
+            messages.error(request, f'Có lỗi xảy ra: {str(e)}')
+            return redirect('schedule')
+    else:
+        work_shifts = WorkShift.objects.all().order_by('start_time')
+        return render(request, 'admin/schedule/view.html', {'work_shifts': work_shifts})

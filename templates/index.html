@@ -186,7 +186,7 @@
           {% for expert in experts %}
           <div class="col-lg-4 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="100">
             <div class="member">
-              <img src="{{ expert.avatar.url }}" class="img-fluid" alt="">
+              <img src="{% if expert.avatar %}{{ expert.avatar.url }}{% else %}{% static 'assets/img/default-avatar.png' %}{% endif %}" class="img-fluid" alt="">
               <div class="member-content">
                 <h4>{{ expert.first_name}} {{expert.last_name}}</h4>
                 <p>
