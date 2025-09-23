@@ -216,3 +216,13 @@ def schedule(request):
             'next_month': next_month,
         }
         return render(request, 'admin/schedule/view.html', context)
+
+def expert_view(request):
+    expert = Expert.objects.all()
+    return render(request, 'admin/expert/view.html', {'expert':expert})
+
+def expert_delete(request, id):
+    expert = Expert.objects.get(id=id)
+    expert.delete()
+    messages.success(request, 'Xóa thành công')
+    return redirect('expert')

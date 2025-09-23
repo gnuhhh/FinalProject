@@ -41,11 +41,13 @@
         </li>
         {% endif %}
 
+        {% if request.user.groups.all.0.name == 'manager' %}
         <li class="sidebar-item">
-            <a href="#" class="menu-item">
+            <a href="{% url 'expert' %}" class="menu-item">
                 <i class="bi bi-people"></i>
                 <span>Quản lý chuyên gia</span>
             </a>
         </li>
+        {% endif %}
     </ul>
 </div>

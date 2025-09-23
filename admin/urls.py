@@ -17,5 +17,9 @@ urlpatterns = [
     path('dashboard/accounts/create', views.accounts_create, name='accounts_create'),
     path('dashboard/accounts/delete/<str:id>', views.accounts_delete, name='accounts_delete'),
     path('dashboard/schedule', views.schedule, name='schedule'),
+    path('dashboard/expert', views.expert_view, name='expert'),
+    # path('dashboard/expert/create', views.expert_create, name='expert_create'),
+    # path('dashboard/expert/update/<str:id>', views.expert_update, name='expert_update'),
+    path('dashboard/expert/delete/<str:id>', views.expert_delete, name='expert_delete'),
     path('logout/', LogoutView.as_view(next_page='index'), name = 'logout_admin'),
 ]
