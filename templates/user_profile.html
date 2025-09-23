@@ -145,20 +145,19 @@
                             <input type="date" id="dob" name="dob" class="form-control" value="{{ member.birthdate|date:'Y-m-d' }}">
                         </div>
                     </div>
-
+                    
                     {% if messages %}
                     <script>
                         const Toast = Swal.mixin({
                             toast: true,
                             position: "top-end",
                             showConfirmButton: false,
-                            timer: 3000,            // tự mất sau 3 giây
+                            timer: 3000,  
                             timerProgressBar: true,
                         });
-
                     {% for message in messages %}
                         Toast.fire({
-                            icon: "{{ message.tags }}",   // success, error, warning, info
+                            icon: "{{ message.tags }}",
                             title: "{{ message|escapejs }}"
                         });
                     {% endfor %}

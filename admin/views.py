@@ -7,6 +7,7 @@ from django.utils.html import strip_tags
 from django.contrib.auth.models import User
 from advise.models import WorkShift, WorkSchedule
 from datetime import datetime, date
+import calendar
 
 # Create your views here.
 def loginadmin(request):
@@ -136,21 +137,82 @@ def accounts_create(request):
 
 def schedule(request):
     if request.method == 'POST':
-        date = request.POST['date']
-        start_time = request.POST['start_time']
-        end_time = request.POST['end_time']
+        selected_date_str = request.POST.get('date')
+        shift_id = request.POST.get('shift_id')
+        start_time = request.POST.get('start_time')
+        end_time = request.POST.get('end_time')
         try:
-            expert = Expert.objects.get(id = request.user.id)
-            work_shift = WorkShift.objects.get(start_time = start_time, end_time=end_time)
-            schedule_date = datetime.strptime(date, '%Y-%m-%d').date()
-            work_schedule = WorkSchedule.objects.create(expert=expert, work_shift=work_shift, date=schedule_date, is_booked=True
+            expert = Expert.objects.get(id=request.user.id)
+            if shift_id:
+                work_shift = WorkShift.objects.get(id=shift_id)
+            else:
+                work_shift = WorkShift.objects.get(start_time=start_time, end_time=end_time)
+            schedule_date = datetime.strptime(selected_date_str, '%Y-%m-%d').date()
+            WorkSchedule.objects.create(
+                expert=expert,
+                work_shift=work_shift,
+                date=schedule_date,
+                is_booked=True,
             )
             messages.success(request, 'Đăng ký lịch tư vấn thành công!')
             return redirect('schedule')
-            
         except Exception as e:
             messages.error(request, f'Có lỗi xảy ra: {str(e)}')
             return redirect('schedule')
     else:
-        work_shifts = WorkShift.objects.all().order_by('start_time')
-        return render(request, 'admin/schedule/view.html', {'work_shifts': work_shifts})
+        # Determine current view month/year
+        today = date.today()
+        try:
+            year = int(request.GET.get('year', today.year))
+            month = int(request.GET.get('month', today.month))
+        except ValueError:
+            year, month = today.year, today.month
+
+        # Selected date (within the shown month ideally)
+        selected_date_str = request.GET.get('selected_date')
+        try:
+            selected_date = (
+                datetime.strptime(selected_date_str, '%Y-%m-%d').date()
+                if selected_date_str
+                else today
+            )
+        except Exception:
+            selected_date = today
+
+        # Build calendar matrix (weeks -> days)
+        cal = calendar.Calendar(firstweekday=0)  # Monday=0? In Python, Monday=0; Sunday=6
+        month_days = list(cal.itermonthdates(year, month))
+        # Group into weeks of 7 days
+        weeks = []
+        for i in range(0, len(month_days), 7):
+            weeks.append(month_days[i:i + 7])
+
+        # Shifts and booked info for selected date
+        work_shifts = list(WorkShift.objects.all().order_by('start_time'))
+        booked_shift_ids = set(
+            WorkSchedule.objects.filter(date=selected_date, is_booked=True)
+            .values_list('work_shift_id', flat=True)
+        )
+
+        # Navigation months
+        prev_month_date = date(year, month, 1) - date.resolution
+        prev_month_year = (prev_month_date.replace(day=1)).year
+        prev_month = (prev_month_date.replace(day=1)).month
+        next_month_base = date(year, month, calendar.monthrange(year, month)[1]) + date.resolution
+        next_month_year = (next_month_base.replace(day=1)).year
+        next_month = (next_month_base.replace(day=1)).month
+
+        context = {
+            'year': year,
+            'month': month,
+            'weeks': weeks,
+            'selected_date': selected_date,
+            'work_shifts': work_shifts,
+            'booked_shift_ids': booked_shift_ids,
+            'month_label': f"Tháng {month} {year}",
+            'prev_year': prev_month_year,
+            'prev_month': prev_month,
+            'next_year': next_month_year,
+            'next_month': next_month,
+        }
+        return render(request, 'admin/schedule/view.html', context)

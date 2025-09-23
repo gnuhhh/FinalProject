@@ -1,327 +1,140 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng ký lịch tư vấn</title>
-    {% include 'components/links.html' %}
+  <!DOCTYPE html>
+  <html lang="vi">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Đăng ký lịch tư vấn</title>
+      {% include 'components/links.html' %}
     <style>
-      :root { --primary:#3b82f6; --primary-600:#2563eb; --bg:#f8fafc; --text:#0f172a; --muted:#64748b; --border:#e2e8f0; }
-      body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; background:var(--bg); color:var(--text); }
-      .container { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
-      .header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
-      .title { font-size:22px; font-weight:700; }
-      .sub { color:var(--muted); font-size:14px; }
-      .card { background:#fff; border:1px solid var(--border); border-radius:12px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
-      .calendar-header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid var(--border); }
-      .cal-nav { display:flex; gap:8px; align-items:center; }
-      .btn { border:1px solid var(--border); background:#fff; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600; }
-      .btn:hover { background:#f1f5f9; }
-      .btn-primary { background: var(--primary); border-color: var(--primary); color:#fff; }
+      :root { 
+        --primary: var(--accent-color);
+        --primary-600: color-mix(in srgb, var(--accent-color), black 15%);
+        --bg: var(--background-color);
+        --text: var(--default-color);
+        --muted: color-mix(in srgb, var(--default-color), transparent 40%);
+        --border: color-mix(in srgb, var(--default-color), transparent 90%);
+      }
+      body { margin:0; font-family: var(--default-font); background:var(--bg); color:var(--text); }
+        .container { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+        .header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+      .title { font-size:22px; font-weight:700; color: var(--heading-color); }
+        .sub { color:var(--muted); font-size:14px; }
+        .card { background:#fff; border:1px solid var(--border); border-radius:12px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+        .calendar-header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid var(--border); }
+        .cal-nav { display:flex; gap:8px; align-items:center; }
+        .btn { border:1px solid var(--border); background:#fff; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600; }
+        .btn:hover { background:#f1f5f9; }
+      .btn-primary { background: var(--primary); border-color: var(--primary); color: var(--contrast-color); }
       .btn-primary:hover { background: var(--primary-600); }
-      .calendar { padding: 12px; }
-      .weekdays, .days { display:grid; grid-template-columns: repeat(7, 1fr); gap:8px; }
-      .weekday { text-align:center; font-size:12px; color:var(--muted); padding:6px 0; }
-      .day { height:70px; border:1px solid var(--border); border-radius:10px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:#fff; font-weight:600; }
-      .day.muted { color:#cbd5e1; cursor:default; background:#fafafa; }
-      .day.today { outline:2px solid var(--primary); outline-offset:-2px; }
-      .day.selected { background:#e0edff; border-color:#bfdbfe; color:#1e3a8a; }
-      .legend { display:flex; gap:12px; align-items:center; padding:0 12px 12px; color:var(--muted); font-size:12px; }
-      .dot { width:10px; height:10px; border-radius:999px; display:inline-block; margin-right:6px; }
-      .dot-available { background:#22c55e; }
-      .dot-full { background:#ef4444; }
-      .content { display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:16px; }
-      .panel { background:#fff; border:1px solid var(--border); border-radius:12px; padding:16px; }
-      .panel h3 { margin:0 0 8px; font-size:16px; }
-      .panel small { color:var(--muted); }
-      .slots { display:flex; flex-direction:column; gap:8px; margin-top:12px; max-height:420px; overflow:auto; }
-      .slot { border:1px solid var(--border); border-radius:10px; padding:12px; display:flex; align-items:center; justify-content:space-between; }
-      .slot .time { font-weight:700; }
-      .slot .meta { color:var(--muted); font-size:12px; }
-      .slot.full { opacity:.5; }
-      .slot input[type="radio"] { width:18px; height:18px; cursor:pointer; }
-      .actions { display:flex; gap:10px; margin-top:12px; }
-      .notice { background:#fef3c7; border:1px solid #fde68a; color:#92400e; padding:10px 12px; border-radius:8px; font-size:14px; }
-      @media (max-width: 900px) { .content { grid-template-columns: 1fr; } .day { height:56px; } }
-    </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <div>
-        <div class="title">Đăng ký lịch tư vấn</div>
+        .calendar { padding: 12px; }
+        .weekdays, .days { display:grid; grid-template-columns: repeat(7, 1fr); gap:8px; }
+        .weekday { text-align:center; font-size:12px; color:var(--muted); padding:6px 0; }
+        .day { height:70px; border:1px solid var(--border); border-radius:10px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:#fff; font-weight:600; }
+        .day.muted { color:#cbd5e1; cursor:default; background:#fafafa; }
+        .day.today { outline:2px solid var(--primary); outline-offset:-2px; }
+        .day.selected { background:#e0edff; border-color:#bfdbfe; color:#1e3a8a; }
+        .legend { display:flex; gap:12px; align-items:center; padding:0 12px 12px; color:var(--muted); font-size:12px; }
+        .dot { width:10px; height:10px; border-radius:999px; display:inline-block; margin-right:6px; }
+        .dot-available { background:#22c55e; }
+        .dot-full { background:#ef4444; }
+        .content { display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:16px; }
+        .panel { background:#fff; border:1px solid var(--border); border-radius:12px; padding:16px; }
+        .panel h3 { margin:0 0 8px; font-size:16px; }
+        .panel small { color:var(--muted); }
+        .slots { display:flex; flex-direction:column; gap:8px; margin-top:12px; max-height:420px; overflow:auto; }
+        .slot { border:1px solid var(--border); border-radius:10px; padding:12px; display:flex; align-items:center; justify-content:space-between; }
+        .slot .time { font-weight:700; }
+        .slot .meta { color:var(--muted); font-size:12px; }
+        .slot.full { opacity:.5; }
+        .slot input[type="radio"] { width:18px; height:18px; cursor:pointer; }
+        .actions { display:flex; gap:10px; margin-top:12px; }
+        .notice { background:#fef3c7; border:1px solid #fde68a; color:#92400e; padding:10px 12px; border-radius:8px; font-size:14px; }
+        @media (max-width: 900px) { .content { grid-template-columns: 1fr; } .day { height:56px; } }
+      </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div>
+          <div class="title">Đăng ký lịch tư vấn</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="calendar-header">
+          <div class="cal-nav">
+            <a class="btn" href="?year={{ prev_year }}&month={{ prev_month }}&selected_date={{ selected_date|date:'Y-m-d' }}" aria-label="Tháng trước">◀</a>
+            <a class="btn" href="?year={{ selected_date|date:'Y' }}&month={{ selected_date|date:'n' }}&selected_date={{ selected_date|date:'Y-m-d' }}">Hôm nay</a>
+            <a class="btn" href="?year={{ next_year }}&month={{ next_month }}&selected_date={{ selected_date|date:'Y-m-d' }}" aria-label="Tháng sau">▶</a>
+          </div>
+          <div style="font-weight:700">{{ month_label }}</div>
+        </div>
+        <div class="calendar">
+          <div class="weekdays">
+            <div class="weekday">T2</div>
+            <div class="weekday">T3</div>
+            <div class="weekday">T4</div>
+            <div class="weekday">T5</div>
+            <div class="weekday">T6</div>
+            <div class="weekday">T7</div>
+            <div class="weekday">CN</div>
+          </div>
+          <div class="days">
+            {% for week in weeks %}
+              {% for d in week %}
+                {% with d_str=d|date:'Y-m-d' %}
+                <a href="?year={{ year }}&month={{ month }}&selected_date={{ d|date:'Y-m-d' }}" class="day {% if d.month != month %}muted{% endif %} {% if d|date:'Y-m-d' == selected_date|date:'Y-m-d' %}selected{% endif %} {% if d|date:'Y-m-d' == now|date:'Y-m-d' %}today{% endif %}">
+                  {{ d|date:'j' }}
+                </a>
+                {% endwith %}
+              {% endfor %}
+            {% endfor %}
+          </div>
+        </div>
+        <div class="legend">
+          <span><span class="dot dot-available"></span>Còn ca</span>
+          <span><span class="dot dot-full"></span>Hết ca</span>
+        </div>
+      </div>
+
+      <form id="scheduleForm" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="date" value="{{ selected_date|date:'Y-m-d' }}">
+        <input type="hidden" name="shift_id" id="shiftIdInput">
+      </form>
+
+      <div class="content">
+        <div class="panel">
+          <h3>Ngày đã chọn</h3>
+          <div>{{ selected_date|date:'d/m/Y' }}</div>
+          <small>Nhấp vào một ngày để xem các ca.</small>
+        </div>
+        <div class="panel">
+          <h3>Các ca trong ngày</h3>
+          <div class="slots">
+            {% if work_shifts %}
+              {% for shift in work_shifts %}
+                {% with is_full=shift.id in booked_shift_ids %}
+                <label class="slot{% if is_full %} full{% endif %}">
+                  <div>
+                    <div class="time">{{ shift.start_time|date:'H:i' }} - {{ shift.end_time|date:'H:i' }}</div>
+                    <div class="meta">Mã ca: S{{ shift.id }}{% if is_full %} • Đã đầy{% endif %}</div>
+                  </div>
+                  <input type="radio" name="slot" value="{{ shift.id }}" {% if is_full %}disabled{% endif %}>
+                </label>
+                {% endwith %}
+              {% endfor %}
+            {% else %}
+              <div class="sub">Không có ca nào trong ngày này.</div>
+            {% endif %}
+          </div>
+          <div class="actions">
+            <button class="btn" type="button" onclick="document.querySelectorAll('input[name=slot]').forEach(r=>r.checked=false);document.getElementById('shiftIdInput').value='';">Bỏ chọn</button>
+            <button class="btn btn-primary" type="submit" onclick="var c=document.querySelector('input[name=slot]:checked'); if(!c){alert('Vui lòng chọn một ca.'); return false;} document.getElementById('shiftIdInput').value=c.value;">Xác nhận đăng ký</button>
+          </div>
+        </div>
       </div>
     </div>
-
-    <div class="card">
-      <div class="calendar-header">
-        <div class="cal-nav">
-          <button class="btn" id="prevMonth" aria-label="Tháng trước">◀</button>
-          <button class="btn" id="todayBtn">Hôm nay</button>
-          <button class="btn" id="nextMonth" aria-label="Tháng sau">▶</button>
-        </div>
-        <div style="font-weight:700" id="monthLabel">Tháng 1 2025</div>
-      </div>
-      <div class="calendar">
-        <div class="weekdays">
-          <div class="weekday">T2</div>
-          <div class="weekday">T3</div>
-          <div class="weekday">T4</div>
-          <div class="weekday">T5</div>
-          <div class="weekday">T6</div>
-          <div class="weekday">T7</div>
-          <div class="weekday">CN</div>
-        </div>
-        <div class="days" id="daysGrid"></div>
-      </div>
-      <div class="legend">
-        <span><span class="dot dot-available"></span>Còn ca</span>
-        <span><span class="dot dot-full"></span>Hết ca</span>
-      </div>
-    </div>
-
-    <!-- Form ẩn để gửi dữ liệu -->
-    <form id="scheduleForm" method="post" style="display: none;">
-      {% csrf_token %}
-      <input type="hidden" name="date" id="formDate">
-      <input type="hidden" name="start_time" id="formStartTime">
-      <input type="hidden" name="end_time" id="formEndTime">
-    </form>
-
-    <div class="content">
-      <div class="panel">
-        <h3>Ngày đã chọn</h3>
-        <div id="selectedDate">Chưa chọn</div>
-        <small>Nhấp vào ô ngày trên lịch để xem các ca.</small>
-      </div>
-      <div class="panel">
-        <h3>Các ca trong ngày</h3>
-        <div class="slots" id="slotsList"></div>
-        <div class="actions">
-          <button class="btn" id="clearSelection">Bỏ chọn</button>
-          <button class="btn btn-primary" id="registerBtn">Xác nhận đăng ký</button>
-        </div>
-        <div style="margin-top:10px" class="notice">
-          Lưu ý: Chọn ngày và ca làm việc, sau đó ấn "Xác nhận đăng ký" để gửi thông tin.
-        </div>
-      </div>
-    </div>
-  </div>
-
-<script>
-  const defaultSlots = [
-    {% for shift in work_shifts %}
-    { 
-      id: "S{{ shift.id }}", 
-      start: "{{ shift.start_time|date:'H:i' }}", 
-      end: "{{ shift.end_time|date:'H:i' }}",
-      shift_id: {{ shift.id }}
-    }{% if not forloop.last %},{% endif %}
-    {% endfor %}
-  ];
-
-  const state = {
-    viewDate: new Date(),
-    selectedDate: null, // yyyy-mm-dd
-    selectedSlotId: null,
-    // Demo: đánh dấu 1 vài ngày hết ca để hiển thị legend
-    fullDays: new Set()
-  };
-
-  const monthLabel = document.getElementById('monthLabel');
-  const daysGrid = document.getElementById('daysGrid');
-  const selectedDateEl = document.getElementById('selectedDate');
-  const slotsList = document.getElementById('slotsList');
-  const prevMonthBtn = document.getElementById('prevMonth');
-  const nextMonthBtn = document.getElementById('nextMonth');
-  const todayBtn = document.getElementById('todayBtn');
-  const clearBtn = document.getElementById('clearSelection');
-  const registerBtn = document.getElementById('registerBtn');
-
-  function pad2(n){ return String(n).padStart(2,'0'); }
-  function fmtYmd(d){ return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate()); }
-  function fmtHuman(d){ return `Ngày ${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()}`; }
-
-  function buildCalendar(){
-    const year = state.viewDate.getFullYear();
-    const month = state.viewDate.getMonth();
-    monthLabel.textContent = `Tháng ${month+1} ${year}`;
-
-    // Lấy ngày đầu tháng (Mon = 1 ... Sun = 7 theo lịch Việt, ta map Mon=0)
-    const firstOfMonth = new Date(year, month, 1);
-    const startWeekday = (firstOfMonth.getDay() + 6) % 7; // Mon=0 ... Sun=6
-    const daysInMonth = new Date(year, month+1, 0).getDate();
-
-    // Ngày của tháng trước để fill trước
-    const prevMonthDays = new Date(year, month, 0).getDate();
-
-    const todayYmd = fmtYmd(new Date());
-
-    daysGrid.innerHTML = '';
-
-    // Ô của tháng trước (muted)
-    for(let i=0;i<startWeekday;i++){
-      const dayNum = prevMonthDays - startWeekday + 1 + i;
-      const cell = document.createElement('div');
-      cell.className = 'day muted';
-      cell.textContent = dayNum;
-      daysGrid.appendChild(cell);
-    }
-
-    // Ô của tháng hiện tại
-    for(let d=1; d<=daysInMonth; d++){
-      const dateObj = new Date(year, month, d);
-      const ymd = fmtYmd(dateObj);
-      const cell = document.createElement('div');
-      cell.className = 'day';
-      cell.textContent = d;
-      if(ymd === todayYmd){ cell.classList.add('today'); }
-      if(state.selectedDate === ymd){ cell.classList.add('selected'); }
-
-      cell.addEventListener('click', ()=>{
-        state.selectedDate = ymd;
-        state.selectedSlotId = null;
-        renderSelectedDate();
-        renderSlots();
-        // cập nhật selected style
-        document.querySelectorAll('.day').forEach(x=>x.classList.remove('selected'));
-        cell.classList.add('selected');
-      });
-
-      daysGrid.appendChild(cell);
-    }
-
-    // Ô của tháng sau để đủ lưới 6 hàng nếu cần
-    const totalCells = daysGrid.children.length;
-    const nextCells = (Math.ceil(totalCells/7)*7) - totalCells;
-    for(let i=1;i<=nextCells;i++){
-      const cell = document.createElement('div');
-      cell.className = 'day muted';
-      cell.textContent = i;
-      daysGrid.appendChild(cell);
-    }
-  }
-
-  function renderSelectedDate(){
-    if(!state.selectedDate){ selectedDateEl.textContent = 'Chưa chọn'; return; }
-    const [y,m,d] = state.selectedDate.split('-').map(Number);
-    selectedDateEl.textContent = fmtHuman(new Date(y, m-1, d));
-  }
-
-  function getSlotsForDate(ymd){
-    // TODO: thay thế bằng gọi API thực tế nếu có
-    // Demo: CN (chủ nhật) sẽ chỉ còn 2 ca, một số ngày random hết ca
-    const [y,m,d] = ymd.split('-').map(Number);
-    const wd = new Date(y, m-1, d).getDay(); // 0=CN
-    let slots = [...defaultSlots];
-    if(wd === 0){ slots = defaultSlots.slice(0,2); }
-    // random full
-    const rng = (y+m+d) % 4;
-    return slots.map((s,idx)=>({ ...s, isFull: (idx===rng) && (wd!==0) }));
-  }
-
-  function renderSlots(){
-    slotsList.innerHTML = '';
-    if(!state.selectedDate){
-      slotsList.innerHTML = '<div class="sub">Chọn một ngày để xem các ca.</div>';
-      return;
-    }
-    const slots = getSlotsForDate(state.selectedDate);
-    if(slots.length === 0){
-      slotsList.innerHTML = '<div class="sub">Không có ca nào trong ngày này.</div>';
-      return;
-    }
-    slots.forEach(slot=>{
-      const row = document.createElement('label');
-      row.className = 'slot' + (slot.isFull ? ' full' : '');
-      const left = document.createElement('div');
-      left.innerHTML = `<div class="time">${slot.start} - ${slot.end}</div><div class="meta">Mã ca: ${slot.id}${slot.isFull ? ' • Đã đầy' : ''}</div>`;
-      const right = document.createElement('input');
-      right.type = 'radio';
-      right.name = 'slot';
-      right.value = slot.id;
-      right.disabled = !!slot.isFull;
-      right.checked = state.selectedSlotId === slot.id;
-      right.addEventListener('change', ()=>{ state.selectedSlotId = slot.id; });
-      row.appendChild(left);
-      row.appendChild(right);
-      slotsList.appendChild(row);
-    });
-  }
-
-  prevMonthBtn.addEventListener('click', ()=>{
-    state.viewDate = new Date(state.viewDate.getFullYear(), state.viewDate.getMonth()-1, 1);
-    buildCalendar();
-  });
-  nextMonthBtn.addEventListener('click', ()=>{
-    state.viewDate = new Date(state.viewDate.getFullYear(), state.viewDate.getMonth()+1, 1);
-    buildCalendar();
-  });
-  todayBtn.addEventListener('click', ()=>{
-    const t = new Date();
-    state.viewDate = new Date(t.getFullYear(), t.getMonth(), 1);
-    state.selectedDate = fmtYmd(t);
-    state.selectedSlotId = null;
-    buildCalendar();
-    renderSelectedDate();
-    renderSlots();
-  });
-  clearBtn.addEventListener('click', ()=>{
-    state.selectedSlotId = null;
-    renderSlots();
-  });
   
-  registerBtn.addEventListener('click', ()=>{
-    if(!state.selectedDate){ alert('Vui lòng chọn ngày.'); return; }
-    if(!state.selectedSlotId){ alert('Vui lòng chọn một ca.'); return; }
-    
-    // Lấy thông tin từ lịch
-    const selectedDate = state.selectedDate;
-    const selectedSlot = state.selectedSlotId;
-    
-    // Lấy thông tin giờ bắt đầu và kết thúc từ ca đã chọn
-    const selectedSlotInfo = defaultSlots.find(slot => slot.id === selectedSlot);
-    const startTime = selectedSlotInfo ? selectedSlotInfo.start : '';
-    const endTime = selectedSlotInfo ? selectedSlotInfo.end : '';
-    const shiftId = selectedSlotInfo ? selectedSlotInfo.shift_id : '';
-    
-    // Tạo dữ liệu để gửi
-    const scheduleData = {
-      date: selectedDate,
-      slotId: selectedSlot,
-      startTime: startTime,
-      endTime: endTime,
-      shiftId: shiftId,
-      timestamp: new Date().toISOString()
-    };
-    
-    // Hiển thị thông tin sẽ gửi
-    console.log('Dữ liệu sẽ gửi:', scheduleData);
-    
-    // Gửi dữ liệu
-    sendScheduleData(scheduleData);
-  });
-
-  // Hàm gửi dữ liệu lịch làm việc
-  function sendScheduleData(data) {
-    // Điền dữ liệu vào form ẩn
-    document.getElementById('formDate').value = data.date;
-    document.getElementById('formStartTime').value = data.startTime;
-    document.getElementById('formEndTime').value = data.endTime;
-    
-    // Submit form
-    document.getElementById('scheduleForm').submit();
-  }
-
-  // Khởi tạo
-  (function init(){
-    // Chọn hôm nay mặc định
-    const t = new Date();
-    state.selectedDate = fmtYmd(t);
-    buildCalendar();
-    renderSelectedDate();
-    renderSlots();
-  })();
-</script>
-</body>
-</html>
+  </body>
+  </html>
