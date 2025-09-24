@@ -226,3 +226,36 @@ def expert_delete(request, id):
     expert.delete()
     messages.success(request, 'Xóa thành công')
     return redirect('expert')
+
+def expert_create(request):
+    if request.method == 'POST':
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        avatar = request.FILES.get('avatar')
+        email = request.POST.get('email')
+        description = request.POST['description']
+        username = request.POST['username']
+        password = request.POST['password']
+        expert = Expert(first_name=first_name, last_name=last_name, avatar=avatar, email=email, description=description, username=username)
+        expert.set_password(password)
+        expert.is_staff = True
+        expert.save()
+        messages.success(request, 'Thêm thành công')
+        return redirect('expert')
+    else:    
+        return render(request, 'admin/expert/create.html', {'title':'Thêm chuyên gia'})
+    
+def expert_update(request, id):
+    expert = Expert.objects.get(id=id)
+    if request.method == 'POST':
+        expert.first_name = request.POST['first_name']
+        expert.last_name = request.POST['last_name']
+        if 'avatar' in request.FILES:
+            expert.avatar = request.FILES['avatar']
+        expert.email = request.POST['email']
+        expert.description = request.POST['description']
+        expert.save()
+        messages.success(request, 'Cập nhật thành công')
+        return redirect('expert')
+    else:
+        return render(request, 'admin/expert/update.html', {'expert':expert, 'title':'Cập nhật chuyên gia'})

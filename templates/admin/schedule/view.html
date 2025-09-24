@@ -114,15 +114,24 @@
           <div class="slots">
             {% if work_shifts %}
               {% for shift in work_shifts %}
-                {% with is_full=shift.id in booked_shift_ids %}
-                <label class="slot{% if is_full %} full{% endif %}">
+                
+                {% if shift.id in booked_shift_ids %}
+                <label class="slot full">
                   <div>
                     <div class="time">{{ shift.start_time|date:'H:i' }} - {{ shift.end_time|date:'H:i' }}</div>
-                    <div class="meta">Mã ca: S{{ shift.id }}{% if is_full %} • Đã đầy{% endif %}</div>
+                    <div class="meta">Mã ca: S{{ shift.id }} • Đã đầy</div>
                   </div>
-                  <input type="radio" name="slot" value="{{ shift.id }}" {% if is_full %}disabled{% endif %}>
+                  <input type="radio" name="slot" value="{{ shift.id }}" disabled>
                 </label>
-                {% endwith %}
+                {% else %}
+                <label class="slot">
+                  <div>
+                    <div class="time">{{ shift.start_time|date:'H:i' }} - {{ shift.end_time|date:'H:i' }}</div>
+                    <div class="meta">Mã ca: S{{ shift.id }}</div>
+                  </div>
+                  <input type="radio" name="slot" value="{{ shift.id }}">
+                </label>
+                {% endif %}
               {% endfor %}
             {% else %}
               <div class="sub">Không có ca nào trong ngày này.</div>

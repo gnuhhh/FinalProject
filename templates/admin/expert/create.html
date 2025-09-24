@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý tin tức</title>
+    <title>Quản lý thông tin tuyển sinh</title>
     {% include 'components/links.html' %}
     <style>
         * {
@@ -172,6 +172,78 @@
             box-shadow: var(--card-shadow);
         }
 
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--hover-color);
+            border-radius: 8px;
+            padding: 8px 16px;
+            width: 300px;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 114, 188, 0.1);
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            padding: 8px;
+            width: 100%;
+            background: transparent;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .language-select {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--hover-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .language-select:hover {
+            background: rgba(0, 114, 188, 0.1);
+        }
+
+        .notification {
+            position: relative;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--hover-color);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .notification:hover {
+            background: rgba(0, 114, 188, 0.1);
+        }
+
+        .notification .badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #FF4C51;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
         .user-profile {
             display: flex;
             align-items: center;
@@ -246,7 +318,6 @@
             transition: all 0.3s ease;
             color: var(--text-color);
             font-size: 15px;
-            text-decoration: none;
         }
 
         .table-btn:hover {
@@ -284,13 +355,56 @@
             line-height: 1.3;
         }
 
-        .table th:nth-child(1) { width: 5%; }
-        .table th:nth-child(2) { width: 10%; }
-        .table th:nth-child(3) { width: 20%; }
-        .table th:nth-child(4) { width: 15%; }
-        .table th:nth-child(5) { width: 18%; }
-        .table th:nth-child(6) { width: 25%; }
-        .table th:nth-child(7) { width: 15%; }
+        .table th:nth-child(1) {
+            width: 5%;
+        }
+        
+        .table th:nth-child(2) {
+            width: 10%;
+        }
+        
+        .table th:nth-child(3) {
+            width: 30%;
+        }
+        
+        .table th:nth-child(4) {
+            width: 40%;
+        }
+        
+        .table th:nth-child(5) {
+            width: 15%;
+        }
+
+        /* Tooltips for truncated headers */
+        .table th span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+
+        .table th span:hover::after {
+            content: attr(title);
+            position: absolute;
+            left: 0;
+            top: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            z-index: 10;
+            white-space: normal;
+            max-width: 200px;
+            word-wrap: break-word;
+        }
+
+        .table thead th:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+
+        .table thead th:last-child {
+            border-radius: 0 8px 8px 0;
+        }
 
         .table tbody tr {
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -316,6 +430,16 @@
             font-size: 1rem;
         }
 
+        .content-cell {
+            max-height: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            line-height: 1.4;
+        }
+
         .table tbody tr:hover td {
             background: rgba(0, 114, 188, 0.02);
         }
@@ -330,13 +454,6 @@
             white-space: nowrap;
         }
 
-        .news-image {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
         .status-badge {
             padding: 5px 10px;
             border-radius: 4px;
@@ -346,14 +463,19 @@
             text-align: center;
         }
 
-        .status-published {
+        .status-active {
             background: rgba(34, 197, 94, 0.1);
             color: #22C55E;
         }
 
-        .status-draft {
+        .status-pending {
             background: rgba(255, 193, 7, 0.1);
             color: #FFC107;
+        }
+
+        .status-inactive {
+            background: rgba(255, 76, 81, 0.1);
+            color: #FF4C51;
         }
 
         .action-btn {
@@ -370,7 +492,6 @@
             transition: all 0.2s;
             margin-right: 8px;
             font-size: 1.1rem;
-            text-decoration: none;
         }
 
         .action-btn:hover {
@@ -429,6 +550,81 @@
                 gap: 15px;
             }
         }
+
+        .form-container {
+            padding: 20px 0;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 114, 188, 0.15);
+            outline: none;
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            min-height: 150px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #005a99;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .avatar-wrapper { width: 120px; height: 120px; border-radius: 50%; overflow: hidden; border: 1px solid #dee2e6; }
+        .avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
 <body>
@@ -438,66 +634,67 @@
         <!-- Main Content -->
         <div class="main-content">
             {% include '../components/header.html' %}
-            <!-- Data Table -->
+            <!-- Form container -->
             <div class="data-table-container" data-aos="fade-up">
                 <div class="table-header">
-                    <div class="table-title">Danh sách tin tức</div>
-                    <div class="table-actions">
-                        <a href="{% url 'expert_create' %}" class="table-btn">
-                            <i class="bi bi-plus"></i>
-                            Thêm mới
-                        </a>
-                    </div>
+                    <div class="table-title">{{ title }}</div>
                 </div>
                 
-                <div class="table-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Ảnh</th>
-                                <th>Họ đệm</th>
-                                <th>Tên</th>
-                                <th>Ngày sinh</th>
-                                <th>Mô tả</th>
-                                <th>Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for e in expert %}
-                            <tr>
-                                <td>{{ e.id }}</td>
-                                <td>
-                                    {% if e.avatar %}
-                                    <img src="{{ e.avatar.url }}" alt="" class="news-image">
-                                    {% else %}
-                                    <img src="{% static 'images/no-image.jpg' %}" alt="No image" class="news-image">
-                                    {% endif %}
-                                </td>
-                                <td>{{ e.first_name }}</td>
-                                <td>{{ e.last_name }}</td>
-                                <td>{{ e.birthdate|date:"d/m/Y" }}</td>
-                                <td>{{ e.description }}</td>
-                                <td>
-                                    <a href="{% url 'expert_update' e.id %}" class="action-btn">Sửa</a>
-                                    <a href="{% url 'expert_delete' e.id %}" class="action-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa chuyên gia này?')">Xóa</a>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="8" class="text-center">Không có chuyên gia nào</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                <div class="avatar-wrapper">
+                    <img id="avatarPreview" src="{% if expert.avatar %}{{ expert.avatar.url }}{% else %}{% static 'assets/img/default-avatar.png' %}{% endif %}" alt="Avatar">
                 </div>
-                
-                <div class="pagination">
-                    <div class="page-item"><i class="bi bi-chevron-left"></i></div>
-                    <div class="page-item active">1</div>
-                    <div class="page-item">2</div>
-                    <div class="page-item">3</div>
-                    <div class="page-item"><i class="bi bi-chevron-right"></i></div>
+
+                <div class="form-container">
+                    <form method="post" action="" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{ new.id }}">
+
+                        <div class="col-md-6">
+                            <label for="avatar" class="form-label">Hình ảnh</label>
+                            <input class="form-control" type="file" id="avatar" name="avatar" accept="image/*">
+                            <div class="form-text">Dung lượng tối đa 2MB. Định dạng: JPG, PNG.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="first_name">Họ đệm</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" value="" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="last_name">Tên</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" value="" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="text" class="form-control" id="email" name="email" value="">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="birthdate">Email</label>
+                            <input type="date" class="form-control" id="birthdate" name="birthdate" value="">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Giới thiệu</label>
+                            <input type="text" class="form-control" id="description" name="description" value="">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="username">Tên đăng nhập</label>
+                            <input type="text" class="form-control" id="username" name="username" value="" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Mật khẩu</label>
+                            <input type="password" class="form-control" id="password" name="password" value="" required>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                            <a href="{% url 'expert' %}" class="btn btn-secondary">Hủy</a>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
