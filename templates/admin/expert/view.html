@@ -441,7 +441,7 @@
             <!-- Data Table -->
             <div class="data-table-container" data-aos="fade-up">
                 <div class="table-header">
-                    <div class="table-title">Danh sách tin tức</div>
+                    <div class="table-title">Danh sách chuyên gia</div>
                     <div class="table-actions">
                         <a href="{% url 'expert_create' %}" class="table-btn">
                             <i class="bi bi-plus"></i>
@@ -466,7 +466,7 @@
                         <tbody>
                             {% for e in expert %}
                             <tr>
-                                <td>{{ e.id }}</td>
+                                <td>{{ forloop.counter }}</td>
                                 <td>
                                     {% if e.avatar %}
                                     <img src="{{ e.avatar.url }}" alt="" class="news-image">

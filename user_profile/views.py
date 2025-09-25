@@ -8,13 +8,15 @@ from django.contrib import messages
 def show_info(request):
     member = get_object_or_404(Member, id=request.user.id)
     if request.method == 'POST':
-        member.avatar = request.FILES['avatar']
+        if 'avatar' in request.FILES:
+            member.avatar = request.FILES['avatar']
         member.first_name = request.POST['first_name']
         member.last_name = request.POST['last_name']
         member.email = request.POST['email']
         member.phone_number = request.POST['phone']
         member.gender = request.POST['gender']
-        member.birthdate = request.POST['dob']
+        if request.POST['birthdate']:
+            member.birthdate = request.POST['dob']
         member.save()
         messages.success(request, "Thay đổi thành công")
         return redirect('user_profile')

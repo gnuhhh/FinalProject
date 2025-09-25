@@ -7,6 +7,7 @@ from django.utils.html import strip_tags
 from django.contrib.auth.models import User
 from advise.models import WorkShift, WorkSchedule
 from datetime import datetime, date
+from django.contrib.auth.decorators import login_required
 import calendar
 
 # Create your views here.
@@ -28,7 +29,8 @@ def loginadmin(request):
             return redirect('admin')
     else:
         return render(request, 'loginadmin.html')
-    
+
+@login_required(login_url='admin')
 def dashboard(request):
     if request.user.is_authenticated:
         if request.user.is_staff == True:
@@ -37,11 +39,13 @@ def dashboard(request):
             return render(request, 'loginadmin.html')
     else:
         return render(request, 'loginadmin.html')
-    
+
+@login_required(login_url='admin')
 def information(request):
     schools = School.objects.all()
     return render(request, 'admin/information/view.html', {'schools':schools})
 
+@login_required(login_url='admin')
 def information_create(request):
     if request.method == 'POST':
         schoolId = request.POST['schoolId']
@@ -64,6 +68,7 @@ def information_create(request):
     else:
         return render(request, 'admin/information/update_create.html', {'title': 'Thêm trường mới'})
 
+@login_required(login_url='admin')
 def information_update(request, id):
     school = School.objects.get(id=id)
     
@@ -82,16 +87,19 @@ def information_update(request, id):
             'title': 'Cập nhật thông tin trường'
         })
 
+@login_required(login_url='admin')
 def information_delete(request, id):
     school = School.objects.get(id=id)
     school.delete()
     messages.success(request, 'Xóa trường thành công!')
     return redirect('information')
 
+@login_required(login_url='admin')
 def news(request):
     news_list = News.objects.all().order_by('id')
     return render(request, 'admin/news/view.html', {'news_list':news_list})
 
+@login_required(login_url='admin')
 def news_create(request):
     if request.method == 'POST':
         title = strip_tags(request.POST['title'])
@@ -103,7 +111,8 @@ def news_create(request):
         return redirect('news')
     else:
         return render(request, 'admin/news/update_create.html', {"title":'Thêm tin tức'})
-    
+
+@login_required(login_url='admin')
 def news_update(request, id):
     new = News.objects.get(id=id)
     if request.method == 'POST':
@@ -115,26 +124,31 @@ def news_update(request, id):
         return redirect('news')
     else:
         return render(request, 'admin/news/update_create.html', {'new':new, 'title':'Cập nhật tin tức'})
-    
+
+@login_required(login_url='admin') 
 def news_delete(request, id):
     new = News.objects.get(id=id)
     new.delete()
     messages.success(request, 'Xóa thành công')
     return redirect('news')
 
+@login_required(login_url='admin')
 def accounts(request):
     users = User.objects.all()
     return render(request, 'admin/account/view.html', {'users':users})
 
+@login_required(login_url='admin')
 def accounts_delete(request, id):
     user = User.objects.get(id=id)
     user.delete()
     messages.success(request, 'Xóa thành công')
     return redirect('accounts')
 
+@login_required(login_url='admin')
 def accounts_create(request):
     return render(request, 'admin/account/update_create.html')
 
+@login_required(login_url='admin')
 def schedule(request):
     if request.method == 'POST':
         selected_date_str = request.POST.get('date')
@@ -217,26 +231,30 @@ def schedule(request):
         }
         return render(request, 'admin/schedule/view.html', context)
 
+@login_required(login_url='admin')
 def expert_view(request):
     expert = Expert.objects.all()
     return render(request, 'admin/expert/view.html', {'expert':expert})
 
+@login_required(login_url='admin')
 def expert_delete(request, id):
     expert = Expert.objects.get(id=id)
     expert.delete()
     messages.success(request, 'Xóa thành công')
     return redirect('expert')
 
+@login_required(login_url='admin')
 def expert_create(request):
     if request.method == 'POST':
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
         avatar = request.FILES.get('avatar')
         email = request.POST.get('email')
+        birthdate = request.POST['birthdate']
         description = request.POST['description']
         username = request.POST['username']
         password = request.POST['password']
-        expert = Expert(first_name=first_name, last_name=last_name, avatar=avatar, email=email, description=description, username=username)
+        expert = Expert(first_name=first_name, last_name=last_name, avatar=avatar, email=email, birthdate=birthdate, description=description, username=username)
         expert.set_password(password)
         expert.is_staff = True
         expert.save()
@@ -245,6 +263,7 @@ def expert_create(request):
     else:    
         return render(request, 'admin/expert/create.html', {'title':'Thêm chuyên gia'})
     
+@login_required(login_url='admin')
 def expert_update(request, id):
     expert = Expert.objects.get(id=id)
     if request.method == 'POST':
@@ -253,6 +272,8 @@ def expert_update(request, id):
         if 'avatar' in request.FILES:
             expert.avatar = request.FILES['avatar']
         expert.email = request.POST['email']
+        if request.POST['birthdate']:
+            expert.birthdate = request.POST['birthdate']
         expert.description = request.POST['description']
         expert.save()
         messages.success(request, 'Cập nhật thành công')
