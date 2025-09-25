@@ -153,15 +153,29 @@ def schedule(request):
     if request.method == 'POST':
         selected_date_str = request.POST.get('date')
         shift_id = request.POST.get('shift_id')
-        start_time = request.POST.get('start_time')
-        end_time = request.POST.get('end_time')
         try:
+            # Lấy expert từ user hiện tại
             expert = Expert.objects.get(id=request.user.id)
-            if shift_id:
-                work_shift = WorkShift.objects.get(id=shift_id)
-            else:
-                work_shift = WorkShift.objects.get(start_time=start_time, end_time=end_time)
+            
+            # Lấy work_shift từ shift_id
+            work_shift = WorkShift.objects.get(id=shift_id)
+            
+            # Chuyển đổi ngày
             schedule_date = datetime.strptime(selected_date_str, '%Y-%m-%d').date()
+            
+            # Kiểm tra xem ca đã được đặt chưa
+            existing_schedule = WorkSchedule.objects.filter(
+                expert=expert,
+                work_shift=work_shift,
+                date=schedule_date,
+                is_booked=True
+            ).exists()
+            
+            if existing_schedule:
+                messages.warning(request, 'Ca này đã được đặt rồi!')
+                return redirect('schedule')
+            
+            # Tạo lịch mới
             WorkSchedule.objects.create(
                 expert=expert,
                 work_shift=work_shift,
@@ -169,6 +183,12 @@ def schedule(request):
                 is_booked=True,
             )
             messages.success(request, 'Đăng ký lịch tư vấn thành công!')
+            return redirect('schedule')
+        except Expert.DoesNotExist:
+            messages.error(request, 'Không tìm thấy thông tin chuyên gia!')
+            return redirect('schedule')
+        except WorkShift.DoesNotExist:
+            messages.error(request, 'Không tìm thấy ca làm việc!')
             return redirect('schedule')
         except Exception as e:
             messages.error(request, f'Có lỗi xảy ra: {str(e)}')

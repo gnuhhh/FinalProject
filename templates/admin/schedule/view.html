@@ -97,12 +97,6 @@
         </div>
       </div>
 
-      <form id="scheduleForm" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="date" value="{{ selected_date|date:'Y-m-d' }}">
-        <input type="hidden" name="shift_id" id="shiftIdInput">
-      </form>
-
       <div class="content">
         <div class="panel">
           <h3>Ngày đã chọn</h3>
@@ -111,39 +105,87 @@
         </div>
         <div class="panel">
           <h3>Các ca trong ngày</h3>
-          <div class="slots">
-            {% if work_shifts %}
-              {% for shift in work_shifts %}
-                
-                {% if shift.id in booked_shift_ids %}
-                <label class="slot full">
-                  <div>
-                    <div class="time">{{ shift.start_time|date:'H:i' }} - {{ shift.end_time|date:'H:i' }}</div>
-                    <div class="meta">Mã ca: S{{ shift.id }} • Đã được đặt</div>
-                  </div>
-                  <input type="radio" name="slot" value="{{ shift.id }}" disabled>
-                </label>
-                {% else %}
-                <label class="slot">
-                  <div>
-                    <div class="time">{{ shift.start_time|date:'H:i' }} - {{ shift.end_time|date:'H:i' }}</div>
-                    <div class="meta">Mã ca: S{{ shift.id }}</div>
-                  </div>
-                  <input type="radio" name="slot" value="{{ shift.id }}">
-                </label>
-                {% endif %}
-              {% endfor %}
-            {% else %}
-              <div class="sub">Không có ca nào trong ngày này.</div>
-            {% endif %}
-          </div>
-          <div class="actions">
-            <button class="btn" type="button" onclick="document.querySelectorAll('input[name=slot]').forEach(r=>r.checked=false);document.getElementById('shiftIdInput').value='';">Bỏ chọn</button>
-            <button class="btn btn-primary" type="submit" onclick="var c=document.querySelector('input[name=slot]:checked'); if(!c){alert('Vui lòng chọn một ca.'); return false;} document.getElementById('shiftIdInput').value=c.value;">Xác nhận đăng ký</button>
-          </div>
+          <form id="scheduleForm" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="date" value="{{ selected_date|date:'Y-m-d' }}">
+            <input type="hidden" name="shift_id" id="shiftIdInput">
+            
+            <div class="slots">
+              {% if work_shifts %}
+                {% for shift in work_shifts %}
+                  
+                  {% if shift.id in booked_shift_ids %}
+                  <label class="slot full">
+                    <div>
+                      <div class="time">{{ shift.start_time|date:'H:i' }} - {{ shift.end_time|date:'H:i' }}</div>
+                      <div class="meta">Mã ca: S{{ shift.id }} • Đã được đặt</div>
+                    </div>
+                    <input type="radio" name="slot" value="{{ shift.id }}" disabled>
+                  </label>
+                  {% else %}
+                  <label class="slot">
+                    <div>
+                      <div class="time">{{ shift.start_time|date:'H:i' }} - {{ shift.end_time|date:'H:i' }}</div>
+                      <div class="meta">Mã ca: S{{ shift.id }}</div>
+                    </div>
+                    <input type="radio" name="slot" value="{{ shift.id }}">
+                  </label>
+                  {% endif %}
+                {% endfor %}
+              {% else %}
+                <div class="sub">Không có ca nào trong ngày này.</div>
+              {% endif %}
+            </div>
+            <div class="actions">
+              <button class="btn" type="button" onclick="clearSelection()">Bỏ chọn</button>
+              <button class="btn btn-primary" type="submit" onclick="return submitForm()">Xác nhận đăng ký</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
+    {% if messages %}
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,  
+            timerProgressBar: true,
+        });
+    {% for message in messages %}
+        Toast.fire({
+            icon: "{{ message.tags }}",
+            title: "{{ message|escapejs }}"
+        });
+    {% endfor %}
+    </script>
+    {% endif %}
   
+    <script>
+      function clearSelection() {
+        document.querySelectorAll('input[name=slot]').forEach(r => r.checked = false);
+        document.getElementById('shiftIdInput').value = '';
+      }
+      
+      function submitForm() {
+        var checkedSlot = document.querySelector('input[name=slot]:checked');
+        if (!checkedSlot) {
+          alert('Vui lòng chọn một ca.');
+          return false;
+        }
+        document.getElementById('shiftIdInput').value = checkedSlot.value;
+        return true;
+      }
+      
+      // Auto-select first available slot when page loads
+      document.addEventListener('DOMContentLoaded', function() {
+        var firstAvailableSlot = document.querySelector('input[name=slot]:not([disabled])');
+        if (firstAvailableSlot) {
+          firstAvailableSlot.checked = true;
+          document.getElementById('shiftIdInput').value = firstAvailableSlot.value;
+        }
+      });
+    </script>
   </body>
   </html>

@@ -158,7 +158,7 @@
                     {% for message in messages %}
                         Toast.fire({
                             icon: "{{ message.tags }}",
-                            title: "{{ message|escapejs }}"
+                            title: "{{ message|escapejs }}",
                         });
                     {% endfor %}
                     </script>

@@ -234,6 +234,84 @@
             });
         }
 
+            // Helpers: render động và gọi API
+        function renderDates(dates) {
+            const grid = document.getElementById('datesGrid');
+            if (!Array.isArray(dates) || dates.length === 0) {
+                grid.innerHTML = '<div class="muted" style="grid-column: 1/-1">Không có ngày khả dụng.</div>';
+                document.getElementById('btnToStep3').disabled = true;
+                return;
+            }
+            const html = dates.map(d => {
+                try {
+                    const dt = new Date(d + 'T00:00:00');
+                    const label = dt.toLocaleDateString('vi-VN', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+                    return `<div class="option-card" data-value="${d}"><p class=\"option-title\">${label}</p></div>`;
+                } catch {
+                    return '';
+                }
+            }).join('');
+            grid.innerHTML = html;
+            // gắn click sau khi render
+            bindCards('datesGrid', (value, label) => {
+                document.getElementById('inputDate').value = value;
+                document.getElementById('btnToStep3').disabled = !value;
+                // reset slots khi đổi ngày
+                document.getElementById('inputSlot').value = '';
+                document.getElementById('btnToStep4').disabled = true;
+                const expertId = document.getElementById('inputExpertId').value;
+                if (expertId && value) {
+                    loadSlots(expertId, value);
+                }
+            });
+        }
+
+        function renderSlots(slots) {
+            const grid = document.getElementById('slotsGrid');
+            if (!Array.isArray(slots) || slots.length === 0) {
+                grid.innerHTML = '<div class="muted" style="grid-column: 1/-1">Không có ca cho ngày này.</div>';
+                document.getElementById('btnToStep4').disabled = true;
+                return;
+            }
+            const html = slots.map(s => {
+                const label = s.label || '';
+                const value = s.shift_id || '';
+                return `<div class=\"option-card\" data-value=\"${value}\"><p class=\"option-title\">${label}</p></div>`;
+            }).join('');
+            grid.innerHTML = html;
+            bindCards('slotsGrid', (value, label) => {
+                document.getElementById('inputSlot').value = value;
+                document.getElementById('btnToStep4').disabled = !value;
+            });
+        }
+
+        async function loadDates(expertId) {
+            const grid = document.getElementById('datesGrid');
+            grid.innerHTML = '<div class="muted" style="grid-column: 1/-1">Đang tải ngày...</div>';
+            try {
+                const res = await fetch(`/advise/available-dates/?expert_id=${encodeURIComponent(expertId)}`);
+                if (!res.ok) throw new Error('Failed to load');
+                const data = await res.json();
+                renderDates(data.dates || []);
+            } catch (e) {
+                grid.innerHTML = '<div class="error" style="grid-column: 1/-1">Không tải được danh sách ngày.</div>';
+            }
+        }
+
+        async function loadSlots(expertId, dateStr) {
+            const grid = document.getElementById('slotsGrid');
+            grid.innerHTML = '<div class="muted" style="grid-column: 1/-1">Đang tải ca...</div>';
+            try {
+                const url = `/advise/available-slots/?expert_id=${encodeURIComponent(expertId)}&date=${encodeURIComponent(dateStr)}`;
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('Failed to load');
+                const data = await res.json();
+                renderSlots(data.slots || []);
+            } catch (e) {
+                grid.innerHTML = '<div class="error" style="grid-column: 1/-1">Không tải được danh sách ca.</div>';
+            }
+        }
+
         // Bước 1 → 2
         bindCards('expertsGrid', (value, label) => {
             document.getElementById('inputExpertId').value = value;
@@ -247,19 +325,26 @@
             document.getElementById('btnToStep3').disabled = true;
             document.getElementById('btnToStep4').disabled = true;
             setStep(2);
+            const expertId = document.getElementById('inputExpertId').value;
+            if (expertId) {
+                loadDates(expertId);
+            }
         });
         document.getElementById('backToStep1').addEventListener('click', (e) => { e.preventDefault(); setStep(1); });
 
         // Bước 2 → 3
-        bindCards('datesGrid', (value, label) => {
-            document.getElementById('inputDate').value = value;
-            document.getElementById('btnToStep3').disabled = !value;
-        });
         document.getElementById('btnToStep3').addEventListener('click', (e) => {
             e.preventDefault();
             document.getElementById('inputSlot').value = '';
             document.getElementById('btnToStep4').disabled = true;
             setStep(3);
+            const expertId = document.getElementById('inputExpertId').value;
+            const dateStr = document.getElementById('inputDate').value;
+            if (expertId && dateStr) {
+                loadSlots(expertId, dateStr);
+            } else {
+                document.getElementById('slotsGrid').innerHTML = '<div class="muted" style="grid-column: 1/-1">Vui lòng chọn ngày trước.</div>';
+            }
         });
         document.getElementById('backToStep2').addEventListener('click', (e) => { e.preventDefault(); setStep(2); });
 

@@ -2216,6 +2216,9 @@ section,
   background: var(--hover-color);
 }
 
+#dropdownUser{
+  color: var(--nav-dropdown-color);
+}
 .dropdown-menu {
   border: none;
   box-shadow: var(--card-shadow);
@@ -2228,14 +2231,20 @@ section,
   padding: 8px 16px;
   border-radius: 6px;
   transition: all 0.3s;
+  color: var(--nav-dropdown-color);
 }
 
 .dropdown-item:hover {
   background: rgba(0, 114, 188, 0.1);
-  color: var(--primary-color);
+  color: var(--nav-dropdown-hover-color);
 }
 
 .dropdown-divider {
   margin: 8px 0;
   border-color: var(--border-color);
+}
+
+.swal2-icon.swal2-success{
+  border-color: var(--accent-color);
+  color: var(--accent-color);
 }

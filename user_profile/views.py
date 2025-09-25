@@ -15,7 +15,7 @@ def show_info(request):
         member.email = request.POST['email']
         member.phone_number = request.POST['phone']
         member.gender = request.POST['gender']
-        if request.POST['birthdate']:
+        if request.POST['dob']:
             member.birthdate = request.POST['dob']
         member.save()
         messages.success(request, "Thay đổi thành công")
