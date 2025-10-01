@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import auth, messages
 from school.models import School
 from news.models import News
@@ -12,6 +12,8 @@ import calendar
 
 # Create your views here.
 def loginadmin(request):
+    if request.user and request.user.is_active:
+        return redirect('dashboard')
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -101,11 +103,14 @@ def news(request):
 
 @login_required(login_url='admin')
 def news_create(request):
+    image = None
     if request.method == 'POST':
+        if 'image' in request.FILES:
+            image = request.FILES['image']
         title = strip_tags(request.POST['title'])
         content = strip_tags(request.POST['content'])
-        author = strip_tags(request.POST['author'])
-        news = News(title=title, content=content, author=author)
+        author = request.user.first_name + ' ' + request.user.last_name
+        news = News(title=title, content=content, author=author, image=image)
         news.save()
         messages.success(request, 'Thêm thành công!')
         return redirect('news')
@@ -114,11 +119,15 @@ def news_create(request):
 
 @login_required(login_url='admin')
 def news_update(request, id):
+    if not request.user.has_perm('news.update_news'):
+        messages.error(request, 'Bạn không có quyền thực hiện thao tác này')
+        return redirect('news')
     new = News.objects.get(id=id)
     if request.method == 'POST':
+        if 'image' in request.FILES:
+            new.image = request.FILES['image']
         new.title = request.POST['title']
         new.content = strip_tags(request.POST['content'])
-        new.author = request.POST['author']
         new.save()
         messages.success(request, 'Cập nhật bài viết thành công')
         return redirect('news')
@@ -127,15 +136,28 @@ def news_update(request, id):
 
 @login_required(login_url='admin') 
 def news_delete(request, id):
+    if not request.user.has_perm('news.delete_news'):
+        messages.error(request, 'Bạn không có quyền thực hiện thao tác này')
+        return redirect('news')
     new = News.objects.get(id=id)
     new.delete()
     messages.success(request, 'Xóa thành công')
     return redirect('news')
 
+def news_activate(request, id):
+    if not request.user.has_perm('news.delete_news'):
+        messages.error(request, 'Bạn không có quyền thực hiện thao tác này')
+        return redirect('news')
+    new = get_object_or_404(News, id=id)
+    new.is_active = True
+    new.save()
+    messages.success(request, 'Đã duyệt')
+    return redirect('news')
+
 @login_required(login_url='admin')
 def accounts(request):
     users = User.objects.all()
-    return render(request, 'admin/account/view.html', {'users':users})
+    return render(request, 'admin/account/schedule_assignment.html', {'users':users})
 
 @login_required(login_url='admin')
 def accounts_delete(request, id):
@@ -149,13 +171,13 @@ def accounts_create(request):
     return render(request, 'admin/account/update_create.html')
 
 @login_required(login_url='admin')
-def schedule(request):
+def schedule_assignment(request):
     if request.method == 'POST':
         selected_date_str = request.POST.get('date')
         shift_id = request.POST.get('shift_id')
         try:
             # Lấy expert từ user hiện tại
-            expert = Expert.objects.get(id=request.user.id)
+            expert = Expert.objects.get(id=request.user.id)                                                     
             
             # Lấy work_shift từ shift_id
             work_shift = WorkShift.objects.get(id=shift_id)
@@ -249,7 +271,17 @@ def schedule(request):
             'next_year': next_month_year,
             'next_month': next_month,
         }
-        return render(request, 'admin/schedule/view.html', context)
+        return render(request, 'admin/schedule/schedule_assignment.html', context)
+
+@login_required(login_url='admin')
+def schedule(request):
+    if request.user.groups.first().name == 'expert':
+        expert = Expert.objects.get(id=request.user.id)
+        schedule = WorkSchedule.objects.filter(expert=expert)
+        return render(request, 'admin/schedule/schedule.html', {'schedule':schedule})
+    else:
+        schedule = WorkSchedule.objects.all()
+        return render(request, 'admin/schedule/schedule.html', {'schedule':schedule})
 
 @login_required(login_url='admin')
 def expert_view(request):

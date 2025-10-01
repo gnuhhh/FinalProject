@@ -104,7 +104,7 @@
             </div>
         </div>
 
-        <form class="card" id="bookingForm" method="post" action="/advise/checkout/">
+        <form class="card" id="bookingForm" method="post" action="{% url 'payment' %}">
             {% csrf_token %}
             <input type="hidden" name="expert_id" id="inputExpertId" value="">
             <input type="hidden" name="date" id="inputDate" value="">
@@ -358,7 +358,7 @@
             // Cập nhật tóm tắt từ các ô đã chọn
             const expertLabel = document.querySelector('#expertsGrid .option-card.active .option-title')?.textContent || '-';
             const dateLabel = document.querySelector('#datesGrid .option-card.active .option-title')?.textContent || '-';
-            const slotLabel = document.querySelector('#slotsGrid .option-card.active .option-title')?.textContent || '-';
+            const slotLabel = document.querySelector('#slotsGrid .option-card.active .  ')?.textContent || '-';
             document.getElementById('summaryExpert').textContent = expertLabel;
             document.getElementById('summaryDate').textContent = dateLabel;
             document.getElementById('summarySlot').textContent = slotLabel;

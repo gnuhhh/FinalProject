@@ -288,7 +288,7 @@
         .table th:nth-child(2) { width: 10%; }
         .table th:nth-child(3) { width: 35%; }
         .table th:nth-child(4) { width: 10%; }
-        .table th:nth-child(5) { width: 10%; }
+        .table th:nth-child(5) { width: 15%; }
         .table th:nth-child(6) { width: 10%; }
         .table th:nth-child(7) { width: 15%; }
 
@@ -305,7 +305,7 @@
         }
 
         .table td {
-            background: white;
+            background: white;  
             vertical-align: middle;
             padding: 18px 25px;
             border: none;
@@ -487,6 +487,9 @@
                                 <td>
                                     <a href="{% url 'news_update' news.id %}" class="action-btn"><i class="bi bi-pencil"></i></a>
                                     <a href="{% url 'news_delete' news.id %}" class="action-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa tin này?')"><i class="bi bi-trash"></i></a>
+                                    {% if not news.is_active %}
+                                    <a href="{% url 'news_activate' news.id %}" class="action-btn"><i class="bi bi-check-lg"></i></a>
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% empty %}
@@ -497,6 +500,7 @@
                         </tbody>
                     </table>
                 </div>
+                {% include 'components/notification.html' %}
                 
                 <div class="pagination">
                     <div class="page-item"><i class="bi bi-chevron-left"></i></div>

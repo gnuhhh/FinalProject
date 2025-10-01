@@ -4,29 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Mentor</title>
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <!-- Vendor CSS Files -->
-    <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
-
-    <!-- Main CSS File -->
-    <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
-
-    <!-- ApexCharts -->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
+    <title>Quản lý tin tức</title>
+    {% include 'components/links.html' %}
     <style>
         * {
             margin: 0;
@@ -193,76 +172,25 @@
             box-shadow: var(--card-shadow);
         }
 
-        .search-box {
+        .user-profile {
             display: flex;
             align-items: center;
-            background: var(--hover-color);
+            gap: 12px;
+            cursor: pointer;
+            padding: 5px 10px;
             border-radius: 8px;
-            padding: 8px 16px;
-            width: 300px;
-            border: 2px solid var(--border-color);
             transition: all 0.3s ease;
         }
 
-        .search-box:focus-within {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 114, 188, 0.1);
-        }
-
-        .search-box input {
-            border: none;
-            outline: none;
-            padding: 8px;
-            width: 100%;
-            background: transparent;
-        }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .language-select {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
+        .user-profile:hover {
             background: var(--hover-color);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
         }
 
-        .language-select:hover {
-            background: rgba(0, 114, 188, 0.1);
-        }
-
-        .notification {
-            position: relative;
-            cursor: pointer;
+        .user-profile img {
             width: 40px;
             height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--hover-color);
             border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .notification:hover {
-            background: rgba(0, 114, 188, 0.1);
-        }
-
-        .notification .badge {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: #FF4C51;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
+            object-fit: cover;
         }
 
         /* Table Styles */
@@ -318,6 +246,7 @@
             transition: all 0.3s ease;
             color: var(--text-color);
             font-size: 15px;
+            text-decoration: none;
         }
 
         .table-btn:hover {
@@ -345,64 +274,21 @@
             padding: 18px 25px;
             border: none;
             text-transform: uppercase;
-            font-size: 1rem;
-            letter-spacing: 1px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            position: relative;
-        }
-
-        .table th:nth-child(1) {
-            width: 10%;
-        }
-        
-        .table th:nth-child(2) {
-            width: 20%;
-        }
-        
-        .table th:nth-child(3) {
-            width: 35%;
-        }
-        
-        .table th:nth-child(4) {
-            width: 15%;
-        }
-        
-        .table th:nth-child(5) {
-            width: 20%;
-        }
-
-        /* Tooltips for truncated headers */
-        .table th span {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: block;
-        }
-
-        .table th span:hover::after {
-            content: attr(title);
-            position: absolute;
-            left: 0;
-            top: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            z-index: 10;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
             white-space: normal;
-            max-width: 200px;
-            word-wrap: break-word;
+            overflow: visible;
+            position: relative;
+            vertical-align: middle;
+            text-align: left;
+            line-height: 1.3;
         }
 
-        .table thead th:first-child {
-            border-radius: 8px 0 0 8px;
-        }
-
-        .table thead th:last-child {
-            border-radius: 0 8px 8px 0;
-        }
+        .table th:nth-child(1) { width: 10%; }
+        .table th:nth-child(2) { width: 30%; }
+        .table th:nth-child(3) { width: 30%; }
+        .table th:nth-child(4) { width: 20%; }
+        .table th:nth-child(5) { width: 10%; }
 
         .table tbody tr {
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -417,7 +303,7 @@
         }
 
         .table td {
-            background: white;
+            background: white;  
             vertical-align: middle;
             padding: 18px 25px;
             border: none;
@@ -442,6 +328,13 @@
             white-space: nowrap;
         }
 
+        .news-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
         .status-badge {
             padding: 5px 10px;
             border-radius: 4px;
@@ -451,19 +344,14 @@
             text-align: center;
         }
 
-        .status-active {
+        .status-published {
             background: rgba(34, 197, 94, 0.1);
             color: #22C55E;
         }
 
-        .status-pending {
+        .status-draft {
             background: rgba(255, 193, 7, 0.1);
             color: #FFC107;
-        }
-
-        .status-inactive {
-            background: rgba(255, 76, 81, 0.1);
-            color: #FF4C51;
         }
 
         .action-btn {
@@ -480,6 +368,7 @@
             transition: all 0.2s;
             margin-right: 8px;
             font-size: 1.1rem;
+            text-decoration: none;
         }
 
         .action-btn:hover {
@@ -543,10 +432,62 @@
 <body>
     <div class="container">
         <!-- Sidebar -->
-        {% include 'admin/components/sidebar.html' %}
+        {% include '../components/sidebar.html' %}
         <!-- Main Content -->
         <div class="main-content">
-            {% include 'admin/components/header.html' %}
+            {% include '../components/header.html' %}
+            <!-- Data Table -->
+            <div class="data-table-container" data-aos="fade-up">
+                <div class="table-header">
+                    <div class="table-title">Danh sách tin tức</div>
+                    <div class="table-actions">
+                        <a href="{% url 'news_create' %}" class="table-btn">
+                            <i class="bi bi-plus"></i>
+                            Thêm tin mới
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Ngày</th>
+                                <th>Thời gian</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in schedule %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ s.date }}</td>
+                                <td>{{ s.work_shift }}</td>
+                                <td>{{ s.is_booked }}</td>
+                                <td>
+                                    
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center">Bạn chưa đăng ký lịch</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% include 'components/notification.html' %}
+                
+                <div class="pagination">
+                    <div class="page-item"><i class="bi bi-chevron-left"></i></div>
+                    <div class="page-item active">1</div>
+                    <div class="page-item">2</div>
+                    <div class="page-item">3</div>
+                    <div class="page-item"><i class="bi bi-chevron-right"></i></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -577,16 +518,6 @@
                 this.classList.toggle('expanded');
                 postSubmenu.classList.toggle('open');
             });
-
-            const postManagement2 = document.getElementById('post-management2');
-            const postSubmenu2 = document.getElementById('post-submenu2');
-
-            postManagement2.addEventListener('click', function(e) {
-                e.preventDefault();
-                this.classList.toggle('expanded');
-                postSubmenu2.classList.toggle('open');
-            });
-
         });
     </script>
 </body>

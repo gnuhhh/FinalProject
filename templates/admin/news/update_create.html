@@ -559,7 +559,7 @@
             margin-bottom: 25px;
         }
         
-        .form-group label {
+        label {
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
@@ -623,6 +623,8 @@
         .btn-secondary:hover {
             background-color: #5a6268;
         }
+        .avatar-wrapper { width: 120px; height: 120px; border-radius: 8%; overflow: hidden; border: 1px solid #dee2e6; }
+        .avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
 <body>
@@ -637,20 +639,25 @@
                 <div class="table-header">
                     <div class="table-title">{{ title }}</div>
                 </div>
+
+                <div class="avatar-wrapper">
+                    <img id="avatarPreview" src="{% if new.image %}{{ new.image.url }}{% else %}{% static 'assets/img/default-avatar.png' %}{% endif %}" alt="img">
+                </div>
                 
                 <div class="form-container">
-                    <form method="post" action="">
+                    <form method="post" action="" enctype="multipart/form-data">
                         {% csrf_token %}
                         <input type="hidden" name="id" value="{{ new.id }}">
+
+                        <div class="col-md-6">
+                            <label for="image" class="form-label">Hình ảnh</label>
+                            <input class="form-control" type="file" id="avatar" name="image" accept="image/*">
+                            <div class="form-text">Dung lượng tối đa 2MB. Định dạng: JPG, PNG.</div>
+                        </div>
                         
                         <div class="form-group">
                             <label for="title">Tiêu đề</label>
                             <input type="text" class="form-control" id="title" name="title" value="{{ new.title }}" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="author">Tác giả</label>
-                            <input type="text" class="form-control" id="author" name="author" value="{{ new.author }}" required>
                         </div>
                         
                         <div class="form-group">

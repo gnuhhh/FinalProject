@@ -1,197 +1,180 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thông tin cá nhân</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lịch học theo tuần</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f9fafb;
+      font-family: "Segoe UI", sans-serif;
+      background: #f9f9f9;
       margin: 0;
       padding: 20px;
     }
-    .container {
-      max-width: 900px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    h1 {
-      margin: 0 0 20px;
-      font-size: 24px;
-    }
-    .tabs button {
-      padding: 10px 20px;
-      border-radius: 8px;
-      border: 1px solid #e5e7eb;
-      background: #fff;
-      cursor: pointer;
-      margin-right: 10px;
-      font-weight: 600;
-    }
-    .tabs button.active {
-      background: #0072bc;
-      color: #fff;
-      border: none;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-    .profile, .appointments { display: none; }
-    .profile.active, .appointments.active { display: block; margin-top: 20px; }
 
-    .profile-box {
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 12px;
-      background: #f9fafb;
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
     }
-    .profile-box label {
-      display: block;
+
+    .schedule {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .schedule-header {
+      display: grid;
+      grid-template-columns: 120px repeat(6, 1fr);
+      background: #1976d2;
+      color: #fff;
+      text-align: center;
       font-weight: bold;
-      margin-bottom: 4px;
-      color: #374151;
     }
-    .profile-box span {
-      display: block;
-      color: #111827;
+
+    .schedule-header div {
+      padding: 12px 0;
+      border-right: 1px solid rgba(255,255,255,0.3);
     }
-    .buttons button {
-      padding: 8px 16px;
-      border-radius: 6px;
-      border: 1px solid #0072bc;
+
+    .schedule-header div:last-child {
+      border-right: none;
+    }
+
+    .schedule-body {
+      display: grid;
+      grid-template-rows: repeat(8, 1fr); /* 8 khung giờ */
+    }
+
+    .time-row {
+      display: grid;
+      grid-template-columns: 120px repeat(6, 1fr);
+      border-top: 1px solid #ddd;
       background: #fff;
-      color: #0072bc;
-      font-weight: 600;
-      cursor: pointer;
-      margin-right: 6px;
+      min-height: 60px;
     }
-    .buttons .primary {
-      background: #0072bc;
-      color: #fff;
-      border: none;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #e5e7eb;
-      padding: 12px;
-      text-align: left;
-    }
-    th {
-      background: #0072bc;
-      color: #fff;
-    }
-    tr:nth-child(even) {
-      background: #f9fafb;
-    }
-    .modal {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.3);
+
+    .time-cell {
+      background: #f1f1f1;
+      text-align: center;
+      font-weight: bold;
       display: flex;
       align-items: center;
       justify-content: center;
-      display: none;
+      border-right: 1px solid #ddd;
     }
-    .modal.active { display: flex; }
-    .modal-content {
-      background: #fff;
-      border-radius: 10px;
-      padding: 20px;
-      max-width: 400px;
-      width: 100%;
+
+    .event-cell {
+      border-right: 1px solid #ddd;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      text-align: center;
+      transition: background 0.3s;
     }
+
+    .event-cell.empty {
+      background: #fafafa;
+      color: #bbb;
+    }
+
+    .event {
+      padding: 6px 10px;
+      border-radius: 6px;
+      color: #fff;
+      font-weight: 500;
+      width: 90%;
+    }
+
+    /* Màu ngẫu nhiên theo môn */
+    .event.math { background: #4caf50; }
+    .event.physics { background: #ff9800; }
+    .event.chemistry { background: #2196f3; }
+    .event.english { background: #9c27b0; }
+    .event.history { background: #e91e63; }
+    .event.programming { background: #795548; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Thông tin cá nhân</h1>
-    <div class="tabs">
-      <button class="active" onclick="showTab('profile')">Xem thông tin</button>
-      <button onclick="showTab('appointments')">Lịch hẹn</button>
+  <h1>📚 Lịch học theo tuần</h1>
+
+  <div class="schedule">
+    <div class="schedule-header">
+      <div>Thời gian</div>
+      <div>Thứ 2</div>
+      <div>Thứ 3</div>
+      <div>Thứ 4</div>
+      <div>Thứ 5</div>
+      <div>Thứ 6</div>
+      <div>Thứ 7</div>
     </div>
 
-    <div id="profile" class="profile active">
-      <div class="profile-box">
-        <label>Họ và tên</label>
-        <span id="name">Nguyễn Văn A</span>
-      </div>
-      <div class="profile-box">
-        <label>Email</label>
-        <span id="email">nguyenvana@example.com</span>
-      </div>
-      <div class="profile-box">
-        <label>Số điện thoại</label>
-        <span id="phone">+84 912 345 678</span>
-      </div>
-      <div class="profile-box">
-        <label>Địa chỉ</label>
-        <span id="address">Hà Nội, Việt Nam</span>
-      </div>
-      <div class="buttons">
-        <button onclick="editProfile()">Sửa thông tin</button>
-      </div>
-    </div>
-
-    <div id="appointments" class="appointments">
-      <table>
-        <thead>
-          <tr>
-            <th>Ngày</th>
-            <th>Tên chuyên gia</th>
-            <th>Giá tiền</th>
-            <th>Hành động</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>2025-09-20</td>
-            <td>Bác sĩ Trần Văn B</td>
-            <td>500,000 VND</td>
-            <td><button onclick="confirmCancel()">Hủy</button></td>
-          </tr>
-          <tr>
-            <td>2025-09-25</td>
-            <td>Chị Nguyễn Thị C</td>
-            <td>300,000 VND</td>
-            <td><button onclick="confirmCancel()">Hủy</button></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <h3>Xác nhận hủy lịch</h3>
-      <p>Bạn có chắc muốn hủy lịch hẹn này?</p>
-      <div class="buttons" style="margin-top:10px; text-align:right;">
-        <button onclick="closeModal()">Trở lại</button>
-        <button class="primary" onclick="closeModal()">Hủy lịch</button>
-      </div>
-    </div>
+    <div class="schedule-body" id="scheduleBody"></div>
   </div>
 
   <script>
-    function showTab(tab) {
-      document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.profile, .appointments').forEach(sec => sec.classList.remove('active'));
-      document.getElementById(tab).classList.add('active');
-      event.target.classList.add('active');
-    }
-    function confirmCancel() {
-      document.getElementById('modal').classList.add('active');
-    }
-    function closeModal() {
-      document.getElementById('modal').classList.remove('active');
-    }
-    function editProfile() { alert('Chức năng sửa thông tin'); }
+    const timeSlots = [
+      "07:00 - 08:00",
+      "08:00 - 09:00",
+      "09:00 - 10:00",
+      "10:00 - 11:00",
+      "13:00 - 14:00",
+      "14:00 - 15:00",
+      "15:00 - 16:00",
+      "16:00 - 17:00",
+    ];
+
+    // Dữ liệu giả lập
+    const scheduleData = [
+      { day: 1, time: 0, subject: "Toán", type: "math" },
+      { day: 2, time: 1, subject: "Vật lý", type: "physics" },
+      { day: 4, time: 2, subject: "Lập trình", type: "programming" },
+      { day: 5, time: 0, subject: "Hóa học", type: "chemistry" },
+      { day: 5, time: 4, subject: "Tiếng Anh", type: "english" },
+      { day: 6, time: 5, subject: "Lịch sử", type: "history" },
+    ];
+
+    const scheduleBody = document.getElementById("scheduleBody");
+
+    timeSlots.forEach((slot, timeIndex) => {
+      const row = document.createElement("div");
+      row.className = "time-row";
+
+      // Cột giờ
+      const timeCell = document.createElement("div");
+      timeCell.className = "time-cell";
+      timeCell.textContent = slot;
+      row.appendChild(timeCell);
+
+      // 6 cột cho thứ 2 -> 7
+      for (let day = 1; day <= 6; day++) {
+        const cell = document.createElement("div");
+        cell.className = "event-cell";
+
+        const event = scheduleData.find(
+          (e) => e.day === day && e.time === timeIndex
+        );
+
+        if (event) {
+          const eventDiv = document.createElement("div");
+          eventDiv.className = `event ${event.type}`;
+          eventDiv.textContent = event.subject;
+          cell.appendChild(eventDiv);
+        } else {
+          cell.classList.add("empty");
+          cell.textContent = "-";
+        }
+
+        row.appendChild(cell);
+      }
+
+      scheduleBody.appendChild(row);
+    });
   </script>
 </body>
 </html>
