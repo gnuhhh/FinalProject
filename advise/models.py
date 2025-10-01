@@ -12,4 +12,9 @@ class WorkSchedule(models.Model):
     work_shift = models.ForeignKey(WorkShift, on_delete=models.CASCADE, related_name='shift')
     date = models.DateField()
     is_booked = models.BooleanField(default=False)
+    status = models.CharField(
+        max_length=20,
+        choices=[('Y', 'Đã được duyệt'), ('P', 'Đang chờ duyệt'), ('C', 'Đã hủy')],
+        default='P'
+    )
 

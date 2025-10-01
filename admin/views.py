@@ -284,6 +284,24 @@ def schedule(request):
         return render(request, 'admin/schedule/schedule.html', {'schedule':schedule})
 
 @login_required(login_url='admin')
+def schedule_customer(request):
+    return render(request, 'admin/schedule/schedule_customer.html')
+
+@login_required(login_url='admin')
+def schedule_cancel_approve(request, id):
+    schedule = WorkSchedule.objects.get(id=id)
+    if request.user.groups.first().name == 'manager':
+        schedule.status = 'Y'
+        schedule.save()
+        messages.success(request, 'Duyệt thành công')
+        return redirect('schedule')
+    else:
+        schedule.status = 'C'
+        schedule.save()
+        messages.success(request, 'Hủy thành công')
+        return redirect('schedule')
+
+@login_required(login_url='admin')
 def expert_view(request):
     expert = Expert.objects.all()
     return render(request, 'admin/expert/view.html', {'expert':expert})

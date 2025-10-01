@@ -33,19 +33,13 @@
             
             <ul class="submenu" id="post-submenu2">
                 <li class="submenu-item-wrapper">
-                    <a href="{% url 'schedule_assignment' %}" class="submenu-item">
-                        <i class="bi bi-mortarboard"></i>
-                        <span>Đăng ký lịch</span>
-                    </a>
-                </li>
-                <li class="submenu-item-wrapper">
                     <a href="{% url 'schedule' %}" class="submenu-item">
                         <i class="bi bi-newspaper"></i>
                         <span>Lịch đã đăng ký</span>
                     </a>
                 </li>
                 <li class="submenu-item-wrapper">
-                    <a href="#" class="submenu-item">
+                    <a href="{% url 'schedule_customer' %}" class="submenu-item">
                         <i class="bi bi-newspaper"></i>
                         <span>Lịch hẹn với khách hàng</span>
                     </a>
