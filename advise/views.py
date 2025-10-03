@@ -8,13 +8,36 @@ import hashlib
 import urllib.parse
 from homepage.models import Expert
 from advise.models import WorkSchedule
-from datetime import date
+from datetime import date, timedelta
 # Create your views here.
 
 @login_required(login_url='login')
 def index(request):
     expert = Expert.objects.all()
-    return render(request, 'advise.html', {'expert':expert})
+    
+    # Tạo dữ liệu lịch tuần hiện tại (từ thứ 2 đến chủ nhật)
+    today = timezone.now().date()
+    # Tìm thứ 2 của tuần hiện tại
+    days_since_monday = today.weekday()  # 0 = Monday, 6 = Sunday
+    monday = today - timedelta(days=days_since_monday)
+    
+    week_dates = []
+    for i in range(7):  # 7 ngày từ thứ 2 đến chủ nhật
+        current_date = monday + timedelta(days=i)
+        # Lấy tất cả lịch của tất cả chuyên gia cho ngày này
+        schedules = WorkSchedule.objects.filter(
+            date=current_date
+        ).select_related('expert', 'work_shift').order_by('work_shift__start_time')
+        
+        week_dates.append({
+            'date': current_date,
+            'schedules': schedules
+        })
+    
+    return render(request, 'advise.html', {
+        'expert': expert,
+        'week_dates': week_dates
+    })
 
 
 @login_required(login_url='login')
@@ -69,6 +92,50 @@ def available_slots(request):
             'label': f"{st} - {et}",
         })
     return JsonResponse({'slots': slots})
+
+@login_required(login_url='login')
+def expert_schedule(request):
+    """API endpoint để lấy lịch của chuyên gia"""
+    expert_id = request.GET.get('expert_id')
+    if not expert_id:
+        return HttpResponseBadRequest('Missing expert_id')
+    
+    try:
+        expert = Expert.objects.get(id=expert_id)
+    except Expert.DoesNotExist:
+        return HttpResponseBadRequest('Invalid expert_id')
+    
+    # Tạo dữ liệu lịch tuần hiện tại (từ thứ 2 đến chủ nhật)
+    today = timezone.now().date()
+    # Tìm thứ 2 của tuần hiện tại
+    days_since_monday = today.weekday()  # 0 = Monday, 6 = Sunday
+    monday = today - timedelta(days=days_since_monday)
+    
+    schedule_data = []
+    for i in range(7):  # 7 ngày từ thứ 2 đến chủ nhật
+        current_date = monday + timedelta(days=i)
+        # Lấy lịch của chuyên gia cho ngày này
+        schedules = WorkSchedule.objects.filter(
+            expert=expert,
+            date=current_date
+        ).select_related('work_shift').order_by('work_shift__start_time')
+        
+        schedule_list = []
+        for schedule in schedules:
+            schedule_list.append({
+                'id': schedule.id,
+                'start_time': schedule.work_shift.start_time.strftime('%H:%M'),
+                'end_time': schedule.work_shift.end_time.strftime('%H:%M'),
+                'is_booked': schedule.is_booked
+            })
+        
+        schedule_data.append({
+            'date': current_date.strftime('%Y-%m-%d'),
+            'schedules': schedule_list
+        })
+    
+    return JsonResponse({'schedule': schedule_data})
+
 
 def payment(request):
     if request.method == 'POST':

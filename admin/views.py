@@ -38,7 +38,8 @@ def dashboard(request):
         if request.user.is_staff == True:
             return render(request, 'dashboard.html', {'user':request.user})
         else:
-            return render(request, 'loginadmin.html')
+            messages.error(request, 'Bạn không có quyền truy cập')
+            return redirect('admin')
     else:
         return render(request, 'loginadmin.html')
 

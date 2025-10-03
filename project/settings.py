@@ -136,5 +136,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 VNPAY_TMN_CODE = "IBJV6YOK"
 VNPAY_HASH_SECRET = "BURUZ0U4NK5UG8QAN4BJW8DPRHGU4SYTs"
 VNPAY_URL = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
-VNPAY_RETURN_URL = "http://localhost:8080/payment/vnpay_return/"
+VNPAY_RETURN_URL = "http://localhost:8000/payment/vnpay_return/"
 VNPAY_API_URL = 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction'

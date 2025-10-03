@@ -1,5 +1,6 @@
 from django.db import models
 from homepage.models import Expert
+from user_profile.models import Member
 # Create your models here.
 class WorkShift(models.Model):
     start_time = models.TimeField()
@@ -18,3 +19,10 @@ class WorkSchedule(models.Model):
         default='P'
     )
 
+class Appointment(models.Model):
+    member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    work_schedule = models.ForeignKey(WorkSchedule, on_delete=models.CASCADE)
+    status = models.CharField(
+        max_length=20,
+        choices=[('Y', 'Đã xong'), ('P', 'Đang thực hiện'), ('N', 'Chưa thực hiện')]
+    )

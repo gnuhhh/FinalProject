@@ -1,180 +1,330 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lịch học theo tuần</title>
-  <style>
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background: #f9f9f9;
-      margin: 0;
-      padding: 20px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt Lịch Tư Vấn Chuyên Gia</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+      .booking-container {
+    background-color: #ffffff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px;
+}
 
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+h1 {
+    text-align: center;
+    color: #0056b3;
+    margin-bottom: 30px;
+}
 
-    .schedule {
-      display: grid;
-      grid-template-rows: auto 1fr;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
+h2 {
+    color: #333;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
 
-    .schedule-header {
-      display: grid;
-      grid-template-columns: 120px repeat(6, 1fr);
-      background: #1976d2;
-      color: #fff;
-      text-align: center;
-      font-weight: bold;
-    }
+.form-step {
+    margin-bottom: 30px;
+}
 
-    .schedule-header div {
-      padding: 12px 0;
-      border-right: 1px solid rgba(255,255,255,0.3);
-    }
+/* --- Phần thông tin người dùng --- */
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+.user-info label {
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+.user-info input {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+.user-info input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
 
-    .schedule-header div:last-child {
-      border-right: none;
-    }
+/* --- Phần chọn chuyên gia --- */
+.expert-selection {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+}
 
-    .schedule-body {
-      display: grid;
-      grid-template-rows: repeat(8, 1fr); /* 8 khung giờ */
-    }
+/* Ẩn các radio button gốc */
+.expert-option input[type="radio"] {
+    display: none;
+}
 
-    .time-row {
-      display: grid;
-      grid-template-columns: 120px repeat(6, 1fr);
-      border-top: 1px solid #ddd;
-      background: #fff;
-      min-height: 60px;
-    }
+.expert-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #fff;
+}
 
-    .time-cell {
-      background: #f1f1f1;
-      text-align: center;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-right: 1px solid #ddd;
-    }
+.expert-card img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
 
-    .event-cell {
-      border-right: 1px solid #ddd;
-      padding: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      text-align: center;
-      transition: background 0.3s;
-    }
+.expert-card h3 {
+    margin: 0 0 5px 0;
+    color: #333;
+}
 
-    .event-cell.empty {
-      background: #fafafa;
-      color: #bbb;
-    }
+.expert-card p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
 
-    .event {
-      padding: 6px 10px;
-      border-radius: 6px;
-      color: #fff;
-      font-weight: 500;
-      width: 90%;
-    }
+/* Hiệu ứng khi di chuột qua card */
+.expert-card:hover {
+    border-color: #007bff;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.15);
+}
 
-    /* Màu ngẫu nhiên theo môn */
-    .event.math { background: #4caf50; }
-    .event.physics { background: #ff9800; }
-    .event.chemistry { background: #2196f3; }
-    .event.english { background: #9c27b0; }
-    .event.history { background: #e91e63; }
-    .event.programming { background: #795548; }
-  </style>
+/* Thay đổi giao diện khi chuyên gia được chọn */
+.expert-option input[type="radio"]:checked + .expert-card {
+    border-color: #007bff;
+    background-color: #e7f3ff;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+    transform: translateY(-5px);
+}
+
+/* --- Phần hiển thị lịch --- */
+.schedule-section {
+    min-height: 150px; /* Giữ không gian cố định, tránh giật layout */
+}
+/* Mặc định ẩn tất cả lịch */
+.schedule {
+    display: none;
+    margin-top: 20px;
+}
+.schedule h4 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 500;
+    color: #0056b3;
+}
+
+/* **Đây là phần quan trọng nhất** */
+/* Hiển thị lịch tương ứng khi một chuyên gia được chọn */
+#expert1:checked ~ .schedule-section #schedule-expert1,
+#expert2:checked ~ .schedule-section #schedule-expert2,
+#expert3:checked ~ .schedule-section #schedule-expert3 {
+    display: block;
+}
+
+.week-schedule {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.day-column {
+    flex: 1;
+    min-width: 120px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+}
+
+.day-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Ẩn radio button của ca hẹn */
+.time-slot input[type="radio"] {
+    display: none;
+}
+
+.time-slot label {
+    display: block;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.time-slot label:hover {
+    background-color: #d4eaff;
+}
+/* Định dạng ca hẹn đã có người đặt */
+.time-slot.unavailable {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    text-decoration: line-through;
+}
+
+/* Định dạng ca hẹn khi được chọn */
+.time-slot input[type="radio"]:checked + label {
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* --- Nút xác nhận --- */
+.submit-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 30px;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #218838;
+}
+    </style>
 </head>
 <body>
-  <h1>📚 Lịch học theo tuần</h1>
 
-  <div class="schedule">
-    <div class="schedule-header">
-      <div>Thời gian</div>
-      <div>Thứ 2</div>
-      <div>Thứ 3</div>
-      <div>Thứ 4</div>
-      <div>Thứ 5</div>
-      <div>Thứ 6</div>
-      <div>Thứ 7</div>
+    <div class="booking-container">
+        <h1>🗓️ Đặt Lịch Tư Vấn</h1>
+
+        <form action="/xu-ly-dat-lich/" method="POST" class="booking-form">
+
+            <div class="form-step">
+                <h2>Thông tin của bạn</h2>
+                <div class="user-info">
+                    <label for="user-name">Họ và Tên:</label>
+                    <input type="text" id="user-name" name="user_name" placeholder="Ví dụ: Nguyễn Văn A" required>
+                </div>
+            </div>
+
+            <div class="form-step">
+                <h2>1. Chọn Chuyên Gia</h2>
+                <div class="expert-selection">
+                    <div class="expert-option">
+                        <input type="radio" id="expert1" name="expert_name" value="Nguyễn Thị Lan" required>
+                        <label for="expert1" class="expert-card">
+                            <img src="https://i.pravatar.cc/150?img=1" alt="Hình chuyên gia Nguyễn Thị Lan">
+                            <h3>Nguyễn Thị Lan</h3>
+                            <p>Tâm lý học đường</p>
+                        </label>
+                    </div>
+
+                    <div class="expert-option">
+                        <input type="radio" id="expert2" name="expert_name" value="Trần Văn Bình">
+                        <label for="expert2" class="expert-card">
+                            <img src="https://i.pravatar.cc/150?img=2" alt="Hình chuyên gia Trần Văn Bình">
+                            <h3>Trần Văn Bình</h3>
+                            <p>Tư vấn Hôn nhân</p>
+                        </label>
+                    </div>
+
+                    <div class="expert-option">
+                        <input type="radio" id="expert3" name="expert_name" value="Lê Minh Anh">
+                        <label for="expert3" class="expert-card">
+                            <img src="https://i.pravatar.cc/150?img=3" alt="Hình chuyên gia Lê Minh Anh">
+                            <h3>Lê Minh Anh</h3>
+                            <p>Phát triển sự nghiệp</p>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-step schedule-section">
+                <h2>2. Chọn Ngày và Giờ</h2>
+                <div class="schedule" id="schedule-expert1">
+                    <h4>Lịch của chuyên gia Nguyễn Thị Lan</h4>
+                    <div class="week-schedule">
+                        <div class="day-column">
+                            <div class="day-header">Thứ Hai</div>
+                            <div class="time-slot">
+                                <input type="radio" name="booking_slot" id="e1-t2-ca1" value="Thứ Hai, 08:00 - 09:00">
+                                <label for="e1-t2-ca1">08:00 - 09:00</label>
+                            </div>
+                            <div class="time-slot">
+                                <input type="radio" name="booking_slot" id="e1-t2-ca2" value="Thứ Hai, 10:00 - 11:00">
+                                <label for="e1-t2-ca2">10:00 - 11:00</label>
+                            </div>
+                        </div>
+                        <div class="day-column">
+                            <div class="day-header">Thứ Ba</div>
+                            <div class="time-slot unavailable">08:00 - 09:00 (Đã có người đặt)</div>
+                            <div class="time-slot">
+                                <input type="radio" name="booking_slot" id="e1-t3-ca2" value="Thứ Ba, 10:00 - 11:00">
+                                <label for="e1-t3-ca2">10:00 - 11:00</label>
+                            </div>
+                        </div>
+                        </div>
+                </div>
+
+                <div class="schedule" id="schedule-expert2">
+                    <h4>Lịch của chuyên gia Trần Văn Bình</h4>
+                    <div class="week-schedule">
+                        <div class="day-column">
+                            <div class="day-header">Thứ Tư</div>
+                            <div class="time-slot">
+                                <input type="radio" name="booking_slot" id="e2-t4-ca1" value="Thứ Tư, 09:00 - 10:00">
+                                <label for="e2-t4-ca1">09:00 - 10:00</label>
+                            </div>
+                        </div>
+                        <div class="day-column">
+                            <div class="day-header">Thứ Sáu</div>
+                            <div class="time-slot">
+                                <input type="radio" name="booking_slot" id="e2-t6-ca1" value="Thứ Sáu, 14:00 - 15:00">
+                                <label for="e2-t6-ca1">14:00 - 15:00</label>
+                            </div>
+                            <div class="time-slot">
+                                <input type="radio" name="booking_slot" id="e2-t6-ca2" value="Thứ Sáu, 16:00 - 17:00">
+                                <label for="e2-t6-ca2">16:00 - 17:00</label>
+                            </div>
+                        </div>
+                        </div>
+                </div>
+
+                <div class="schedule" id="schedule-expert3">
+                     <h4>Lịch của chuyên gia Lê Minh Anh</h4>
+                     <p>Chuyên gia này hiện chưa có lịch trống trong tuần.</p>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Xác Nhận Đặt Lịch</button>
+
+        </form>
     </div>
 
-    <div class="schedule-body" id="scheduleBody"></div>
-  </div>
-
-  <script>
-    const timeSlots = [
-      "07:00 - 08:00",
-      "08:00 - 09:00",
-      "09:00 - 10:00",
-      "10:00 - 11:00",
-      "13:00 - 14:00",
-      "14:00 - 15:00",
-      "15:00 - 16:00",
-      "16:00 - 17:00",
-    ];
-
-    // Dữ liệu giả lập
-    const scheduleData = [
-      { day: 1, time: 0, subject: "Toán", type: "math" },
-      { day: 2, time: 1, subject: "Vật lý", type: "physics" },
-      { day: 4, time: 2, subject: "Lập trình", type: "programming" },
-      { day: 5, time: 0, subject: "Hóa học", type: "chemistry" },
-      { day: 5, time: 4, subject: "Tiếng Anh", type: "english" },
-      { day: 6, time: 5, subject: "Lịch sử", type: "history" },
-    ];
-
-    const scheduleBody = document.getElementById("scheduleBody");
-
-    timeSlots.forEach((slot, timeIndex) => {
-      const row = document.createElement("div");
-      row.className = "time-row";
-
-      // Cột giờ
-      const timeCell = document.createElement("div");
-      timeCell.className = "time-cell";
-      timeCell.textContent = slot;
-      row.appendChild(timeCell);
-
-      // 6 cột cho thứ 2 -> 7
-      for (let day = 1; day <= 6; day++) {
-        const cell = document.createElement("div");
-        cell.className = "event-cell";
-
-        const event = scheduleData.find(
-          (e) => e.day === day && e.time === timeIndex
-        );
-
-        if (event) {
-          const eventDiv = document.createElement("div");
-          eventDiv.className = `event ${event.type}`;
-          eventDiv.textContent = event.subject;
-          cell.appendChild(eventDiv);
-        } else {
-          cell.classList.add("empty");
-          cell.textContent = "-";
-        }
-
-        row.appendChild(cell);
-      }
-
-      scheduleBody.appendChild(row);
-    });
-  </script>
 </body>
 </html>
