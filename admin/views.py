@@ -203,7 +203,6 @@ def schedule_assignment(request):
                 expert=expert,
                 work_shift=work_shift,
                 date=schedule_date,
-                is_booked=True,
             )
             messages.success(request, 'Đăng ký lịch tư vấn thành công!')
             return redirect('schedule')

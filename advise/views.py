@@ -5,10 +5,12 @@ from django.utils import timezone
 from django.conf import settings
 from advise.vnpay import vnpay
 import hashlib
+import hmac
 import urllib.parse
 from homepage.models import Expert
-from advise.models import WorkSchedule
-from datetime import date, timedelta
+from user_profile.models import Member
+from .models import WorkSchedule, Appointment
+from datetime import date, timedelta, datetime
 # Create your views here.
 
 @login_required(login_url='login')
@@ -26,7 +28,8 @@ def index(request):
         current_date = monday + timedelta(days=i)
         # Lấy tất cả lịch của tất cả chuyên gia cho ngày này
         schedules = WorkSchedule.objects.filter(
-            date=current_date
+            date=current_date,
+            status='Y'
         ).select_related('expert', 'work_shift').order_by('work_shift__start_time')
         
         week_dates.append({
@@ -53,7 +56,7 @@ def available_dates(request):
     today = timezone.now().date()
     dates_qs = (
         WorkSchedule.objects
-        .filter(expert=expert, date__gte=today)
+        .filter(expert=expert, status='Y', date__gte=today)
         .order_by('date')
         .values_list('date', flat=True)
         .distinct()
@@ -117,7 +120,8 @@ def expert_schedule(request):
         # Lấy lịch của chuyên gia cho ngày này
         schedules = WorkSchedule.objects.filter(
             expert=expert,
-            date=current_date
+            date=current_date,
+            status='Y'
         ).select_related('work_shift').order_by('work_shift__start_time')
         
         schedule_list = []
@@ -136,45 +140,114 @@ def expert_schedule(request):
     
     return JsonResponse({'schedule': schedule_data})
 
+def hmacsha512(key, data):
+    byteKey = key.encode('utf-8')
+    byteData = data.encode('utf-8')
+    return hmac.new(byteKey, byteData, hashlib.sha512).hexdigest()
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
 
 def payment(request):
-    if request.method == 'POST':
-        # Process input data and build url payment
-        form = PaymentForm(request.POST)
-        if form.is_valid():
-            order_type = form.cleaned_data['order_type']
-            order_id = form.cleaned_data['order_id']
-            amount = form.cleaned_data['amount']
-            order_desc = form.cleaned_data['order_desc']
-            bank_code = form.cleaned_data['bank_code']
-            language = form.cleaned_data['language']
-            ipaddr = get_client_ip(request)
-            # Build URL Payment
-            vnp = vnpay()
-            vnp.requestData['vnp_Version'] = '2.1.0'
-            vnp.requestData['vnp_Command'] = 'pay'
-            vnp.requestData['vnp_TmnCode'] = settings.VNPAY_TMN_CODE
-            vnp.requestData['vnp_Amount'] = amount * 100
-            vnp.requestData['vnp_CurrCode'] = 'VND'
-            vnp.requestData['vnp_TxnRef'] = order_id
-            vnp.requestData['vnp_OrderInfo'] = order_desc
-            vnp.requestData['vnp_OrderType'] = order_type
-            # Check language, default: vn
-            if language and language != '':
-                vnp.requestData['vnp_Locale'] = language
-            else:
-                vnp.requestData['vnp_Locale'] = 'vn'
-                # Check bank_code, if bank_code is empty, customer will be selected bank on VNPAY
-            if bank_code and bank_code != "":
-                vnp.requestData['vnp_BankCode'] = bank_code
+    ipaddr = get_client_ip(request)
+    vnp = vnpay()
+    vnp.requestData['vnp_Version'] = '2.1.0'
+    vnp.requestData['vnp_Command'] = 'pay'
+    vnp.requestData['vnp_TmnCode'] = settings.VNPAY_TMN_CODE
+    vnp.requestData['vnp_Amount'] = 200000 * 100
+    vnp.requestData['vnp_CurrCode'] = 'VND'
+    vnp.requestData['vnp_TxnRef'] = 'DH1007'
+    vnp.requestData['vnp_OrderInfo'] = 'thanh toan hoa don'
+    vnp.requestData['vnp_OrderType'] = 'billpayment'
+    vnp.requestData['vnp_Locale'] = 'vn'
+    vnp.requestData['vnp_BankCode'] = 'NCB'
+    vnp.requestData['vnp_CreateDate'] = datetime.now().strftime('%Y%m%d%H%M%S')  # 20150410063022
+    vnp.requestData['vnp_IpAddr'] = ipaddr
+    vnp.requestData['vnp_ReturnUrl'] = settings.VNPAY_RETURN_URL
+    vnpay_payment_url = vnp.get_payment_url(settings.VNPAY_PAYMENT_URL, settings.VNPAY_HASH_SECRET_KEY)
+    print(vnpay_payment_url)
+    return redirect(vnpay_payment_url)
 
-            vnp.requestData['vnp_CreateDate'] = datetime.now().strftime('%Y%m%d%H%M%S')  # 20150410063022
-            vnp.requestData['vnp_IpAddr'] = ipaddr
-            vnp.requestData['vnp_ReturnUrl'] = settings.VNPAY_RETURN_URL
-            vnpay_payment_url = vnp.get_payment_url(settings.VNPAY_PAYMENT_URL, settings.VNPAY_HASH_SECRET_KEY)
-            print(vnpay_payment_url)
-            return redirect(vnpay_payment_url)
+def payment_ipn(request):
+    inputData = request.GET
+    if inputData:
+        vnp = vnpay()
+        vnp.responseData = inputData.dict()
+        order_id = inputData['vnp_TxnRef']
+        amount = inputData['vnp_Amount']
+        order_desc = inputData['vnp_OrderInfo']
+        vnp_TransactionNo = inputData['vnp_TransactionNo']
+        vnp_ResponseCode = inputData['vnp_ResponseCode']
+        vnp_TmnCode = inputData['vnp_TmnCode']
+        vnp_PayDate = inputData['vnp_PayDate']
+        vnp_BankCode = inputData['vnp_BankCode']
+        vnp_CardType = inputData['vnp_CardType']
+        if vnp.validate_response(settings.VNPAY_HASH_SECRET_KEY):
+            # Check & Update Order Status in your Database
+            # Your code here
+            firstTimeUpdate = True
+            totalamount = True
+            if totalamount:
+                if firstTimeUpdate:
+                    if vnp_ResponseCode == '00':
+                        print('Payment Success. Your code implement here')
+                    else:
+                        print('Payment Error. Your code implement here')
+
+                    # Return VNPAY: Merchant update success
+                    result = JsonResponse({'RspCode': '00', 'Message': 'Confirm Success'})
+                else:
+                    # Already Update
+                    result = JsonResponse({'RspCode': '02', 'Message': 'Order Already Update'})
+            else:
+                # invalid amount
+                result = JsonResponse({'RspCode': '04', 'Message': 'invalid amount'})
         else:
-            print("Form input not validate")
+            # Invalid Signature
+            result = JsonResponse({'RspCode': '97', 'Message': 'Invalid Signature'})
     else:
-        return render(request, "payment.html", {"title": "Thanh toán"})
+        result = JsonResponse({'RspCode': '99', 'Message': 'Invalid request'})
+
+    return result
+
+def payment_return(request):
+    inputData = request.GET
+    if inputData:
+        vnp = vnpay()
+        vnp.responseData = inputData.dict()
+        order_id = inputData['vnp_TxnRef']
+        amount = int(inputData['vnp_Amount']) / 100
+        order_desc = inputData['vnp_OrderInfo']
+        vnp_TransactionNo = inputData['vnp_TransactionNo']
+        vnp_ResponseCode = inputData['vnp_ResponseCode']
+        vnp_TmnCode = inputData['vnp_TmnCode']
+        vnp_PayDate = inputData['vnp_PayDate']
+        vnp_BankCode = inputData['vnp_BankCode']
+        vnp_CardType = inputData['vnp_CardType']
+        if vnp.validate_response(settings.VNPAY_HASH_SECRET_KEY):
+            if vnp_ResponseCode == "00":
+                return render(request, "payment_return.html", {"title": "Kết quả thanh toán",
+                                                               "result": "Thành công", "order_id": order_id,
+                                                               "amount": amount,
+                                                               "order_desc": order_desc,
+                                                               "vnp_TransactionNo": vnp_TransactionNo,
+                                                               "vnp_ResponseCode": vnp_ResponseCode})
+            else:
+                return render(request, "payment_return.html", {"title": "Kết quả thanh toán",
+                                                               "result": "Lỗi", "order_id": order_id,
+                                                               "amount": amount,
+                                                               "order_desc": order_desc,
+                                                               "vnp_TransactionNo": vnp_TransactionNo,
+                                                               "vnp_ResponseCode": vnp_ResponseCode})
+        else:
+            return render(request, "payment_return.html",
+                          {"title": "Kết quả thanh toán", "result": "Lỗi", "order_id": order_id, "amount": amount,
+                           "order_desc": order_desc, "vnp_TransactionNo": vnp_TransactionNo,
+                           "vnp_ResponseCode": vnp_ResponseCode, "msg": "Sai checksum"})
+    else:
+        return render(request, "payment_return.html", {"title": "Kết quả thanh toán", "result": ""})
