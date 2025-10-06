@@ -1,16 +1,21 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, HttpResponseBadRequest, HttpResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.utils import timezone
 from django.conf import settings
 from advise.vnpay import vnpay
 import hashlib
 import hmac
 import urllib.parse
+import string
+import random
 from homepage.models import Expert
 from user_profile.models import Member
-from .models import WorkSchedule, Appointment
+from .models import WorkSchedule, Appointment, Invoice
+from decimal import Decimal
 from datetime import date, timedelta, datetime
+# Regex for extracting invoice id from vnp_TxnRef
+import re
 # Create your views here.
 
 @login_required(login_url='login')
@@ -154,24 +159,46 @@ def get_client_ip(request):
     return ip
 
 def payment(request):
-    ipaddr = get_client_ip(request)
-    vnp = vnpay()
-    vnp.requestData['vnp_Version'] = '2.1.0'
-    vnp.requestData['vnp_Command'] = 'pay'
-    vnp.requestData['vnp_TmnCode'] = settings.VNPAY_TMN_CODE
-    vnp.requestData['vnp_Amount'] = 200000 * 100
-    vnp.requestData['vnp_CurrCode'] = 'VND'
-    vnp.requestData['vnp_TxnRef'] = 'DH1007'
-    vnp.requestData['vnp_OrderInfo'] = 'thanh toan hoa don'
-    vnp.requestData['vnp_OrderType'] = 'billpayment'
-    vnp.requestData['vnp_Locale'] = 'vn'
-    vnp.requestData['vnp_BankCode'] = 'NCB'
-    vnp.requestData['vnp_CreateDate'] = datetime.now().strftime('%Y%m%d%H%M%S')  # 20150410063022
-    vnp.requestData['vnp_IpAddr'] = ipaddr
-    vnp.requestData['vnp_ReturnUrl'] = settings.VNPAY_RETURN_URL
-    vnpay_payment_url = vnp.get_payment_url(settings.VNPAY_PAYMENT_URL, settings.VNPAY_HASH_SECRET_KEY)
-    print(vnpay_payment_url)
-    return redirect(vnpay_payment_url)
+    if request.method == 'POST':
+        member = Member.objects.get(id=request.user.id)
+        schedule_id = request.POST.get('schedule_id')
+        if not schedule_id:
+            return HttpResponseBadRequest('Missing schedule_id')
+        try:
+            work_schedule = WorkSchedule.objects.get(id=schedule_id)
+        except WorkSchedule.DoesNotExist:
+            return HttpResponseBadRequest('Invalid schedule_id')
+
+        # Tạo hóa đơn trước khi chuyển hướng VNPay
+        invoice = Invoice.objects.create(
+            member=member,
+            work_schedule=work_schedule,
+            price=Decimal('200000')/1000,  # 200,000 VND
+            status='N'
+        )
+        invoice.invoice_id=f'INV000{invoice.id}'
+        invoice.save()
+        
+        ipaddr = get_client_ip(request)
+        vnp = vnpay()
+        vnp.requestData['vnp_Version'] = '2.1.0'
+        vnp.requestData['vnp_Command'] = 'pay'
+        vnp.requestData['vnp_TmnCode'] = settings.VNPAY_TMN_CODE
+        vnp.requestData['vnp_Amount'] = 200000 * 100
+        vnp.requestData['vnp_CurrCode'] = 'VND'
+        vnp.requestData['vnp_TxnRef'] = f'INV000{invoice.id}'
+        vnp.requestData['vnp_OrderInfo'] = 'thanh toan hoa don'
+        vnp.requestData['vnp_OrderType'] = 'billpayment'
+        vnp.requestData['vnp_Locale'] = 'vn'
+        vnp.requestData['vnp_BankCode'] = 'NCB'
+        vnp.requestData['vnp_CreateDate'] = datetime.now().strftime('%Y%m%d%H%M%S')  # 20150410063022
+        vnp.requestData['vnp_IpAddr'] = ipaddr
+        vnp.requestData['vnp_ReturnUrl'] = settings.VNPAY_RETURN_URL
+        vnpay_payment_url = vnp.get_payment_url(settings.VNPAY_PAYMENT_URL, settings.VNPAY_HASH_SECRET_KEY)
+        print(vnpay_payment_url)
+        return redirect(vnpay_payment_url)
+    else:
+        return render(request, 'advise.html')
 
 def payment_ipn(request):
     inputData = request.GET

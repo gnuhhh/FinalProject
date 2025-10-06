@@ -24,5 +24,18 @@ class Appointment(models.Model):
     work_schedule = models.ForeignKey(WorkSchedule, on_delete=models.CASCADE)
     status = models.CharField(
         max_length=20,
-        choices=[('Y', 'Đã xong'), ('P', 'Đang thực hiện'), ('N', 'Chưa thực hiện')]
+        choices=[('Y', 'Đã xong'), ('P', 'Đang thực hiện'), ('N', 'Chưa thực hiện')],
+        default='N'
     )
+
+class Invoice(models.Model):
+    member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    work_schedule = models.ForeignKey(WorkSchedule, on_delete=models.CASCADE)
+    invoice_id = models.CharField(max_length=15, null=False)
+    price = models.DecimalField(max_digits=7, decimal_places=3, default=200.000)
+    status = models.CharField(
+        max_length=20,
+        choices=[('N', 'Chưa thanh toán'), ('Y', 'Đã thanh toán')],
+        default='N'
+    )
+
