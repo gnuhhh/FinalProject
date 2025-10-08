@@ -285,7 +285,10 @@ def schedule(request):
 
 @login_required(login_url='admin')
 def schedule_customer(request):
-    appointments = Appointment.objects.filter(invoices__status='Y', work_schedule__expert__id=request.user.id)
+    if request.user.groups.first().name == 'manager':
+        appointments = Appointment.objects.filter(invoices__status='Y')
+    else:
+        appointments = Appointment.objects.filter(invoices__status='Y', work_schedule__expert__id=request.user.id)
     return render(request, 'admin/schedule/schedule_customer.html', {'appointments':appointments})
 
 @login_required(login_url='admin')

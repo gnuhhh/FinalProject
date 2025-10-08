@@ -1,29 +1,22 @@
 <div class="sidebar">
     <ul class="sidebar-menu">
+        {% if request.user.groups.all.0.name == 'manager' or request.user.groups.all.0.name == 'expert'%}
+        {% if request.user.groups.all.0.name == 'manager' %}
         <li class="sidebar-item">
-            <a href="#" class="menu-item expandable" id="post-management">
-                <i class="bi bi-card-list"></i>
-                <span>Quản lý bài viết</span>
-                <i class="bi bi-chevron-right arrow"></i>
+            <a href="{% url 'information' %}" class="menu-item">
+                <i class="bi bi-mortarboard"></i>
+                <span>Quản lý thông tin trường</span>
             </a>
-            
-            <ul class="submenu" id="post-submenu">
-                <li class="submenu-item-wrapper">
-                    <a href="{% url 'information' %}" class="submenu-item">
-                        <i class="bi bi-mortarboard"></i>
-                        <span>Quản lý thông tin trường</span>
-                    </a>
-                </li>
-                <li class="submenu-item-wrapper">
-                    <a href="{% url 'news' %}" class="submenu-item">
-                        <i class="bi bi-newspaper"></i>
-                        <span>Quản lý tin tức</span>
-                    </a>
-                </li>
-            </ul>
         </li>
-
-        {% if request.user.groups.all.0.name == 'expert' or request.user.groups.all.0.name == 'manager' %}
+        {% endif %}
+        <li class="sidebar-item">
+            <a href="{% url 'news' %}" class="menu-item">
+                <i class="bi bi-newspaper"></i>
+                <span>Quản lý tin tức</span>
+            </a>
+        </li>
+        {% endif %}
+        {% if request.user.groups.all.0.name == 'expert'%}
         <li class="sidebar-item">
             <a href="#" class="menu-item expandable" id="post-management2">
                 <i class="bi bi-card-list"></i>
@@ -40,7 +33,7 @@
                 </li>
                 <li class="submenu-item-wrapper">
                     <a href="{% url 'schedule_customer' %}" class="submenu-item">
-                        <i class="bi bi-newspaper"></i>
+                        <i class="bi bi-receipt"></i>
                         <span>Lịch hẹn với khách hàng</span>
                     </a>
                 </li>
@@ -58,6 +51,12 @@
         {% endif %}
 
         {% if request.user.groups.all.0.name == 'manager' %}
+        <li class="sidebar-item">
+            <a href="{% url 'schedule_customer' %}" class="menu-item">
+                <i class="bi bi-receipt"></i>
+                <span>Lịch hẹn với khách hàng</span>
+            </a>
+        </li>
         <li class="sidebar-item">
             <a href="{% url 'expert' %}" class="menu-item">
                 <i class="bi bi-people"></i>

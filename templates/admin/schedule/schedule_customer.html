@@ -468,7 +468,9 @@
                                 <th>Thời gian</th>
                                 <th>Zoom</th>
                                 <th>Trạng thái</th>
+                                {% if request.user.groups.all.0.name == 'expert' %}
                                 <th>Thao tác</th>
+                                {% endif %}
                             </tr>
                         </thead>
                         <tbody>
@@ -488,9 +490,11 @@
                                     <span class="status-badge status-cancelled">Đang thực hiện</span>
                                     {% endif %}
                                 </td>
+                                {% if request.user.groups.all.0.name == 'expert' %}
                                 <td>
                                     <a href="{% url 'schedule_customer_complete' appointment.id %}" class="btn btn-sm" style="color: #0072bc; border-color: #0072bc">Xong</a>
                                 </td>
+                                {% endif %}
                                 
                             </tr>
                             {% empty %}
