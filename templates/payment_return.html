@@ -1,17 +1,90 @@
-<div class="panel panel-default">
-        <div class="panel-heading">{{ title }}: {{ result }}</div>
-        <div class="panel-body">
-            <p>order_id:{{ order_id }}</p>
-            <p>amount:{{ amount }}</p>
-            <p>order_desc:{{ order_desc }}</p>
-            <p>vnp_TransactionNo:{{ vnp_TransactionNo }}</p>
-            {% if vnp_ResponseCode == '00' %}
-                <p>vnp_ResponseCode: {{ vnp_ResponseCode }} - Thành công</p>
-            {% else %}
-                <p>vnp_ResponseCode: {{ vnp_ResponseCode }} - Lỗi</p>
-            {% endif %}
-            {% if msg %}
-                <p class="alert-warning"> {{ msg }}</p>
-            {% endif %}
+<div class="vnpay-result">
+        <div class="vnpay-card">
+                <div class="vnpay-card__header">
+                        <div class="vnpay-card__brand">
+                                <span class="vnpay-logo">VNPAY</span>
+                                <span class="vnpay-sub">Payment Gateway</span>
+                        </div>
+                        <div class="vnpay-status">
+                                {% if vnp_ResponseCode == '00' %}
+                                <span class="badge badge--success">Thanh toán thành công</span>
+                                {% else %}
+                                <span class="badge badge--error">Thanh toán thất bại</span>
+                                {% endif %}
+                        </div>
+                </div>
+
+                <div class="vnpay-card__title">
+                        <h2>{{ title|default:"Kết quả thanh toán" }}</h2>
+                        <p class="muted">{{ result }}</p>
+                </div>
+
+                <div class="vnpay-details">
+                        <div class="row">
+                                <div class="col col--label">Mã đơn hàng</div>
+                                <div class="col col--value">{{ order_id }}</div>
+                        </div>
+                        <div class="row">
+                                <div class="col col--label">Số tiền</div>
+                                <div class="col col--value">{{ amount }} đ</div>
+                        </div>
+                        <div class="row">
+                                <div class="col col--label">Mô tả</div>
+                                <div class="col col--value">{{ order_desc }}</div>
+                        </div>
+                        <div class="row">
+                                <div class="col col--label">Mã giao dịch (VNPAY)</div>
+                                <div class="col col--value">{{ vnp_TransactionNo|default:"-" }}</div>
+                        </div>
+                        <div class="row">
+                                <div class="col col--label">Mã phản hồi</div>
+                                <div class="col col--value">
+                                        {% if vnp_ResponseCode == '00' %}
+                                        {{ vnp_ResponseCode }} - Thành công
+                                        {% else %}
+                                        {{ vnp_ResponseCode }} - Lỗi
+                                        {% endif %}
+                                </div>
+                        </div>
+                        {% if msg %}
+                        <div class="row">
+                                <div class="col col--label">Thông báo</div>
+                                <div class="col col--value warn">{{ msg }}</div>
+                        </div>
+                        {% endif %}
+                </div>
+
+                <div class="vnpay-actions">
+                        <a href="/" class="btn btn--primary">Về trang chủ</a>
+                        <a href="javascript:history.back()" class="btn btn--ghost">Quay lại</a>
+                </div>
         </div>
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap');
+        .vnpay-result {max-width: 760px;margin: 24px auto;padding: 16px;font-family: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"}
+        .vnpay-card {background: #fff;border: 1px solid #e5e7eb;border-radius: 12px;box-shadow: 0 4px 16px rgba(0,0,0,0.06);overflow: hidden}
+        .vnpay-card__header {display: flex;justify-content: space-between;align-items: center;padding: 16px 20px;background: #0072bc;color: #fff}
+        .vnpay-card__brand {display: flex;align-items: baseline;gap: 10px}
+        .vnpay-logo {font-weight: 800;letter-spacing: 1px}
+        .vnpay-sub {opacity: .85;font-size: 12px}
+        .vnpay-card__title {padding: 20px 20px 0 20px}
+        .vnpay-card__title h2 {margin: 0 0 4px 0;font-size: 20px}
+        .muted {color: #6b7280;margin: 0}
+        .badge {display: inline-block;padding: 6px 10px;border-radius: 999px;font-size: 12px;font-weight: 600}
+        .badge--success {background: #d1fae5;color: #065f46;border: 1px solid #10b981}
+        .badge--error {background: #fee2e2;color: #991b1b;border: 1px solid #ef4444}
+        .vnpay-details {padding: 12px 20px 4px 20px}
+        .vnpay-details .row {display: grid;grid-template-columns: 220px 1fr;padding: 12px 0;border-bottom: 1px dashed #e5e7eb}
+        .vnpay-details .row:last-child {border-bottom: none}
+        .col--label {color: #6b7280}
+        .col--value {color: #111827;font-weight: 600}
+        .warn {color: #92400e;background: #fef3c7;border: 1px solid #f59e0b;padding: 6px 10px;border-radius: 6px;display: inline-block}
+        .vnpay-actions {display: flex;gap: 12px;justify-content: flex-end;padding: 16px 20px 20px 20px}
+        .btn {text-decoration: none;padding: 10px 16px;border-radius: 8px;font-weight: 600;font-size: 14px}
+        .btn--primary {background: #0072bc;color: #fff}
+        .btn--primary:hover {filter: brightness(0.95)}
+        .btn--ghost {border: 1px solid #cbd5e1;color: #0f172a;background: #fff}
+        .btn--ghost:hover {background: #f8fafc}
+        @media (max-width: 600px) { .vnpay-details .row {grid-template-columns: 1fr;gap: 6px} }
+        </style>
     </div>

@@ -28,7 +28,16 @@
         .avatar-wrapper { width: 120px; height: 120px; border-radius: 50%; overflow: hidden; border: 1px solid #dee2e6; }
         .avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
         .status-badge { padding: 5px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: 500; display: inline-block; }
+        .status-completed {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22C55E;
+        }
+        .status-pending {
+            background: rgba(255, 193, 7, 0.1);
+            color: #FFC107;
+        }
         @media (max-width: 992px) { .container { flex-direction: column; } .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); } }
+
     </style>
 </head>
 <body>
@@ -180,34 +189,29 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th><span title="Tên chuyên gia">STT</span></th>
+                                <th><span title="STT">STT</span></th>
                                 <th><span title="Tên chuyên gia">Tên chuyên gia</span></th>
+                                <th><span title="Ngày">Ngày</span></th>
                                 <th><span title="Thời gian">Thời gian</span></th>
+                                <th><span title="Zoom">Zoom</span></th>
                                 <th><span title="Trạng thái">Trạng thái</span></th>
                                 <th><span title="Hủy">Hủy</span></th>
                             </tr>
                         </thead>
                         <tbody>
+                            {% for appointment in appointments %}
                             <tr>
-                                <td>1</td>
-                                <td>Chuyên gia Tư vấn 1</td>
-                                <td>09:00 20/09/2025</td>
-                                <td><span class="status-badge status-pending" style="background: rgba(255, 193, 7, 0.1); color: #FFC107;">Chờ xác nhận</span></td>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ appointment.work_schedule.expert.first_name }} {{ appointment.work_schedule.expert.last_name }}</td>
+                                <td>{{ appointment.work_schedule.date|date:"d/m/Y" }}</td>
+                                <td>{{ appointment.work_schedule.work_shift.start_time|time:"H:i" }} - {{ appointment.work_schedule.work_shift.end_time|time:"H:i" }}</td>
+                                <td>ID: {{appointment.zoom_room.zoom_id}}/Pass: {{ appointment.zoom_room.password }}</td>
+                                <td><span class="status-badge {% if appointment.status == 'N' or appointment.status == 'P' %}status-pending{% else %}status-completed{% endif %}">{% if appointment.status == 'N' %}Chưa thực hiện{% elif appointment.status == 'P' %}Đang thực hiện{% else %}Đã xong{% endif %}</span></td>
                                 <td>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc muốn hủy lịch hẹn này?');">
-                                        <i class="bi bi-x-circle"></i> Hủy
-                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc muốn hủy lịch hẹn này?');">Hủy</button>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Chuyên gia Tư vấn 2</td>
-                                <td>14:30 22/09/2025</td>
-                                <td><span class="status-badge" style="background: rgba(34, 197, 94, 0.1); color: #22C55E;">Đã xác nhận</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-secondary" disabled>Hủy</button>
-                                </td>
-                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>

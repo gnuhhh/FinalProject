@@ -19,9 +19,14 @@ class WorkSchedule(models.Model):
         default='P'
     )
 
+class Room(models.Model):
+    zoom_id = models.CharField(max_length=10, unique=True)
+    password = models.CharField(max_length=6)
+    is_used = models.BooleanField(default=False)
 class Appointment(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
     work_schedule = models.ForeignKey(WorkSchedule, on_delete=models.CASCADE)
+    zoom_room = models.ForeignKey(Room, on_delete=models.CASCADE, null=True)
     status = models.CharField(
         max_length=20,
         choices=[('Y', 'Đã xong'), ('P', 'Đang thực hiện'), ('N', 'Chưa thực hiện')],
@@ -29,8 +34,7 @@ class Appointment(models.Model):
     )
 
 class Invoice(models.Model):
-    member = models.ForeignKey(Member, on_delete=models.CASCADE)
-    work_schedule = models.ForeignKey(WorkSchedule, on_delete=models.CASCADE)
+    appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE, related_name='invoices')
     invoice_id = models.CharField(max_length=15, null=False)
     price = models.DecimalField(max_digits=7, decimal_places=3, default=200.000)
     status = models.CharField(

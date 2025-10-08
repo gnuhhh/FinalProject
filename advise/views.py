@@ -11,7 +11,7 @@ import string
 import random
 from homepage.models import Expert
 from user_profile.models import Member
-from .models import WorkSchedule, Appointment, Invoice
+from .models import WorkSchedule, Appointment, Invoice, Room
 from decimal import Decimal
 from datetime import date, timedelta, datetime
 # Regex for extracting invoice id from vnp_TxnRef
@@ -168,11 +168,15 @@ def payment(request):
             work_schedule = WorkSchedule.objects.get(id=schedule_id)
         except WorkSchedule.DoesNotExist:
             return HttpResponseBadRequest('Invalid schedule_id')
-
-        # Tạo hóa đơn trước khi chuyển hướng VNPay
-        invoice = Invoice.objects.create(
+        
+        appointment = Appointment.objects.create(
             member=member,
-            work_schedule=work_schedule,
+            work_schedule=work_schedule
+            )
+        appointment.save()
+
+        invoice = Invoice.objects.create(
+            appointment=appointment,
             price=Decimal('200000')/1000,  # 200,000 VND
             status='N'
         )
@@ -258,6 +262,16 @@ def payment_return(request):
         vnp_CardType = inputData['vnp_CardType']
         if vnp.validate_response(settings.VNPAY_HASH_SECRET_KEY):
             if vnp_ResponseCode == "00":
+                invoice = Invoice.objects.get(invoice_id=order_id)
+                invoice.status = 'Y'
+                invoice.save()
+                zoom_room = Room.objects.filter(is_used=False).first()
+                invoice.appointment.zoom_room = zoom_room
+                invoice.appointment.save()
+                invoice.appointment.work_schedule.is_booked=True
+                invoice.appointment.work_schedule.save()
+                zoom_room.is_used=True
+                zoom_room.save()
                 return render(request, "payment_return.html", {"title": "Kết quả thanh toán",
                                                                "result": "Thành công", "order_id": order_id,
                                                                "amount": amount,

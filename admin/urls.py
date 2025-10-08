@@ -23,6 +23,7 @@ urlpatterns = [
     #Lịch hẹn chuyên gia
     path('schedule_assignment', views.schedule_assignment, name='schedule_assignment'),
     path('schedule_customer', views.schedule_customer, name='schedule_customer'),
+    path('schedule_customer_complete/<str:id>', views.schedule_customer_complete, name='schedule_customer_complete'),
     path('schedule', views.schedule, name='schedule'),
     path('schedule_cancel_approve/<str:id>', views.schedule_cancel_approve, name='schedule_cancel_approve'),
     #Quản lý chuyên gia
@@ -30,5 +31,5 @@ urlpatterns = [
     path('expert/create', views.expert_create, name='expert_create'),
     path('expert/update/<str:id>', views.expert_update, name='expert_update'),
     path('expert/delete/<str:id>', views.expert_delete, name='expert_delete'),
-    path('logout/', LogoutView.as_view(next_page='index'), name = 'logout_admin'),
+    path('logout/', LogoutView.as_view(next_page='admin'), name = 'logout_admin'),
 ]

@@ -5,7 +5,7 @@ from news.models import News
 from homepage.models import Expert
 from django.utils.html import strip_tags
 from django.contrib.auth.models import User
-from advise.models import WorkShift, WorkSchedule
+from advise.models import WorkShift, WorkSchedule, Appointment
 from datetime import datetime, date
 from django.contrib.auth.decorators import login_required
 import calendar
@@ -285,7 +285,18 @@ def schedule(request):
 
 @login_required(login_url='admin')
 def schedule_customer(request):
-    return render(request, 'admin/schedule/schedule_customer.html')
+    appointments = Appointment.objects.filter(invoices__status='Y', work_schedule__expert__id=request.user.id)
+    return render(request, 'admin/schedule/schedule_customer.html', {'appointments':appointments})
+
+@login_required(login_url='admin')
+def schedule_customer_complete(request, id):
+    appointment = Appointment.objects.get(id=id)
+    appointment.status = 'Y'
+    appointment.zoom_room.is_used = False
+    appointment.save()
+    appointment.zoom_room.save()
+    messages.success(request, 'Cập nhật thành công')
+    return redirect('schedule_customer')
 
 @login_required(login_url='admin')
 def schedule_cancel_approve(request, id):

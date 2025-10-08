@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from user_profile.models import Member
+from advise.models import Appointment
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -21,7 +22,9 @@ def show_info(request):
         messages.success(request, "Thay đổi thành công")
         return redirect('user_profile')
     else:
-        return render(request, 'user_profile.html', {'member':member})
+        appointments = Appointment.objects.filter(member=member, invoices__status='Y')
+        return render(request, 'userprofile.html', {'member':member, 'appointments':appointments})
+        
 
 
         
