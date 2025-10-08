@@ -18,13 +18,13 @@
         {% endif %}
         {% if request.user.groups.all.0.name == 'expert'%}
         <li class="sidebar-item">
-            <a href="#" class="menu-item expandable" id="post-management2">
+            <a href="#" class="menu-item expandable" id="post-management">
                 <i class="bi bi-card-list"></i>
                 <span>Quản lý lịch hẹn</span>
                 <i class="bi bi-chevron-right arrow"></i>
             </a>
             
-            <ul class="submenu" id="post-submenu2">
+            <ul class="submenu" id="post-submenu">
                 <li class="submenu-item-wrapper">
                     <a href="{% url 'schedule' %}" class="submenu-item">
                         <i class="bi bi-newspaper"></i>

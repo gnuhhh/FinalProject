@@ -550,7 +550,10 @@
         .page-item:hover:not(.active) {
             background: rgba(0, 114, 188, 0.1);
         }
-
+        .btn.update:hover{
+            background-color: var(--primary-color);
+            color: var(--hover-color) !important;
+        }
         @media (max-width: 992px) {
             .container {
                 flex-direction: column;
@@ -589,10 +592,6 @@
                 <div class="table-header">
                     <div class="table-title">Danh sách trường</div>
                     <div class="table-actions">
-                        <button class="table-btn">
-                            <i class="bi bi-filter"></i>
-                            Lọc
-                        </button>
                         <a href="{% url 'information_create' %}" class="table-btn">
                             <i class="bi bi-plus"></i>
                             Thêm mới
@@ -619,8 +618,8 @@
                                 <td>{{ school.schoolName }}</td>
                                 <td><div class="content-cell">{{ school.content|truncatewords:20 }}</div></td>
                                 <td>
-                                    <a href="{% url 'information_update' school.id %}" class="action-btn">Sửa</a>
-                                    <a href="{% url 'information_delete' school.id %}" class="action-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa trường này?')">Xóa</a>
+                                    <a href="{% url 'information_update' school.id %}" class="btn btn-sm update" style="color: #0072bc; border-color: #0072bc;">Sửa</a>
+                                    <a href="{% url 'information_delete' school.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa trường này?')">Xóa</a>
                                 </td>
                             </tr>
                             {% endfor %}

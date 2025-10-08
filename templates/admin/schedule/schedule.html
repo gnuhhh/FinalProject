@@ -359,28 +359,6 @@
             color: #dc3545;
         }
 
-        .action-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--hover-color);
-            color: var(--text-color);
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-right: 8px;
-            font-size: 1.1rem;
-            text-decoration: none;
-        }
-
-        .action-btn:hover {
-            background: rgba(0, 114, 188, 0.1);
-            color: var(--primary-color);
-        }
-
         .pagination {
             display: flex;
             justify-content: center;
@@ -480,7 +458,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a href="{% url 'schedule_cancel_approve' s.id %}" class="action-btn" onclick="return confirm('Bạn có chắc chắn muốn hủy lịch này?')"><i class="bi bi-trash"></i></a>
+                                    <a href="{% url 'schedule_cancel_approve' s.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn hủy lịch này?')">Hủy</a>
                                 </td>
                             </tr>
                             {% empty %}

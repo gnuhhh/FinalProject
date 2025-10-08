@@ -158,7 +158,7 @@ def news_activate(request, id):
 @login_required(login_url='admin')
 def accounts(request):
     users = User.objects.all()
-    return render(request, 'admin/account/schedule_assignment.html', {'users':users})
+    return render(request, 'admin/account/view.html', {'users':users})
 
 @login_required(login_url='admin')
 def accounts_delete(request, id):

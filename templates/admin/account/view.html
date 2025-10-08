@@ -374,28 +374,6 @@
             color: #FFC107;
         }
 
-        .action-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--hover-color);
-            color: var(--text-color);
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-right: 8px;
-            font-size: 1.1rem;
-            text-decoration: none;
-        }
-
-        .action-btn:hover {
-            background: rgba(0, 114, 188, 0.1);
-            color: var(--primary-color);
-        }
-
         .pagination {
             display: flex;
             justify-content: center;
@@ -425,6 +403,14 @@
             background: rgba(0, 114, 188, 0.1);
         }
 
+        .btn.update{
+            color: #0072bc; 
+            border-color: #0072bc;
+        }
+        .btn.update:hover{
+            background-color: var(--primary-color);
+            color: var(--hover-color) !important;
+        }
         @media (max-width: 992px) {
             .container {
                 flex-direction: column;
@@ -491,8 +477,8 @@
                                 <td>{{ user.first_name }}</td>
                                 <td>{{ user.last_name }}</td>
                                 <td>
-                                    <a href="#" class="action-btn"><i class="bi bi-pencil"></i></a>
-                                    <a href="{% url 'accounts_delete' user.id %}" class="action-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?')"><i class="bi bi-trash"></i></a>
+                                    <a href="#" class="btn btn-sm update">Sửa</a>
+                                    <a href="{% url 'accounts_delete' user.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?')">Hủy</a>
                                 </td>
                             </tr>
                             {% empty %}
