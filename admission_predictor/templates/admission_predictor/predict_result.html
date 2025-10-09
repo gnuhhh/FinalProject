@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .score-summary {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            margin: 20px;
+            border-radius: 10px;
+        }
+        
+        .total-score {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .chance-section {
+            margin: 20px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .high-chance {
+            border: 3px solid #28a745;
+            background: #f8fff9;
+        }
+        
+        .medium-chance {
+            border: 3px solid #ffc107;
+            background: #fffbf0;
+        }
+        
+        .low-chance {
+            border: 3px solid #dc3545;
+            background: #fff5f5;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .major-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .major-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .major-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .university-name {
+            color: #007bff;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .major-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+        
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 20px;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            font-size: 1.1em;
+        }
+        
+        @media (max-width: 768px) {
+            .major-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Kết quả dự đoán khả năng đậu</h1>
+            <p>Dựa trên điểm chuẩn năm 2024</p>
+        </div>
+
+        <a href="{% url 'admission_predictor:predict_admission' %}" class="back-btn">
+            ← Thử lại với điểm khác
+        </a>
+
+        <div class="score-summary">
+            <div class="total-score">{{ total_score }}</div>
+            <div>Tổng điểm khối {{ block }} ({{ subject_scores.subject_1 }}-{{ subject_scores.subject_2 }}-{{ subject_scores.subject_3 }})</div>
+        </div>
+
+        <!-- Khả năng cao -->
+        <div class="chance-section high-chance">
+            <div class="section-title">
+                ✅ Khả năng đậu cao ({{ high_chance_count }} trường)
+            </div>
+            {% if high_chance_majors %}
+                {% for major in high_chance_majors %}
+                <div class="major-card">
+                    <div class="major-name">{{ major.name }}</div>
+                    <div class="university-name">🏫 {{ major.university.name }}</div>
+                    <div class="major-info">
+                        <div class="info-item">
+                            <span>Điểm chuẩn 2024:</span>
+                            <strong style="color: #28a745;">{{ major.benchmark_2024 }}</strong>
+                        </div>
+                        <div class="info-item">
+                            <span>Chênh lệch:</span>
+                            <strong style="color: #28a745;">+{{ total_score|floatformat:1 }}</strong>
+                        </div>
+                        <div class="info-item">
+                            <span>Chỉ tiêu:</span>
+                            <span>{{ major.admission_quota }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span>Địa điểm:</span>
+                            <span>{{ major.university.location }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-results">Không có trường nào trong nhóm này</div>
+            {% endif %}
+        </div>
+
+        <!-- Khả năng trung bình -->
+        <div class="chance-section medium-chance">
+            <div class="section-title">
+                ⚠️ Khả năng đậu trung bình ({{ medium_chance_count }} trường)
+            </div>
+            {% if medium_chance_majors %}
+                {% for major in medium_chance_majors %}
+                <div class="major-card">
+                    <div class="major-name">{{ major.name }}</div>
+                    <div class="university-name">🏫 {{ major.university.name }}</div>
+                    <div class="major-info">
+                        <div class="info-item">
+                            <span>Điểm chuẩn 2024:</span>
+                            <strong style="color: #ffc107;">{{ major.benchmark_2024 }}</strong>
+                        </div>
+                        <div class="info-item">
+                            <span>Chênh lệch:</span>
+                            <strong style="color: #ffc107;">+{{ total_score|floatformat:1 }}</strong>
+                        </div>
+                        <div class="info-item">
+                            <span>Chỉ tiêu:</span>
+                            <span>{{ major.admission_quota }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-results">Không có trường nào trong nhóm này</div>
+            {% endif %}
+        </div>
+
+        <!-- Khả năng thấp -->
+        <div class="chance-section low-chance">
+            <div class="section-title">
+                🔴 Khả năng đậu thấp ({{ low_chance_count }} trường)
+            </div>
+            {% if low_chance_majors %}
+                {% for major in low_chance_majors %}
+                <div class="major-card">
+                    <div class="major-name">{{ major.name }}</div>
+                    <div class="university-name">🏫 {{ major.university.name }}</div>
+                    <div class="major-info">
+                        <div class="info-item">
+                            <span>Điểm chuẩn 2024:</span>
+                            <strong style="color: #dc3545;">{{ major.benchmark_2024 }}</strong>
+                        </div>
+                        <div class="info-item">
+                            <span>Chênh lệch:</span>
+                            <strong style="color: #dc3545;">+{{ total_score|floatformat:1 }}</strong>
+                        </div>
+                        <div class="info-item">
+                            <span>Khuyến nghị:</span>
+                            <span>Ôn tập thêm</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-results">Không có trường nào trong nhóm này</div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

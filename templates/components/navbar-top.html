@@ -22,6 +22,50 @@
             </ul>
           </li>
           <li><a href="{% url 'question' %}" class="{% if request.path == '/question'%}active{% endif %}">Câu hỏi định hướng</a></li>
+          <li class="dropdown">
+            <a href="#" class="{% if 'test-khoi' in request.path or 'test' in request.path %}active{% endif %}">
+                <span>Định Hướng Học Tập</span> <i class="bi bi-chevron-down toggle-dropdown"></i>
+            </a>
+            <ul>
+                <!-- Test Khối -->
+                <li class="dropdown">
+                    <a href="{% url 'testblock:test_block_list' %}">
+                        <span>Test Khối Thi</span> <i class="bi bi-chevron-right toggle-dropdown"></i>
+                    </a>
+                    <ul>
+                        <li><a href="{% url 'testblock:test_block_list' %}">Tất cả khối thi</a></li>
+                        <li><a href="{% url 'testblock:test_block_detail' 1 %}">Khối A (Toán-Lý-Hóa)</a></li>
+                        <li><a href="{% url 'testblock:test_block_detail' 2 %}">Khối A1 (Toán-Lý-Anh)</a></li>
+                        <li><a href="{% url 'testblock:test_block_detail' 3 %}">Khối B (Toán-Hóa-Sinh)</a></li>
+                        <li><a href="{% url 'testblock:test_block_detail' 4 %}">Khối C (Văn-Sử-Địa)</a></li>
+                        <li><a href="{% url 'testblock:test_block_detail' 5 %}">Khối D (Toán-Văn-Anh)</a></li>
+                    </ul>
+                </li>
+                
+                <!-- Test Chuyên Ngành - Sử dụng URL thực tế từ testapp -->
+                <li class="dropdown">
+                    <a href="{% url 'testapp:test_list' %}">
+                        <span>Test Chuyên Ngành</span> <i class="bi bi-chevron-right toggle-dropdown"></i>
+                    </a>
+                    <ul>
+                        <li><a href="{% url 'testapp:test_list' %}">Tất cả chuyên ngành</a></li>
+                        <li><a href="{% url 'testapp:test_detail' 1 %}">Công nghệ thông tin</a></li>
+                        <li><a href="{% url 'testapp:test_detail' 2 %}">Kinh tế - Tài chính</a></li>
+                        <li><a href="{% url 'testapp:test_detail' 3 %}">Marketing</a></li>
+                        <li><a href="{% url 'testapp:test_detail' 4 %}">Ngôn ngữ Anh</a></li>
+                        <li><a href="{% url 'testapp:test_detail' 5 %}">Luật</a></li>
+                    </ul>
+                </li>
+                <li><a href="{% url 'admission_predictor:predict_admission' %}" class="nav-link">
+                  🔮 Dự Đoán Đại Học
+              </a></li>
+              <li>
+                <a href="{% url 'daihoc_compare:compare_universities' %}" class="nav-link">
+                    🏫 So Sánh Trường Đại Học
+                </a>
+            </li>
+            </ul>
+        </li>
           <li class="dropdown"><a href="#" class="{% if request.path == '/college' or request.path == '/college/ha-noi' or request.path == '/college/tp-hcm'%}active{% endif %}"><span>Tư vấn</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
             <ul>
               <li><a href="{% url 'advise' %}">Tư vấn với chuyên gia</a></li>

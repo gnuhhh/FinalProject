@@ -1,0 +1,436 @@
+{% extends 'testapp.html' %}
+{% load static %}
+{% block title %}Làm bài: {{ test.title }} - Cổng thông tin tuyển sinh{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Sidebar theo dõi tiến độ -->
+    <div class="col-md-3 mb-4">
+        <div class="card shadow-sm border-0 sticky-top" style="top: 20px;">
+            <div class="card-header bg-primary text-white py-3">
+                <h6 class="mb-0"><i class="bi bi-clock me-2"></i>Theo dõi bài làm</h6>
+            </div>
+            <div class="card-body">
+                <!-- Đồng hồ đếm ngược -->
+                <div class="text-center mb-4">
+                    <div class="border rounded p-3 bg-light">
+                        <h5 class="text-danger mb-2" id="timer">30:00</h5>
+                        <small class="text-muted">Thời gian còn lại</small>
+                    </div>
+                </div>
+
+                <!-- Tiến độ tổng quan -->
+                <div class="mb-3">
+                    <strong class="d-block mb-2">Tiến độ:</strong>
+                    <div class="progress mb-2" style="height: 10px;">
+                        <div class="progress-bar bg-success" id="progressBar" 
+                             style="width: {% widthratio page_obj.number page_obj.paginator.num_pages 100 %}%">
+                        </div>
+                    </div>
+                    <small class="text-muted">
+                        Trang <span id="currentPage">{{ page_obj.number }}</span>/{{ page_obj.paginator.num_pages }}
+                    </small>
+                </div>
+
+                <!-- Danh sách trang -->
+                <div class="mb-3">
+                    <strong class="d-block mb-2">Các trang:</strong>
+                    <div class="d-flex flex-wrap gap-1">
+                        {% for page_num in page_obj.paginator.page_range %}
+                            {% if page_num == page_obj.number %}
+                                <a href="?page={{ page_num }}" class="btn btn-primary btn-sm px-2 py-1">
+                                    {{ page_num }}
+                                </a>
+                            {% else %}
+                                <a href="?page={{ page_num }}" class="btn btn-outline-primary btn-sm px-2 py-1">
+                                    {{ page_num }}
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Thống kê nhanh -->
+                <div class="border-top pt-3">
+                    <small class="text-muted d-block mb-1">
+                        <i class="bi bi-check-circle text-success me-1"></i>
+                        <span id="answeredCount">0</span>/{{ test.num_questions }} câu đã trả lời
+                    </small>
+                    <small class="text-muted d-block">
+                        <i class="bi bi-question-circle text-warning me-1"></i>
+                        <span id="unansweredCount">{{ test.num_questions }}</span>/{{ test.num_questions }} câu chưa trả lời
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nội dung chính -->
+    <div class="col-md-9">
+        <!-- Test Header -->
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-header bg-primary text-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">{{ test.title }}</h4>
+                    <span class="badge bg-light text-primary fs-6">
+                        Trang {{ page_obj.number }}/{{ page_obj.paginator.num_pages }}
+                    </span>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-2"><strong>Chuyên ngành:</strong> {{ test.major.name }}</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <p class="mb-2"><strong>Tổng số câu:</strong> {{ test.num_questions }}</p>
+                    </div>
+                </div>
+                {% if test.description %}
+                <p class="mb-0"><strong>Mô tả:</strong> {{ test.description }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Questions Form -->
+        <form method="post" action="{% url 'testapp:test_submit' test.id %}" id="testForm">
+            {% csrf_token %}
+            
+            {% for question in questions %}
+            <div class="card mb-4 shadow-sm border-0 question-card" data-question-id="{{ question.id }}">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0">Câu {{ forloop.counter0|add:page_obj.start_index }}</h5>
+                </div>
+                <div class="card-body p-4">
+                    <p class="fw-bold mb-3 text-dark fs-6">{{ question.text }}</p>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input question-radio" type="radio" 
+                               name="question_{{ question.id }}" id="q{{ question.id }}_a" value="A"
+                               data-question-id="{{ question.id }}">
+                        <label class="form-check-label w-100 fs-6 text-dark" for="q{{ question.id }}_a">
+                            A. {{ question.option_a }}
+                        </label>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input question-radio" type="radio" 
+                               name="question_{{ question.id }}" id="q{{ question.id }}_b" value="B"
+                               data-question-id="{{ question.id }}">
+                        <label class="form-check-label w-100 fs-6 text-dark" for="q{{ question.id }}_b">
+                            B. {{ question.option_b }}
+                        </label>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input question-radio" type="radio" 
+                               name="question_{{ question.id }}" id="q{{ question.id }}_c" value="C"
+                               data-question-id="{{ question.id }}">
+                        <label class="form-check-label w-100 fs-6 text-dark" for="q{{ question.id }}_c">
+                            C. {{ question.option_c }}
+                        </label>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input question-radio" type="radio" 
+                               name="question_{{ question.id }}" id="q{{ question.id }}_d" value="D"
+                               data-question-id="{{ question.id }}">
+                        <label class="form-check-label w-100 fs-6 text-dark" for="q{{ question.id }}_d">
+                            D. {{ question.option_d }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="alert alert-warning text-center py-4">
+                <i class="bi bi-exclamation-triangle display-4 text-warning"></i>
+                <p class="mt-3 fs-5">Bài test chưa có câu hỏi.</p>
+                <a class="btn btn-secondary mt-2" href="{% url 'testapp:test_detail' test.id %}">
+                    <i class="bi bi-arrow-left me-2"></i>Quay lại chi tiết
+                </a>
+            </div>
+            {% endfor %}
+
+            {% if questions %}
+            <!-- Pagination & Navigation -->
+            <div class="card mt-4 border-0">
+                <div class="card-body">
+                    <!-- Pagination -->
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center mb-4">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1" aria-label="First">
+                                        <span aria-hidden="true">&laquo;&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">&laquo;&laquo;</span>
+                                </li>
+                                <li class="page-item disabled">
+                                    <span class="page-link">&laquo;</span>
+                                </li>
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ num }}</span>
+                                    </li>
+                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                                        <span aria-hidden="true">&raquo;&raquo;</span>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">&raquo;</span>
+                                </li>
+                                <li class="page-item disabled">
+                                    <span class="page-link">&raquo;&raquo;</span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+
+                    <!-- Navigation Buttons -->
+                    <div class="text-center">
+                        <div class="btn-group" role="group">
+                            {% if page_obj.has_previous %}
+                                <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-primary">
+                                    <i class="bi bi-arrow-left me-2"></i>Trang trước
+                                </a>
+                            {% else %}
+                                <button type="button" class="btn btn-outline-secondary" disabled>
+                                    <i class="bi bi-arrow-left me-2"></i>Trang trước
+                                </button>
+                            {% endif %}
+
+                            {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-primary">
+                                    Trang sau<i class="bi bi-arrow-right ms-2"></i>
+                                </a>
+                            {% else %}
+                                <button type="submit" class="btn btn-success" id="submitBtn">
+                                    <i class="bi bi-send-check me-2"></i>Nộp bài
+                                </button>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mt-3">
+                            <a class="btn btn-outline-secondary" href="{% url 'testapp:test_detail' test.id %}">
+                                <i class="bi bi-arrow-left me-2"></i>Quay lại chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<script>
+    // ĐỒNG HỒ ĐẾM NGƯỢC - 30 phút
+    let timeLeft = 30 * 60; // 30 phút tính bằng giây
+    const timerElement = document.getElementById('timer');
+    
+    function updateTimer() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        if (timeLeft <= 300) { // 5 phút cuối
+            timerElement.classList.add('text-danger', 'pulse');
+        } else if (timeLeft <= 600) { // 10 phút cuối
+            timerElement.classList.add('text-warning');
+        }
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            alert('Thời gian làm bài đã kết thúc! Hệ thống sẽ tự động nộp bài.');
+            document.getElementById('testForm').submit();
+        }
+        
+        timeLeft--;
+    }
+    
+    const timerInterval = setInterval(updateTimer, 1000);
+    
+    // SỬA LỖI: QUẢN LÝ CÂU TRẢ LỜI TỐT HƠN
+    function updateProgress() {
+        const totalQuestions = {{ test.num_questions }};
+        let answeredCount = 0;
+        
+        // Đếm số câu đã trả lời từ tất cả các trang
+        const allQuestionIds = [];
+        {% for question in page_obj.paginator.object_list %}
+            allQuestionIds.push({{ question.id }});
+        {% endfor %}
+        
+        allQuestionIds.forEach(questionId => {
+            const savedAnswer = sessionStorage.getItem(`question_${questionId}`);
+            if (savedAnswer && savedAnswer !== '') {
+                answeredCount++;
+            }
+        });
+        
+        const unansweredCount = totalQuestions - answeredCount;
+        
+        // Cập nhật UI
+        document.getElementById('answeredCount').textContent = answeredCount;
+        document.getElementById('unansweredCount').textContent = unansweredCount;
+        
+        // Cập nhật progress bar tổng thể
+        const progressPercent = (answeredCount / totalQuestions) * 100;
+        document.getElementById('progressBar').style.width = `${progressPercent}%`;
+    }
+    
+    // SỬA LỖI: LƯU CÂU TRẢ LỜI VỚI KIỂM TRA TỐT HƠN
+    document.querySelectorAll('.question-radio').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const questionId = this.dataset.questionId;
+            const value = this.value;
+            
+            // CHỈ lưu khi radio thực sự được chọn
+            if (this.checked) {
+                sessionStorage.setItem(`question_${questionId}`, value);
+                
+                // Đánh dấu câu hỏi đã trả lời
+                const questionCard = document.querySelector(`.question-card[data-question-id="${questionId}"]`);
+                if (questionCard) {
+                    questionCard.classList.add('answered');
+                }
+            }
+            
+            updateProgress();
+        });
+    });
+    
+    // SỬA LỖI: KHÔI PHỤC CÂU TRẢ LỜI CHÍNH XÁC HƠN
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.question-card').forEach(card => {
+            const questionId = card.dataset.questionId;
+            const savedValue = sessionStorage.getItem(`question_${questionId}`);
+            
+            if (savedValue && savedValue !== '') {
+                // Tìm radio button tương ứng với giá trị đã lưu
+                const radioToCheck = card.querySelector(`input[value="${savedValue}"]`);
+                if (radioToCheck) {
+                    radioToCheck.checked = true;
+                    card.classList.add('answered');
+                }
+            }
+        });
+        
+        updateProgress();
+    });
+    
+    // SỬA LỖI: XÓA DỮ LIỆU KHI RỜI TRANG (KHÔNG PHẢI KHI SUBMIT)
+    window.addEventListener('beforeunload', function() {
+        // KHÔNG xóa dữ liệu ở đây để giữ câu trả lời khi refresh
+    });
+    
+    // Xóa dữ liệu khi nộp bài thành công
+    document.getElementById('testForm')?.addEventListener('submit', function() {
+        Object.keys(sessionStorage).forEach(key => {
+            if (key.startsWith('question_')) {
+                sessionStorage.removeItem(key);
+            }
+        });
+        clearInterval(timerInterval);
+    });
+    
+    // SỬA LỖI: THÊM NÚT XÓA TẤT CẢ CÂU TRẢ LỜI
+    function clearAllAnswers() {
+        if (confirm('Bạn có chắc muốn xóa tất cả câu trả lời? Hành động này không thể hoàn tác.')) {
+            Object.keys(sessionStorage).forEach(key => {
+                if (key.startsWith('question_')) {
+                    sessionStorage.removeItem(key);
+                }
+            });
+            
+            // Bỏ chọn tất cả radio buttons
+            document.querySelectorAll('.question-radio').forEach(radio => {
+                radio.checked = false;
+            });
+            
+            // Xóa đánh dấu đã trả lời
+            document.querySelectorAll('.question-card.answered').forEach(card => {
+                card.classList.remove('answered');
+            });
+            
+            updateProgress();
+            alert('Đã xóa tất cả câu trả lời!');
+        }
+    }
+    
+    // Thêm nút xóa tất cả vào sidebar
+    const sidebar = document.querySelector('.card-body');
+    const clearButton = document.createElement('button');
+    clearButton.className = 'btn btn-outline-danger btn-sm w-100 mt-3';
+    clearButton.innerHTML = '<i class="bi bi-trash me-2"></i>Xóa tất cả câu trả lời';
+    clearButton.onclick = clearAllAnswers;
+    sidebar.appendChild(clearButton);
+    
+    // Prevent form resubmission on page refresh
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+</script>
+
+<style>
+    .question-card.answered {
+        border-left: 4px solid #28a745;
+        background-color: #f8fff8;
+    }
+    
+    .sticky-top {
+        position: sticky;
+        z-index: 100;
+    }
+    
+    .pulse {
+        animation: pulse 1s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+    
+    .progress {
+        background-color: #e9ecef;
+    }
+    
+    .page-item.active .page-link {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+    
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+</style>
+{% endblock %}

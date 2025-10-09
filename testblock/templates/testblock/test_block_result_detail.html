@@ -1,0 +1,61 @@
+{% extends 'testblock.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h3>Kết quả bài test {{ result.test_block.name }}</h3>
+        </div>
+        <div class="card-body">
+            {% if result.user_name %}
+            <h5>Thí sinh: {{ result.user_name }}</h5>
+            {% endif %}
+            <h4>Điểm số: {{ result.score }}/{{ result.total_questions }} ({{ result.percentage|floatformat:1 }}%)</h4>
+            
+            <div class="mt-4">
+                <h5>🎯 Ngành học gợi ý:</h5>
+                <ul>
+                    {% for major in result.suggested_majors.split %}
+                    <li><strong>{{ major }}</strong></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="mt-4">
+                <h5>📊 Chi tiết bài làm:</h5>
+                {% for question in questions %}
+                <div class="card mb-3 {% if user_answers.get(question.id) == question.correct_answer %}border-success{% else %}border-danger{% endif %}">
+                    <div class="card-body">
+                        <h6 class="card-title">{{ question.text }}</h6>
+                        <div class="{% if question.correct_answer == 'A' %}text-success fw-bold{% endif %}">
+                            A. {{ question.option_a }}
+                        </div>
+                        <div class="{% if question.correct_answer == 'B' %}text-success fw-bold{% endif %}">
+                            B. {{ question.option_b }}
+                        </div>
+                        <div class="{% if question.correct_answer == 'C' %}text-success fw-bold{% endif %}">
+                            C. {{ question.option_c }}
+                        </div>
+                        <div class="{% if question.correct_answer == 'D' %}text-success fw-bold{% endif %}">
+                            D. {{ question.option_d }}
+                        </div>
+                        <p class="mt-2">
+                            <strong>Đáp án của bạn:</strong> 
+                            <span class="{% if user_answers.get(question.id) == question.correct_answer %}text-success{% else %}text-danger{% endif %}">
+                                {{ user_answers.get(question.id, 'Chưa trả lời') }}
+                            </span>
+                        </p>
+                        <p><strong>Đáp án đúng:</strong> {{ question.correct_answer }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="mt-4">
+                <a href="{% url 'testblock:test_block_list' %}" class="btn btn-primary">Làm bài test khác</a>
+                <a href="{% url 'major_list' %}" class="btn btn-outline-primary">Xem danh sách ngành học</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

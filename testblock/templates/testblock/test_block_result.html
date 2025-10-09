@@ -1,0 +1,172 @@
+{% extends 'testblock.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h3><i class="fas fa-trophy"></i> {{ title }}</h3>
+        </div>
+        <div class="card-body">
+            {% if result.user_name %}
+            <h5><i class="fas fa-user"></i> Thí sinh: {{ result.user_name }}</h5>
+            {% endif %}
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card text-center bg-light">
+                        <div class="card-body">
+                            <h4 class="card-title text-primary">Điểm số</h4>
+                            <h2 class="text-primary display-4">{{ result.score }}/{{ result.total_questions }}</h2>
+                            <p class="card-text h5">{{ result.percentage|floatformat:1 }}%</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card text-center bg-light">
+                        <div class="card-body">
+                            <h4 class="card-title text-success">Khối thi</h4>
+                            <h2 class="text-success display-6">{{ result.test_block.name }}</h2>
+                            <p class="card-text">{{ result.test_block.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <h5><i class="fas fa-graduation-cap"></i> Ngành học gợi ý:</h5>
+                <div class="row">
+                    {% for major in suggested_majors %}
+                    <div class="col-md-6 mb-2">
+                        <div class="alert alert-info d-flex align-items-center">
+                            <i class="fas fa-bookmark me-2"></i> 
+                            <strong>{{ major }}</strong>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-info-circle"></i> 
+                            Chưa có ngành học nào được gợi ý phù hợp với kết quả của bạn.
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Thống kê kết quả -->
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h6 class="card-title">Câu đúng</h6>
+                            <h4 class="text-success">{{ result.score }}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h6 class="card-title">Câu sai</h6>
+                            <h4 class="text-danger">{{ result.total_questions|add:"-"|add:result.score }}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h6 class="card-title">Tổng câu</h6>
+                            <h4 class="text-primary">{{ result.total_questions }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Đánh giá kết quả -->
+            <div class="mt-4">
+                <h5><i class="fas fa-chart-line"></i> Đánh giá:</h5>
+                <div class="alert 
+                    {% if result.percentage >= 80 %}alert-success
+                    {% elif result.percentage >= 60 %}alert-info
+                    {% elif result.percentage >= 40 %}alert-warning
+                    {% else %}alert-danger
+                    {% endif %}">
+                    {% if result.percentage >= 80 %}
+                    <i class="fas fa-star"></i> <strong>Xuất sắc!</strong> Bạn có năng lực rất tốt cho khối {{ result.test_block.name }}.
+                    {% elif result.percentage >= 60 %}
+                    <i class="fas fa-thumbs-up"></i> <strong>Khá tốt!</strong> Bạn có năng lực phù hợp với khối {{ result.test_block.name }}.
+                    {% elif result.percentage >= 40 %}
+                    <i class="fas fa-check"></i> <strong>Trung bình!</strong> Bạn cần ôn tập thêm để cải thiện kết quả.
+                    {% else %}
+                    <i class="fas fa-exclamation-triangle"></i> <strong>Cần cố gắng!</strong> Bạn nên dành thời gian ôn tập nhiều hơn.
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="mt-4 text-center">
+                <div class="btn-group" role="group">
+                    <a href="{% url 'testblock:test_block_result_detail' result.id %}" class="btn btn-info">
+                        <i class="fas fa-list-alt"></i> Xem chi tiết bài làm
+                    </a>
+                    <a href="{% url 'testblock:test_block_list' %}" class="btn btn-primary">
+                        <i class="fas fa-redo"></i> Làm bài test khác
+                    </a>
+                    <a href="{% url 'major_list' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-search"></i> Xem danh sách ngành học
+                    </a>
+                </div>
+            </div>
+
+            <!-- Thông tin thời gian -->
+            <div class="mt-4 text-center text-muted">
+                <small>
+                    <i class="fas fa-clock"></i> 
+                    Thời gian hoàn thành: {{ result.created_at|date:"d/m/Y H:i" }}
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS tùy chỉnh -->
+<style>
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.display-4 {
+    font-weight: 300;
+    line-height: 1.2;
+}
+
+.btn-group .btn {
+    margin: 0 2px;
+}
+
+.alert {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .btn-group .btn {
+        margin: 2px 0;
+    }
+    
+    .display-4 {
+        font-size: 2.5rem;
+    }
+}
+</style>
+{% endblock %}

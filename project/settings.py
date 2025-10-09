@@ -45,7 +45,12 @@ INSTALLED_APPS = [
     "school",
     "news", 
     "user_profile",
-    "advise"
+    "advise",
+    "testapp",
+    "django_extensions",
+    "testblock",
+    'admission_predictor',
+    'daihoc_compare'
 ]
 
 MIDDLEWARE = [

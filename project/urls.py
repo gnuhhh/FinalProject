@@ -28,4 +28,8 @@ urlpatterns = [
     path('college/', include('college.urls')),
     path('admin/', include('admin.urls')),
     path('profile/', include('user_profile.urls')),
+    path('tests/', include('testapp.urls')),
+    path('test-khoi/', include('testblock.urls')),
+    path('du-doan-dai-hoc/', include('admission_predictor.urls')),
+    path('compare/', include('daihoc_compare.urls')),
 ]

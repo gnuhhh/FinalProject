@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bài Test {{ subject_name }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+            padding: 20px;
+            height: calc(100vh - 40px);
+            overflow-y: auto;
+            position: sticky;
+            top: 0;
+        }
+        
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .question-tracker {
+            margin-bottom: 25px;
+        }
+        
+        .tracker-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .question-number {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .question-number:hover {
+            border-color: #007bff;
+            transform: scale(1.05);
+        }
+        
+        .question-number.answered {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+        
+        .question-number.current {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+        
+        .tracker-stats {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            text-align: center;
+        }
+        
+        .stat-item {
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+        
+        .stat-number {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .stat-answered { color: #28a745; }
+        .stat-unanswered { color: #6c757d; }
+        .stat-current { color: #007bff; }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header { 
+            background: linear-gradient(135deg, #2c3e50, #34495e); 
+            color: white; 
+            padding: 20px; 
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .header-text {
+            text-align: center;
+            flex-grow: 1;
+        }
+        
+        .timer { 
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white; 
+            padding: 15px; 
+            text-align: center; 
+            font-size: 1.3em; 
+            font-weight: bold;
+        }
+        
+        .question { 
+            background: white; 
+            border: 2px solid #e9ecef; 
+            border-radius: 10px; 
+            padding: 25px; 
+            margin-bottom: 20px; 
+            transition: all 0.3s ease;
+            display: none;
+        }
+        
+        .question.active {
+            display: block;
+        }
+        
+        .question:hover {
+            border-color: #007bff;
+            box-shadow: 0 5px 15px rgba(0,123,255,0.1);
+        }
+        
+        .options { 
+            margin-top: 15px; 
+        }
+        
+        .option { 
+            margin: 12px 0; 
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .option:hover {
+            border-color: #007bff;
+            background: #f8f9ff;
+            transform: translateX(5px);
+        }
+        
+        .option input[type="radio"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+        
+        .submit-btn { 
+            background: linear-gradient(135deg, #28a745, #20c997); 
+            color: white; 
+            border: none; 
+            padding: 18px 40px; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-size: 1.2em; 
+            font-weight: bold; 
+            margin: 30px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .submit-btn:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4); 
+        }
+        
+        .back-btn { 
+            background: #6c757d; 
+            color: white; 
+            border: none; 
+            padding: 12px 25px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 1em;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .back-btn:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        .test-content {
+            padding: 30px;
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .progress-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .progress-bar {
+            background: #e9ecef;
+            height: 10px;
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        /* Pagination Styles */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            gap: 10px;
+        }
+        
+        .page-btn {
+            padding: 10px 20px;
+            border: 2px solid #007bff;
+            background: white;
+            color: #007bff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .page-btn:hover {
+            background: #007bff;
+            color: white;
+        }
+        
+        .page-btn:disabled {
+            background: #6c757d;
+            border-color: #6c757d;
+            color: white;
+            cursor: not-allowed;
+        }
+        
+        .page-info {
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0 15px;
+        }
+        
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        
+        .nav-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-prev {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .nav-next {
+            background: #007bff;
+            color: white;
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .nav-btn:disabled {
+            background: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        /* Scrollbar styling */
+        .test-content::-webkit-scrollbar,
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .test-content::-webkit-scrollbar-track,
+        .sidebar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .test-content::-webkit-scrollbar-thumb,
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        
+        .test-content::-webkit-scrollbar-thumb:hover,
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                flex-direction: column;
+                border-radius: 10px;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+            
+            .header {
+                padding: 15px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .test-content {
+                padding: 20px;
+            }
+            
+            .question {
+                padding: 20px;
+            }
+            
+            .submit-btn {
+                padding: 15px 30px;
+                font-size: 1.1em;
+            }
+            
+            .question-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar theo dõi câu hỏi -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>📊 Theo dõi bài làm</h3>
+            </div>
+            
+            <div class="question-tracker">
+                <div class="tracker-title">Danh sách câu hỏi</div>
+                <div class="question-grid" id="question-tracker">
+                    <!-- JavaScript sẽ generate các số câu hỏi -->
+                </div>
+                
+                <div class="tracker-stats">
+                    <div class="stat-item">
+                        <span class="stat-answered stat-number" id="stat-answered">0</span> đã làm
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-unanswered stat-number" id="stat-unanswered">{{ total_questions }}</span> chưa làm
+                    </div>
+                    <div class="stat-item">
+                        Trang: <span class="stat-current stat-number" id="stat-current-page">1</span>/<span id="stat-total-pages">5</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pagination" id="pagination">
+                <!-- JavaScript sẽ generate phân trang -->
+            </div>
+        </div>
+
+        <!-- Nội dung chính -->
+        <div class="main-content">
+            <div class="header">
+                <div class="header-content">
+                    <a href="/test-khoi/{{ block_code }}/mon-hoc/" class="back-btn">
+                        ← Quay lại
+                    </a>
+                    <div class="header-text">
+                        <h1>Bài Test {{ subject_name }}</h1>
+                        <p>Mã môn: {{ subject_code }} | Số câu: {{ total_questions }} | Thời gian: {{ time_limit }} phút</p>
+                    </div>
+                    <div style="width: 100px;"></div>
+                </div>
+            </div>
+
+            <div class="timer" id="timer">
+                ⏰ Thời gian còn lại: <span id="time-display">{{ time_limit }}:00</span>
+            </div>
+
+            <div class="test-content">
+                <div class="progress-section">
+                    <div>📝 Đã trả lời: <span id="answered-count">0</span>/{{ total_questions }} câu</div>
+                    <div class="progress-bar">
+                        <div class="progress" id="progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <form id="test-form">
+                    {% for question in questions %}
+                    <div class="question" id="question-{{ forloop.counter0 }}" data-page="{{ forloop.counter0|divisibleby:10|add:1 }}">
+                        <h3>Câu {{ forloop.counter }}: {{ question.question_text }}</h3>
+                        <div class="options">
+                            {% for option in question.options %}
+                            <div class="option">
+                                <input type="radio" 
+                                       id="q{{ forloop.parentloop.counter0 }}_option{{ forloop.counter0 }}" 
+                                       name="question_{{ forloop.parentloop.counter0 }}" 
+                                       value="{{ forloop.counter0 }}"
+                                       onchange="updateProgress()">
+                                <label for="q{{ forloop.parentloop.counter0 }}_option{{ forloop.counter0 }}">
+                                    {{ option }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </form>
+
+                <!-- Navigation buttons -->
+                <div class="nav-buttons">
+                    <button class="nav-btn nav-prev" onclick="previousPage()" disabled>
+                        ⬅️ Câu trước
+                    </button>
+                    <button class="nav-btn nav-next" onclick="nextPage()">
+                        Câu tiếp theo ➡️
+                    </button>
+                </div>
+
+                <div style="text-align: center;">
+                    <button type="button" class="submit-btn" onclick="submitTest()">
+                        📝 Nộp Bài
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Biến toàn cục
+        let timeLeft = {{ time_limit }} * 60;
+        const timerElement = document.getElementById('time-display');
+        let timerInterval;
+        let currentPage = 1;
+        const questionsPerPage = 10;
+        const totalQuestions = {{ total_questions }};
+        const totalPages = Math.ceil(totalQuestions / questionsPerPage);
+        let answeredQuestions = new Set();
+
+        // Khởi tạo trang
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeQuestionTracker();
+            initializePagination();
+            showPage(1);
+            startTimer();
+            updateProgress();
+            
+            console.log('🔍 DEBUG: Khởi tạo thành công');
+            console.log('Tổng số câu:', totalQuestions);
+            console.log('Tổng số trang:', totalPages);
+        });
+
+        // Khởi tạo danh sách theo dõi câu hỏi
+        function initializeQuestionTracker() {
+            const tracker = document.getElementById('question-tracker');
+            tracker.innerHTML = '';
+            
+            for (let i = 1; i <= totalQuestions; i++) {
+                const questionElement = document.createElement('div');
+                questionElement.className = 'question-number';
+                questionElement.textContent = i;
+                questionElement.setAttribute('data-question', i);
+                questionElement.onclick = () => goToQuestion(i);
+                
+                tracker.appendChild(questionElement);
+            }
+            
+            // Cập nhật thống kê
+            updateTrackerStats();
+        }
+
+        // Khởi tạo phân trang
+        function initializePagination() {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            
+            // Nút về trang đầu
+            const firstPageBtn = createPageButton('⏮️', 1, 'first');
+            pagination.appendChild(firstPageBtn);
+            
+            // Nút trang trước
+            const prevPageBtn = createPageButton('⬅️', currentPage - 1, 'prev');
+            pagination.appendChild(prevPageBtn);
+            
+            // Thông tin trang
+            const pageInfo = document.createElement('span');
+            pageInfo.className = 'page-info';
+            pageInfo.id = 'page-info';
+            pageInfo.textContent = `Trang ${currentPage}/${totalPages}`;
+            pagination.appendChild(pageInfo);
+            
+            // Nút trang tiếp
+            const nextPageBtn = createPageButton('➡️', currentPage + 1, 'next');
+            pagination.appendChild(nextPageBtn);
+            
+            // Nút đến trang cuối
+            const lastPageBtn = createPageButton('⏭️', totalPages, 'last');
+            pagination.appendChild(lastPageBtn);
+            
+            updatePaginationButtons();
+        }
+
+        function createPageButton(text, page, type) {
+            const button = document.createElement('button');
+            button.className = 'page-btn';
+            button.textContent = text;
+            button.onclick = () => showPage(page);
+            
+            if (type === 'first' || type === 'prev') {
+                button.disabled = currentPage === 1;
+            } else if (type === 'next' || type === 'last') {
+                button.disabled = currentPage === totalPages;
+            }
+            
+            return button;
+        }
+
+        // Hiển thị trang cụ thể
+        function showPage(page) {
+            if (page < 1 || page > totalPages) return;
+            
+            currentPage = page;
+            
+            // Ẩn tất cả câu hỏi
+            document.querySelectorAll('.question').forEach(q => {
+                q.classList.remove('active');
+            });
+            
+            // Hiển thị câu hỏi của trang hiện tại
+            const startQuestion = (page - 1) * questionsPerPage;
+            const endQuestion = Math.min(startQuestion + questionsPerPage, totalQuestions);
+            
+            for (let i = startQuestion; i < endQuestion; i++) {
+                const questionElement = document.getElementById(`question-${i}`);
+                if (questionElement) {
+                    questionElement.classList.add('active');
+                }
+            }
+            
+            // Cập nhật UI
+            updatePaginationButtons();
+            updateQuestionTracker();
+            updateTrackerStats();
+            
+            console.log(`📄 Đang hiển thị trang ${page} (câu ${startQuestion + 1}-${endQuestion})`);
+        }
+
+        // Chuyển đến câu hỏi cụ thể
+        function goToQuestion(questionNumber) {
+            const questionIndex = questionNumber - 1;
+            const targetPage = Math.floor(questionIndex / questionsPerPage) + 1;
+            
+            showPage(targetPage);
+            
+            // Cuộn đến câu hỏi
+            setTimeout(() => {
+                const questionElement = document.getElementById(`question-${questionIndex}`);
+                if (questionElement) {
+                    questionElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 100);
+        }
+
+        // Cập nhật nút phân trang
+        function updatePaginationButtons() {
+            document.querySelectorAll('.page-btn').forEach(btn => {
+                const isPrev = btn.textContent.includes('⬅️') || btn.textContent.includes('⏮️');
+                const isNext = btn.textContent.includes('➡️') || btn.textContent.includes('⏭️');
+                
+                if (isPrev) {
+                    btn.disabled = currentPage === 1;
+                } else if (isNext) {
+                    btn.disabled = currentPage === totalPages;
+                }
+            });
+            
+            // Cập nhật nút navigation
+            document.querySelector('.nav-prev').disabled = currentPage === 1;
+            document.querySelector('.nav-next').disabled = currentPage === totalPages;
+            
+            // Cập nhật thông tin trang
+            document.getElementById('page-info').textContent = `Trang ${currentPage}/${totalPages}`;
+            document.getElementById('stat-current-page').textContent = currentPage;
+        }
+
+        // Cập nhật tracker câu hỏi
+        function updateQuestionTracker() {
+            document.querySelectorAll('.question-number').forEach((element, index) => {
+                const questionNumber = index + 1;
+                const questionIndex = questionNumber - 1;
+                
+                element.classList.remove('answered', 'current');
+                
+                // Kiểm tra câu đã trả lời
+                const radioInputs = document.querySelectorAll(`input[name="question_${questionIndex}"]`);
+                const isAnswered = Array.from(radioInputs).some(input => input.checked);
+                
+                if (isAnswered) {
+                    element.classList.add('answered');
+                    answeredQuestions.add(questionNumber);
+                } else {
+                    answeredQuestions.delete(questionNumber);
+                }
+                
+                // Đánh dấu câu hiện tại
+                const questionPage = Math.floor(questionIndex / questionsPerPage) + 1;
+                if (questionPage === currentPage) {
+                    element.classList.add('current');
+                }
+            });
+        }
+
+        // Cập nhật thống kê
+        function updateTrackerStats() {
+            const answeredCount = answeredQuestions.size;
+            const unansweredCount = totalQuestions - answeredCount;
+            
+            document.getElementById('stat-answered').textContent = answeredCount;
+            document.getElementById('stat-unanswered').textContent = unansweredCount;
+            document.getElementById('stat-total-pages').textContent = totalPages;
+        }
+
+        // Navigation functions
+        function nextPage() {
+            showPage(currentPage + 1);
+        }
+
+        function previousPage() {
+            showPage(currentPage - 1);
+        }
+
+        // Timer functions
+        function startTimer() {
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft <= 300) {
+                document.getElementById('timer').style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a52)';
+            }
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                alert('⏰ Hết giờ! Hệ thống sẽ tự động nộp bài.');
+                submitTest();
+            } else {
+                timeLeft--;
+            }
+        }
+        
+        function updateProgress() {
+            const form = document.getElementById('test-form');
+            const inputs = form.querySelectorAll('input[type="radio"]:checked');
+            const answeredCount = inputs.length;
+            const progress = (answeredCount / totalQuestions) * 100;
+            
+            document.getElementById('progress-bar').style.width = progress + '%';
+            document.getElementById('answered-count').textContent = answeredCount;
+            
+            // Cập nhật tracker
+            updateQuestionTracker();
+            updateTrackerStats();
+        }
+
+        // Các hàm submit và CSRF token giữ nguyên
+        function submitTest() {
+            if (confirm('Bạn có chắc chắn muốn nộp bài?\n\nSau khi nộp, bạn không thể thay đổi câu trả lời.')) {
+                const form = document.getElementById('test-form');
+                const formData = new FormData(form);
+                const answers = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    const answerLetters = ['A', 'B', 'C', 'D'];
+                    const letterAnswer = answerLetters[parseInt(value)];
+                    answers[key] = letterAnswer;
+                }
+                
+                console.log('📤 Answers gửi lên server:', answers);
+                
+                const answeredCount = Object.keys(answers).length;
+                if (answeredCount < totalQuestions && !confirm(`Bạn mới trả lời ${answeredCount}/${totalQuestions} câu. Bạn có chắc chắn muốn nộp bài không?`)) {
+                    return;
+                }
+                
+                const user_name = prompt('📝 Nhập tên của bạn để lưu kết quả:') || 'Thí sinh';
+                
+                const submitBtn = document.querySelector('.submit-btn');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '⏳ Đang xử lý...';
+                submitBtn.disabled = true;
+                
+                const csrfToken = getCookie('csrftoken');
+                
+                fetch(`/test-khoi/{{ block_code }}/test/{{ subject_code }}/submit/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({
+                        answers: answers,
+                        time_taken: ({{ time_limit }} * 60) - timeLeft,
+                        user_name: user_name
+                    })
+                })
+                .then(response => {
+                    console.log('📥 HTTP Status:', response.status, response.statusText);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('✅ Phản hồi từ server:', data);
+                    
+                    if (data.success) {
+                        console.log('🎯 Redirect đến:', data.redirect_url);
+                        
+                        setTimeout(() => {
+                            if (data.redirect_url) {
+                                window.location.href = data.redirect_url;
+                            } else if (data.result_id) {
+                                window.location.href = `/test-khoi/ket-qua/${data.result_id}/`;
+                            } else {
+                                throw new Error('Không có URL redirect hoặc result_id');
+                            }
+                        }, 1000);
+                        
+                    } else {
+                        alert('❌ Có lỗi xảy ra: ' + (data.error || 'Lỗi không xác định'));
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Lỗi kết nối:', error);
+                    alert('❌ Lỗi kết nối: ' + error.message + '\n\nVui lòng mở Developer Console (F12) và kiểm tra tab Network.');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                });
+            }
+        }
+        
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            
+            if (!cookieValue) {
+                const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+                if (csrfMeta) {
+                    cookieValue = csrfMeta.getAttribute('content');
+                }
+            }
+            
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

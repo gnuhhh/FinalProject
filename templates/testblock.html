@@ -1,0 +1,28 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hệ Thống Test Khối - Ôn Thi{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container bg-white p-4 rounded shadow-lg">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+    
+</body>
+</html>

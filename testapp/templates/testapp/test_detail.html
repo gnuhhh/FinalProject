@@ -1,0 +1,67 @@
+{% extends 'testapp.html' %}
+{% load static %}
+{% block title %}{{ test.title }} - Cổng thông tin tuyển sinh{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white py-3">
+                <h4 class="mb-0">{{ test.title }}</h4>
+            </div>
+            <div class="card-body p-4">
+                <p class="text-muted mb-3">
+                    <strong>Chuyên ngành:</strong> 
+                    <span class="badge bg-secondary">{{ test.major.name }}</span>
+                </p>
+                
+                <!-- THÊM PHẦN MÔ TẢ Ở ĐÂY -->
+                <div class="alert alert-info border-0 mb-4">
+                    <h6 class="alert-heading mb-2">📝 Thông tin bài test:</h6>
+                    <p class="mb-2">Bài test này giúp đánh giá năng lực và định hướng nghề nghiệp của bạn trong lĩnh vực <strong>{{ test.major.name }}</strong>.</p>
+                    <p class="mb-0">Hãy trả lời trung thực tất cả các câu hỏi để có kết quả chính xác nhất!</p>
+                </div>
+                
+                {% if test.description %}
+                <div class="mb-3">
+                    <strong>Mô tả:</strong>
+                    <p class="mt-2 text-dark">{{ test.description }}</p>
+                </div>
+                {% endif %}
+                
+                <div class="mb-4 p-3 bg-light rounded">
+                    <p class="mb-1"><strong>Số câu hỏi:</strong> {{ questions_count }}</p>
+                    <p class="mb-1"><strong>Thời gian làm bài:</strong> Ước tính {{ questions_count|add:"0" }} phút</p>
+                    <p class="mb-0"><strong>Hình thức:</strong> Trắc nghiệm 4 lựa chọn</p>
+                </div>
+                
+                <!-- QUAN TRỌNG: Đoạn code này phải có -->
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-4">
+                    <a class="btn btn-success me-md-2 px-4" href="{% url 'testapp:test_take' test.id %}">
+                        <i class="bi bi-play-circle me-2"></i>Bắt đầu làm bài
+                    </a>
+                    <a class="btn btn-outline-secondary px-3" href="{% url 'testapp:test_list' %}">
+                        <i class="bi bi-arrow-left me-2"></i>Quay lại
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Thêm phần hướng dẫn chi tiết -->
+        <div class="card shadow-sm border-0 mt-4">
+            <div class="card-header bg-light py-3">
+                <h6 class="mb-0"><i class="bi bi-info-circle me-2"></i>Hướng dẫn làm bài</h6>
+            </div>
+            <div class="card-body p-4">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Đọc kỹ từng câu hỏi trước khi chọn đáp án</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Chọn đáp án bạn cho là đúng nhất</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Bài test có thể được chia thành nhiều trang</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Bạn có thể quay lại trang trước để sửa đáp án</li>
+                    <li class="mb-0"><i class="bi bi-check-circle text-success me-2"></i>Kết quả sẽ được hiển thị ngay sau khi nộp bài</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

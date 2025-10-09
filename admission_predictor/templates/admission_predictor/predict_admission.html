@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+            outline: none;
+        }
+        
+        .score-inputs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        
+        .score-input {
+            text-align: center;
+        }
+        
+        .score-input input {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            margin-top: 20px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        }
+        
+        .home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            border: none;
+            cursor: pointer;
+            margin-bottom: 25px;
+        }
+        
+        .home-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .info-box {
+            background: #e7f3ff;
+            border: 2px solid #b3d9ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .info-box h3 {
+            color: #0066cc;
+            margin-bottom: 10px;
+        }
+        
+        .total-score {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .score-inputs {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .home-btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Dự đoán khả năng đậu Đại học</h1>
+            <p>Nhập điểm 3 môn để xem các trường phù hợp với bạn</p>
+        </div>
+
+        <div class="content">
+            <!-- Nút Quay lại trang chủ -->
+            <a href="http://127.0.0.1:8000/" class="home-btn">
+                <span style="font-size: 18px;">←</span>
+                Quay lại trang chủ
+            </a>
+
+            <div class="info-box">
+                <h3>📊 Hướng dẫn sử dụng</h3>
+                <p>• Nhập điểm 3 môn theo khối thi của bạn</p>
+                <p>• Hệ thống sẽ so sánh với điểm chuẩn 2024 của các trường</p>
+                <p>• Kết quả được phân loại theo khả năng đậu: Cao - Trung bình - Thấp</p>
+            </div>
+
+            <form id="predictForm" method="POST" action="{% url 'admission_predictor:predict_admission_result' %}">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="block">🎯 Chọn khối thi:</label>
+                    <select class="form-control" id="block" name="block" required>
+                        <option value="">-- Chọn khối --</option>
+                        <option value="A00">Khối A00 (Toán, Lý, Hóa)</option>
+                        <option value="A01">Khối A01 (Toán, Lý, Anh)</option>
+                        <option value="B00">Khối B00 (Toán, Hóa, Sinh)</option>
+                        <option value="C00">Khối C00 (Văn, Sử, Địa)</option>
+                        <option value="D01">Khối D01 (Toán, Văn, Anh)</option>
+                        <option value="D07">Khối D07 (Toán, Hóa, Anh)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>📝 Nhập điểm 3 môn (thang điểm 10):</label>
+                    <div class="score-inputs" id="scoreInputs">
+                        <!-- JavaScript sẽ thay đổi môn học theo khối -->
+                    </div>
+                </div>
+
+                <div class="total-score" id="totalScore">
+                    Tổng điểm: <span id="totalScoreValue">0</span>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    🎯 Dự đoán khả năng đậu
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const subjectMapping = {
+            'A00': ['Toán', 'Vật lý', 'Hóa học'],
+            'A01': ['Toán', 'Vật lý', 'Tiếng Anh'],
+            'B00': ['Toán', 'Hóa học', 'Sinh học'],
+            'C00': ['Ngữ văn', 'Lịch sử', 'Địa lý'],
+            'D01': ['Toán', 'Ngữ văn', 'Tiếng Anh'],
+            'D07': ['Toán', 'Hóa học', 'Tiếng Anh']
+        };
+
+        const scoreInputs = document.getElementById('scoreInputs');
+        const blockSelect = document.getElementById('block');
+        const totalScoreDiv = document.getElementById('totalScore');
+        const totalScoreValue = document.getElementById('totalScoreValue');
+
+        // Cập nhật môn học khi chọn khối
+        blockSelect.addEventListener('change', function() {
+            const selectedBlock = this.value;
+            updateSubjectInputs(selectedBlock);
+        });
+
+        function updateSubjectInputs(block) {
+            if (!block) {
+                scoreInputs.innerHTML = '<div class="score-input"><p>Vui lòng chọn khối thi trước</p></div>';
+                totalScoreDiv.style.display = 'none';
+                return;
+            }
+
+            const subjects = subjectMapping[block];
+            let inputsHTML = '';
+
+            subjects.forEach((subject, index) => {
+                inputsHTML += `
+                    <div class="score-input">
+                        <label for="subject_${index + 1}">${subject}</label>
+                        <input type="number" 
+                                class="form-control" 
+                                id="subject_${index + 1}" 
+                                name="subject_${index + 1}_score"
+                                min="0" max="10" step="0.1" 
+                                placeholder="0.0"
+                                required
+                                oninput="calculateTotalScore()">
+                    </div>
+                `;
+            });
+
+            scoreInputs.innerHTML = inputsHTML;
+            totalScoreDiv.style.display = 'block';
+            calculateTotalScore();
+        }
+
+        function calculateTotalScore() {
+            let total = 0;
+            const inputs = scoreInputs.querySelectorAll('input[type="number"]');
+            
+            inputs.forEach(input => {
+                const value = parseFloat(input.value) || 0;
+                total += value;
+            });
+
+            totalScoreValue.textContent = total.toFixed(1);
+            
+            // Đổi màu theo điểm
+            if (total >= 24) {
+                totalScoreDiv.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+            } else if (total >= 18) {
+                totalScoreDiv.style.background = 'linear-gradient(135deg, #ffc107, #ffb300)';
+            } else {
+                totalScoreDiv.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a52)';
+            }
+        }
+
+        // Khởi tạo ban đầu
+        updateSubjectInputs('');
+        
+        // Debug info
+        console.log('🔍 Dự đoán khả năng đậu - Form initialized');
+    </script>
+</body>
+</html>

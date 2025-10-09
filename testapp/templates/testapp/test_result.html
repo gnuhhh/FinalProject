@@ -1,0 +1,89 @@
+{% extends 'testapp.html' %}
+{% load static %}
+{% block title %}Kết quả: {{ test.title }} - Cổng thông tin tuyển sinh{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <!-- Result Summary -->
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-header bg-success text-white py-3">
+                <h4 class="mb-0"><i class="bi bi-trophy me-2"></i>Kết quả bài test</h4>
+            </div>
+            <div class="card-body p-4">
+                <h5 class="card-title">{{ test.title }}</h5>
+                <p class="lead">{{ message }}</p>
+                
+                <div class="row text-center mt-4">
+                    <div class="col-md-4 mb-3">
+                        <div class="border rounded p-3 bg-light">
+                            <h3 class="text-primary fw-bold">{{ score }}%</h3>
+                            <p class="text-muted mb-0">Điểm số</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="border rounded p-3 bg-light">
+                            <h3 class="text-success fw-bold">{{ correct }}/{{ total }}</h3>
+                            <p class="text-muted mb-0">Số câu đúng</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="border rounded p-3 bg-light">
+                            <h3 class="text-info fw-bold">{{ percentage|floatformat:1 }}%</h3>
+                            <p class="text-muted mb-0">Tỷ lệ đúng</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Results -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-light py-3">
+                <h5 class="mb-0"><i class="bi bi-list-check me-2"></i>Chi tiết bài làm</h5>
+            </div>
+            <div class="card-body p-4">
+                {% for detail in details %}
+                <div class="mb-4 p-3 border rounded {% if detail.is_correct %}border-success bg-success bg-opacity-10{% else %}border-danger bg-danger bg-opacity-10{% endif %}">
+                    <p class="fw-bold mb-2 text-dark">{{ detail.question }}</p>
+                    
+                    <div class="mb-2">
+                        <span class="fw-medium">Bạn chọn:</span>
+                        <span class="{% if detail.is_correct %}text-success{% else %}text-danger{% endif %} fw-medium">
+                            {{ detail.chosen }}
+                        </span>
+                    </div>
+                    
+                    {% if not detail.is_correct %}
+                    <div class="mb-2">
+                        <span class="fw-medium">Đáp án đúng:</span>
+                        <span class="text-success fw-medium">{{ detail.correct }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mt-2">
+                        {% if detail.is_correct %}
+                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Chính xác</span>
+                        {% else %}
+                        <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Sai</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <div class="text-center mt-4 pt-3 border-top">
+                    <a class="btn btn-primary me-2" href="{% url 'testapp:test_list' %}">
+                        <i class="bi bi-list-ul me-2"></i>Danh sách bài test
+                    </a>
+                    <a class="btn btn-outline-secondary me-2" href="{% url 'testapp:test_detail' test.id %}">
+                        <i class="bi bi-arrow-left me-2"></i>Quay lại chi tiết
+                    </a>
+                    <a class="btn btn-success" href="{% url 'testapp:test_take' test.id %}">
+                        <i class="bi bi-arrow-repeat me-2"></i>Làm lại
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

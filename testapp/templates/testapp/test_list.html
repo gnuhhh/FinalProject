@@ -1,0 +1,60 @@
+{% extends 'testapp.html' %}
+{% load static %}
+{% block title %}Bài Test Chuyên ngành - Cổng thông tin tuyển sinh{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4 fw-bold">📚 Bài Test Chuyên ngành</h2>
+
+        <!-- Search Form -->
+        <form method="get" class="mb-4">
+            <div class="input-group input-group-lg">
+                <input type="text" name="q" value="{{ query }}" class="form-control" 
+                       placeholder="Tìm theo tên bài test hoặc chuyên ngành...">
+                <button class="btn btn-primary" type="submit">
+                    <i class="bi bi-search me-2"></i>Tìm kiếm
+                </button>
+            </div>
+        </form>
+
+        <!-- Tests Grid -->
+        {% if tests %}
+        <div class="row g-4">
+            {% for t in tests %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 shadow-sm border-0 hover-shadow">
+                    <div class="card-body d-flex flex-column p-4">
+                        <h5 class="card-title text-primary fw-bold">{{ t.title }}</h5>
+                        <p class="card-text mb-2">
+                            <strong>Chuyên ngành:</strong> 
+                            <span class="badge bg-info text-dark">{{ t.major.name }}</span>
+                        </p>
+                        <p class="text-muted mt-auto mb-3">
+                            <i class="bi bi-question-circle me-1"></i>Số câu hỏi: {{ t.num_questions }}
+                        </p>
+                        <div class="mt-auto">
+                            <a class="btn btn-outline-primary w-100" 
+                               href="{% url 'testapp:test_detail' t.id %}">
+                                <i class="bi bi-eye me-2"></i>Xem chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <div class="empty-state">
+                <i class="bi bi-inbox display-1 text-muted"></i>
+                <p class="text-muted mt-3">Chưa có bài test nào.</p>
+                <a href="{% url 'testapp:test_list' %}" class="btn btn-primary mt-2">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Thử lại
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

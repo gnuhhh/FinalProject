@@ -1,0 +1,107 @@
+cong_nghe_thong_tin_questions = {
+    "Kỹ năng Giải quyết Vấn đề & Tư duy Phản biện": [
+    {"text": "Trong một buổi gỡ lỗi (debugging), một lập trình viên liên tục thay đổi mã mà không kiểm tra kết quả từng bước. Điều này vi phạm nguyên tắc giải quyết vấn đề nào?", "options": ["Nguyên tắc giao tiếp", "Nguyên tắc cô lập và kiểm soát các biến", "Nguyên tắc quản lý thời gian", "Nguyên tắc làm việc nhóm"], "correct": "B"},
+    {"text": "Khi bạn phải đối mặt với một vấn đề phức tạp, bạn nên:", "options": ["Giải quyết toàn bộ vấn đề cùng một lúc", "Chia nhỏ vấn đề thành các phần nhỏ hơn, dễ quản lý hơn", "Chờ đợi người khác giải quyết", "Phớt lờ vấn đề cho đến khi không thể trì hoãn"], "correct": "B"},
+    {"text": "Việc đọc các tài liệu và mã nguồn hiện có trước khi cố gắng sửa lỗi là một ví dụ về:", "options": ["Lãng phí thời gian", "Thu thập và phân tích dữ liệu/thông tin liên quan", "Trì hoãn công việc", "Kỹ năng lập trình cơ bản"], "correct": "B"},
+    {"text": "Một giải pháp được cho là tốt nhất khi nó:", "options": ["Nhanh nhất", "Mới nhất", "Hiệu quả, bền vững, dễ bảo trì và giải quyết triệt để vấn đề", "Sử dụng công nghệ bạn thích nhất"], "correct": "C"},
+    {"text": "\"Lập luận cảm tính\" là trở ngại lớn nhất đối với tư duy phản biện vì:", "options": ["Nó quá chậm", "Nó quá phức tạp", "Nó ưu tiên cảm xúc/thiên kiến cá nhân hơn bằng chứng và logic", "Nó đòi hỏi nhiều công cụ"], "correct": "C"},
+
+    {"text": "Bước đầu tiên trong quá trình giải quyết vấn đề là gì?", "options": ["Đề xuất giải pháp", "Xác định và hiểu rõ vấn đề", "Triển khai mã ngay", "Tìm lỗi trong hệ thống"], "correct": "B"},
+    {"text": "Một lập trình viên có tư duy phản biện sẽ luôn:", "options": ["Tin vào kinh nghiệm cũ", "Xem xét nhiều góc độ và đặt câu hỏi trước khi kết luận", "Phản đối mọi ý kiến của người khác", "Chỉ tin vào tài liệu chính thức"], "correct": "B"},
+    {"text": "Khi hai giải pháp cùng có hiệu quả, nên chọn giải pháp nào?", "options": ["Phức tạp hơn để thể hiện năng lực", "Đơn giản, dễ hiểu và dễ bảo trì hơn", "Tốn nhiều tài nguyên hơn", "Cần nhiều người thực hiện hơn"], "correct": "B"},
+    {"text": "Khi gặp lỗi lặp lại nhiều lần trong hệ thống, cách tiếp cận tốt nhất là:", "options": ["Sửa tạm thời mỗi lần xảy ra", "Phân tích nguyên nhân gốc rễ và khắc phục triệt để", "Phớt lờ vì không nghiêm trọng", "Đổi framework"], "correct": "B"},
+    {"text": "Điều nào KHÔNG thuộc về tư duy phản biện?", "options": ["Đặt câu hỏi để hiểu sâu hơn", "Đánh giá bằng chứng khách quan", "Đưa ra kết luận dựa trên cảm xúc", "Kiểm chứng thông tin trước khi tin"], "correct": "C"},
+
+    {"text": "Khi phân tích dữ liệu, tư duy phản biện giúp bạn:", "options": ["Tự tin hơn với mọi dữ liệu", "Phát hiện sai sót, thiên kiến và giới hạn của dữ liệu", "Tăng tốc độ nhập dữ liệu", "Bỏ qua kết quả không mong muốn"], "correct": "B"},
+    {"text": "Một trong những sai lầm phổ biến khi giải quyết vấn đề là:", "options": ["Giả định mà không kiểm chứng", "Đặt câu hỏi làm rõ", "Thu thập dữ liệu", "Thử nghiệm có kiểm soát"], "correct": "A"},
+    {"text": "Khi bạn không thể tái hiện lại lỗi được báo cáo, bạn nên:", "options": ["Báo là lỗi giả", "Thu thập thêm thông tin từ người dùng hoặc môi trường chạy", "Bỏ qua", "Gỡ toàn bộ module"], "correct": "B"},
+    {"text": "Điều nào sau đây thể hiện tư duy phản biện trong teamwork?", "options": ["Đồng ý mọi đề xuất để tránh tranh cãi", "Đưa ra ý kiến khác biệt dựa trên dữ liệu và lập luận logic", "Chỉ trích người khác", "Không tham gia thảo luận"], "correct": "B"},
+    {"text": "Một kỹ thuật giúp phân tích nguyên nhân gốc là:", "options": ["Brainstorming", "Fishbone Diagram (Sơ đồ xương cá)", "Scrum Board", "Code Review"], "correct": "B"},
+
+    {"text": "Trong giải quyết vấn đề, thử nghiệm (experiment) có vai trò gì?", "options": ["Để kiểm chứng giả thuyết trước khi áp dụng rộng rãi", "Để làm rối quy trình", "Để thay thế việc phân tích", "Không cần thiết"], "correct": "A"},
+    {"text": "Điều nào giúp bạn nâng cao tư duy phản biện hàng ngày?", "options": ["Đặt câu hỏi 'tại sao' cho mọi điều", "Tin ngay vào thông tin đầu tiên", "Tránh thảo luận để tiết kiệm thời gian", "Chỉ đọc tiêu đề tin tức"], "correct": "A"},
+    {"text": "Khi một đồng nghiệp đề xuất ý tưởng, bạn nên:", "options": ["Đánh giá dựa trên dữ liệu và lập luận, không dựa vào vị trí của họ", "Từ chối vì không phải ý mình", "Đồng ý ngay để khỏi tranh luận", "Không quan tâm"], "correct": "A"},
+    {"text": "Nếu giải pháp của bạn thất bại, phản ứng đúng là:", "options": ["Đổ lỗi cho người khác", "Phân tích nguyên nhân, rút kinh nghiệm và thử hướng khác", "Bỏ cuộc", "Giấu đi để tránh bị phát hiện"], "correct": "B"},
+    {"text": "Khi bạn có nhiều giả thuyết, điều nào giúp xác định giả thuyết đúng?", "options": ["Chọn giả thuyết bạn thích nhất", "Thử nghiệm, thu thập dữ liệu và loại bỏ giả thuyết sai", "Bỏ qua các dữ liệu mâu thuẫn", "Chọn giả thuyết đơn giản nhất không cần kiểm chứng"], "correct": "B"},
+
+    {"text": "Khi giải quyết vấn đề nhóm, điều gì giúp tránh mâu thuẫn không cần thiết?", "options": ["Thảo luận dựa trên dữ liệu và mục tiêu chung", "Tránh thảo luận", "Chỉ nghe ý kiến của trưởng nhóm", "Tránh đề cập đến vấn đề khó"], "correct": "A"},
+    {"text": "Trong dự án phần mềm, 'retrospective meeting' giúp nhóm:", "options": ["Kiểm điểm cá nhân", "Phân tích điều gì đã tốt và cần cải thiện để làm tốt hơn", "Đánh giá lỗi của khách hàng", "Thay đổi công nghệ"], "correct": "B"},
+    {"text": "Tư duy phản biện KHÔNG nhằm mục đích nào dưới đây?", "options": ["Tìm lỗi trong suy nghĩ người khác", "Tìm hiểu và cải thiện cách ra quyết định", "Phân tích và đánh giá bằng chứng", "Đưa ra kết luận hợp lý"], "correct": "A"},
+    {"text": "Khi gặp vấn đề chưa từng thấy, bạn nên:", "options": ["Tìm hiểu, chia nhỏ vấn đề và thử nghiệm có hệ thống", "Sao chép giải pháp từ dự án khác mà không kiểm tra", "Đoán đại giải pháp", "Bỏ qua để không tốn thời gian"], "correct": "A"},
+    {"text": "Một lập trình viên có tư duy phản biện tốt sẽ luôn:", "options": ["Tin tưởng mù quáng vào tài liệu", "Đặt câu hỏi và xác minh thông tin trước khi hành động", "Theo cảm tính", "Chỉ học theo hướng dẫn có sẵn"], "correct": "B"}
+],
+    "Kỹ năng Giao tiếp & Làm việc Nhóm": [
+    {"text": "Trong bối cảnh làm việc nhóm IT, kỹ năng Giao tiếp hiệu quả bao gồm:", "options": ["Chỉ nói về các vấn đề kỹ thuật phức tạp", "Gửi email dài và chi tiết", "Truyền đạt thông tin rõ ràng, ngắn gọn và lắng nghe tích cực", "Luôn đồng ý với ý kiến của trưởng nhóm"], "correct": "C"},
+    {"text": "Khi giao tiếp bằng văn bản (email, chat) trong dự án IT, bạn nên ưu tiên điều gì?", "options": ["Sử dụng nhiều biệt ngữ (jargon) để thể hiện sự chuyên nghiệp", "Gửi một tin nhắn duy nhất bao gồm mọi vấn đề", "Tính rõ ràng, chính xác, và sử dụng tiêu đề/đoạn văn hợp lý", "Dùng chữ viết tắt và ngôn ngữ mạng"], "correct": "C"},
+    {"text": "Bạn nhận được một phản hồi (feedback) tiêu cực về đoạn mã của mình. Phản ứng tốt nhất là gì?", "options": ["Cố gắng bảo vệ mã của bạn bằng mọi giá", "Cảm thấy tự ái và né tránh người đưa ra phản hồi", "Đón nhận, đặt câu hỏi làm rõ và xem nó như cơ hội để học hỏi và cải thiện", "Bỏ qua và hy vọng không ai để ý"], "correct": "C"},
+    {"text": "Vai trò của một thành viên nhóm IT 'tích cực lắng nghe' là gì?", "options": ["Nghe ngóng xem ai mắc lỗi", "Tập trung hoàn toàn vào người nói, không ngắt lời, và xác nhận lại thông tin đã nghe", "Chuẩn bị sẵn câu trả lời trong đầu", "Chỉ lắng nghe khi vấn đề liên quan trực tiếp đến công việc của bạn"], "correct": "B"},
+    {"text": "Xung đột xảy ra khi hai thành viên nhóm có ý kiến khác nhau về kiến trúc hệ thống. Bạn là thành viên thứ ba nên làm gì?", "options": ["Chọn phe và ủng hộ một bên", "Đóng vai trò trung gian, khuyến khích hai bên tập trung vào dữ liệu và mục tiêu chung", "Bỏ đi và để họ tự giải quyết", "Báo cáo lên cấp trên ngay lập tức"], "correct": "B"},
+
+    {"text": "Một buổi họp nhóm bị kéo dài do lạc đề. Bạn nên làm gì?", "options": ["Im lặng cho xong", "Nhắc nhẹ nhóm quay lại chủ đề chính", "Rời khỏi cuộc họp", "Tham gia nói chuyện ngoài lề"], "correct": "B"},
+    {"text": "Khi bạn thấy đồng nghiệp khó hiểu yêu cầu của khách hàng, hành động đúng là:", "options": ["Phớt lờ vì không phải việc của mình", "Giúp họ diễn giải lại yêu cầu một cách rõ ràng", "Chỉ trích họ không chịu chú ý", "Thay họ làm luôn phần việc"], "correct": "B"},
+    {"text": "Điều nào KHÔNG thuộc về kỹ năng giao tiếp hiệu quả trong môi trường IT?", "options": ["Truyền đạt ý tưởng rõ ràng", "Lắng nghe tích cực", "Sử dụng thuật ngữ gây hiểu nhầm", "Đặt câu hỏi làm rõ"], "correct": "C"},
+    {"text": "Khi làm việc từ xa, cách duy trì giao tiếp nhóm hiệu quả là:", "options": ["Không cần báo cáo thường xuyên", "Sử dụng công cụ chat, video và cập nhật tiến độ đều đặn", "Chỉ họp khi có lỗi nghiêm trọng", "Gửi báo cáo cuối tuần là đủ"], "correct": "B"},
+    {"text": "Trong buổi code review, nên tập trung vào:", "options": ["Tấn công cá nhân người viết code", "Thảo luận logic, hiệu năng, và khả năng bảo trì mã", "Chứng minh mình giỏi hơn", "Bỏ qua phần nhỏ vì không quan trọng"], "correct": "B"},
+
+    {"text": "Một thành viên nhóm nói quá nhiều trong cuộc họp, bạn nên:", "options": ["Ngắt lời ngay", "Lịch sự điều hướng để người khác có cơ hội phát biểu", "Im lặng và để họ nói hết", "Bỏ qua nội dung họ nói"], "correct": "B"},
+    {"text": "Giao tiếp phi ngôn ngữ (non-verbal communication) thể hiện qua:", "options": ["Chỉ qua giọng nói", "Ánh mắt, cử chỉ, tư thế và nét mặt", "Nội dung email", "Chỉ khi trình bày slide"], "correct": "B"},
+    {"text": "Nếu bạn không hiểu ý đồng nghiệp, cách phản ứng đúng là:", "options": ["Giả vờ hiểu để tránh ngại", "Đặt câu hỏi làm rõ nhẹ nhàng", "Tranh luận gay gắt", "Bỏ qua vì không quan trọng"], "correct": "B"},
+    {"text": "Khi nhóm có thành viên mới, để họ hòa nhập nhanh bạn nên:", "options": ["Không cần để ý", "Chủ động giới thiệu và chia sẻ thông tin dự án", "Để họ tự tìm hiểu", "Giao việc khó ngay để thử thách"], "correct": "B"},
+    {"text": "Yếu tố quan trọng nhất để tránh hiểu lầm trong nhóm là:", "options": ["Gửi thật nhiều tin nhắn", "Xác nhận lại thông tin và đồng thuận", "Giữ im lặng", "Chỉ nói khi có sự cố"], "correct": "B"},
+
+    {"text": "Trong khi làm việc nhóm, điều gì giúp tăng hiệu quả?", "options": ["Mỗi người làm riêng, không cần trao đổi", "Phối hợp thường xuyên và chia sẻ tiến độ", "Giấu thông tin để bảo vệ công việc", "Chỉ báo cáo khi được yêu cầu"], "correct": "B"},
+    {"text": "Khi trình bày ý tưởng, điều nào quan trọng nhất?", "options": ["Nói càng dài càng tốt", "Tập trung vào mục tiêu, dữ liệu và lợi ích cụ thể", "Dùng thuật ngữ khó hiểu để thể hiện chuyên môn", "Nói nhỏ để người khác chú ý"], "correct": "B"},
+    {"text": "Một nhóm làm việc hiệu quả thường có đặc điểm nào?", "options": ["Mỗi người làm một kiểu", "Tôn trọng, lắng nghe và phối hợp chặt chẽ", "Không cần phản hồi", "Không có quy trình họp"], "correct": "B"},
+    {"text": "Phản hồi (feedback) hiệu quả nên:", "options": ["Tập trung vào hành vi, không công kích cá nhân", "Phê bình gay gắt để họ nhớ lâu", "Gửi công khai trước nhóm", "Tránh nói ra để giữ hòa khí"], "correct": "A"},
+    {"text": "Khi nhận nhiệm vụ mới, bạn nên làm gì để đảm bảo hiểu đúng?", "options": ["Tự đoán ý sếp", "Đặt câu hỏi xác nhận và ghi lại yêu cầu", "Chờ người khác hỏi trước", "Làm theo kinh nghiệm cũ"], "correct": "B"},
+
+    {"text": "Một cuộc họp online hiệu quả cần:", "options": ["Không cần chuẩn bị agenda", "Có mục tiêu rõ ràng và người điều phối", "Nói tự do không cần ghi chép", "Kéo dài càng lâu càng tốt"], "correct": "B"},
+    {"text": "Trong nhóm có thành viên ít nói, bạn nên:", "options": ["Bỏ qua vì họ ít đóng góp", "Khuyến khích họ chia sẻ bằng câu hỏi mở", "Chỉ định họ phát biểu bắt buộc", "Không để ý"], "correct": "B"},
+    {"text": "Khi gửi tin nhắn công việc, nên tránh:", "options": ["Viết ngắn gọn và có trọng tâm", "Sử dụng emoji và ngôn ngữ thân mật quá mức", "Có tiêu đề rõ ràng", "Phân tách nội dung theo dòng"], "correct": "B"},
+    {"text": "Trong nhóm IT quốc tế, điều quan trọng khi giao tiếp bằng tiếng Anh là:", "options": ["Nói nhanh và dùng slang", "Phát âm rõ, dùng từ đơn giản và lịch sự", "Tránh dùng từ kỹ thuật", "Im lặng khi không chắc nghĩa"], "correct": "B"},
+    {"text": "Làm việc nhóm hiệu quả đòi hỏi:", "options": ["Cạnh tranh nội bộ", "Mục tiêu chung rõ ràng và tinh thần hợp tác", "Mỗi người giữ thông tin riêng", "Chỉ quan tâm phần việc của mình"], "correct": "B"},
+
+    {"text": "Khi mâu thuẫn cá nhân ảnh hưởng công việc, cách tốt nhất là:", "options": ["Bỏ qua hoàn toàn", "Trao đổi trực tiếp trong tinh thần xây dựng", "Phàn nàn với người khác", "Gửi email phê bình"], "correct": "B"},
+    {"text": "Khi được giao vai trò trưởng nhóm tạm thời, điều nên làm đầu tiên là:", "options": ["Ra lệnh ngay", "Xác định nhiệm vụ và lắng nghe ý kiến nhóm", "Thay đổi toàn bộ quy trình", "Không làm gì để tránh mâu thuẫn"], "correct": "B"},
+    {"text": "Lắng nghe tích cực KHÔNG bao gồm:", "options": ["Duy trì giao tiếp mắt", "Cắt ngang để nói quan điểm mình", "Phản hồi thể hiện bạn hiểu đúng", "Tập trung vào người nói"], "correct": "B"},
+    {"text": "Trong báo cáo tiến độ, cách trình bày hiệu quả là:", "options": ["Nói chi tiết mọi việc", "Tập trung vào kết quả, vấn đề và giải pháp", "Kể về quy trình làm việc", "Nêu cảm nhận cá nhân"], "correct": "B"},
+    {"text": "Nếu thấy nhóm trì trệ do thiếu động lực, bạn nên:", "options": ["Than phiền với cấp trên", "Đề xuất hoạt động thảo luận, chia sẻ mục tiêu", "Giữ im lặng", "Rút lui khỏi nhóm"], "correct": "B"}
+],
+    "Kỹ năng Quản lý Thời gian & Học hỏi Liên tục": [
+    {"text": "Phương pháp nào giúp bạn phân loại nhiệm vụ dựa trên hai tiêu chí: Tầm quan trọng và Khẩn cấp?", "options": ["Kỹ thuật Pomodoro", "Biểu đồ Gantt", "Ma trận Eisenhower", "Mô hình Kanban"], "correct": "C"},
+    {"text": "Nguyên tắc 80/20 (Pareto Principle) trong quản lý thời gian có ý nghĩa gì đối với lập trình viên?", "options": ["80% thời gian dành cho lập trình, 20% cho họp", "20% công việc tạo ra 80% kết quả (tập trung vào những nhiệm vụ có giá trị cao nhất)", "Hoàn thành 80% công việc là đủ", "Dành 80% thời gian cho việc học"], "correct": "B"},
+    {"text": "Bạn bị mất tập trung do thông báo liên tục từ các ứng dụng nhắn tin. Giải pháp tốt nhất là gì?", "options": ["Tắt hoàn toàn máy tính", "Thiết lập khoảng thời gian làm việc sâu bằng cách tắt hoặc giới hạn thông báo", "Trả lời ngay lập tức mọi thông báo", "Yêu cầu đồng nghiệp không nhắn tin"], "correct": "B"},
+    {"text": "\"Technical Debt\" (Nợ Kỹ thuật) liên quan đến việc quản lý thời gian như thế nào?", "options": ["Là khoản nợ công ty phải trả", "Việc cắt giảm thời gian để đưa ra giải pháp nhanh chóng, khiến phải tốn nhiều thời gian hơn để sửa chữa/bảo trì sau này", "Chỉ là thuật ngữ chuyên môn không quan trọng", "Tiền thưởng cho lập trình viên"], "correct": "B"},
+    {"text": "Tại sao việc \"Ước tính thời gian\" (Time Estimation) lại là một kỹ năng quan trọng?", "options": ["Để chứng minh bạn làm việc nhanh hơn người khác", "Để giúp quản lý dự án, đặt ra kỳ vọng hợp lý và đảm bảo deadline khả thi", "Để lấy cớ trì hoãn", "Để làm cho mã trông phức tạp hơn"], "correct": "B"},
+
+    {"text": "Kỹ thuật Pomodoro giúp cải thiện điều gì?", "options": ["Tăng số giờ làm việc liên tục", "Tăng khả năng tập trung bằng cách chia nhỏ thời gian làm việc và nghỉ ngắn", "Giảm số lượng công việc phải làm", "Tránh hoàn toàn việc nghỉ giải lao"], "correct": "B"},
+    {"text": "Khi cảm thấy quá tải với nhiều nhiệm vụ, bạn nên làm gì đầu tiên?", "options": ["Làm tất cả cùng lúc để tiết kiệm thời gian", "Xác định và ưu tiên nhiệm vụ quan trọng nhất", "Trì hoãn mọi việc sang ngày mai", "Tìm người khác làm giúp"], "correct": "B"},
+    {"text": "Một cách hiệu quả để theo dõi tiến độ cá nhân là:", "options": ["Nhớ trong đầu", "Dùng to-do list hoặc ứng dụng quản lý công việc", "Hỏi người khác", "Không cần theo dõi"], "correct": "B"},
+    {"text": "Thói quen nào giúp học hỏi liên tục trong ngành CNTT?", "options": ["Chỉ đọc tài liệu khi gặp lỗi", "Thường xuyên cập nhật công nghệ mới và thực hành dự án nhỏ", "Phụ thuộc hoàn toàn vào khóa học", "Chỉ học khi được yêu cầu"], "correct": "B"},
+    {"text": "Làm thế nào để tránh tình trạng trì hoãn (procrastination)?", "options": ["Đợi đến phút cuối mới làm", "Chia nhỏ công việc, đặt deadline rõ ràng và tự thưởng cho bản thân", "Làm việc ngẫu hứng", "Không lập kế hoạch"], "correct": "B"},
+
+    {"text": "Đâu là dấu hiệu cho thấy bạn đang quản lý thời gian kém?", "options": ["Luôn hoàn thành công việc trước hạn", "Thường xuyên phải làm thêm giờ và quên deadline", "Có thời gian rảnh rỗi", "Biết cách nói 'không' khi cần"], "correct": "B"},
+    {"text": "Lợi ích của việc đặt mục tiêu SMART là gì?", "options": ["Giúp làm việc ngẫu hứng hơn", "Giúp xác định mục tiêu cụ thể, đo lường được và có thời hạn", "Làm giảm áp lực công việc", "Tăng độ khó của mục tiêu"], "correct": "B"},
+    {"text": "Trong môi trường agile, cách quản lý thời gian hiệu quả là:", "options": ["Chờ scrum master nhắc việc", "Chia nhỏ nhiệm vụ và theo dõi tiến độ theo sprint", "Làm việc tự do không theo kế hoạch", "Làm tất cả vào cuối sprint"], "correct": "B"},
+    {"text": "Để tận dụng thời gian học online hiệu quả, bạn nên:", "options": ["Xem video với tốc độ nhanh nhất có thể", "Ghi chú lại ý chính và áp dụng thực hành", "Xem nhiều khóa cùng lúc", "Chỉ xem một lần không cần ôn tập"], "correct": "B"},
+    {"text": "Tại sao việc nghỉ ngơi đúng lúc lại giúp tăng hiệu suất?", "options": ["Làm gián đoạn công việc", "Giúp não bộ phục hồi và duy trì tập trung lâu hơn", "Khiến bạn lười biếng", "Không có tác dụng"], "correct": "B"},
+
+    {"text": "Điều gì giúp bạn duy trì động lực học lâu dài?", "options": ["Đặt mục tiêu ngắn hạn và tự thưởng khi hoàn thành", "Học không mục tiêu", "So sánh bản thân với người khác", "Chỉ học khi có áp lực"], "correct": "A"},
+    {"text": "Một người học hiệu quả thường làm gì sau khi đọc tài liệu kỹ thuật?", "options": ["Ghi chép, tóm tắt lại bằng lời của mình và áp dụng thử", "Chỉ đọc qua cho biết", "Chuyển sang đọc tài liệu khác ngay", "Quên đi sau khi đọc xong"], "correct": "A"},
+    {"text": "Cách tốt nhất để rèn luyện thói quen kỷ luật thời gian là:", "options": ["Làm việc khi có cảm hứng", "Tạo lịch làm việc cố định và tuân thủ nó", "Chờ người khác nhắc nhở", "Không cần kế hoạch"], "correct": "B"},
+    {"text": "Nếu thường xuyên quên deadline, bạn nên:", "options": ["Ghi chú và sử dụng công cụ nhắc nhở", "Phó mặc cho quản lý", "Làm lại từ đầu", "Đổ lỗi cho hoàn cảnh"], "correct": "A"},
+    {"text": "Điều gì giúp việc học lập trình hiệu quả hơn?", "options": ["Chỉ xem video hướng dẫn", "Kết hợp lý thuyết với thực hành thường xuyên", "Đọc tài liệu một lần", "Học không cần mục tiêu"], "correct": "B"},
+
+    {"text": "Trong nhóm làm việc, kỹ năng quản lý thời gian cá nhân ảnh hưởng gì đến nhóm?", "options": ["Không ảnh hưởng", "Ảnh hưởng trực tiếp đến tiến độ và tinh thần chung của nhóm", "Chỉ ảnh hưởng đến cá nhân đó", "Không liên quan đến teamwork"], "correct": "B"},
+    {"text": "Khi lên kế hoạch học kỹ năng mới, bạn nên:", "options": ["Học ngẫu nhiên", "Xác định mục tiêu rõ ràng, chia nhỏ và theo dõi tiến trình", "Chờ người khác dạy", "Chỉ học khi có thời gian rảnh"], "correct": "B"},
+    {"text": "Một trong những yếu tố khiến việc học kém hiệu quả là:", "options": ["Đặt mục tiêu rõ ràng", "Không có kế hoạch học cụ thể và không ôn tập", "Tự đánh giá sau mỗi buổi học", "Thực hành đều đặn"], "correct": "B"},
+    {"text": "Để tối ưu thời gian làm việc, bạn nên bắt đầu ngày mới bằng:", "options": ["Kiểm tra mạng xã hội", "Lên danh sách 3 việc quan trọng nhất cần làm", "Trả lời email ngẫu nhiên", "Thảo luận ngoài lề"], "correct": "B"},
+    {"text": "Một cách hữu ích để duy trì việc học liên tục là:", "options": ["Chờ có thời gian rảnh mới học", "Đặt lịch học cố định hằng ngày hoặc hằng tuần", "Tham gia quá nhiều khóa học cùng lúc", "Học theo cảm hứng"], "correct": "B"},
+
+    {"text": "Khi bạn gặp khó khăn với công nghệ mới, cách tiếp cận hiệu quả là:", "options": ["Bỏ qua vì quá khó", "Tìm tài nguyên chính thống, thử nghiệm và hỏi cộng đồng", "Chờ ai đó chỉ", "Chuyển sang học cái khác"], "correct": "B"},
+    {"text": "Tại sao lập trình viên cần học hỏi liên tục?", "options": ["Công nghệ thay đổi nhanh, cần cập nhật để không bị lạc hậu", "Để chứng minh năng lực với người khác", "Để làm nhiều việc hơn", "Vì bắt buộc"], "correct": "A"},
+    {"text": "Cách tránh 'burnout' (kiệt sức) trong học tập và làm việc là:", "options": ["Làm việc không nghỉ để hoàn thành sớm", "Cân bằng giữa làm việc, nghỉ ngơi và giải trí", "Trì hoãn đến khi hết hạn", "Bỏ qua cảm xúc cá nhân"], "correct": "B"},
+    {"text": "Khi học kỹ năng mới, điều quan trọng nhất là:", "options": ["Học thật nhanh để chuyển qua kỹ năng khác", "Kiên trì và áp dụng thực tế thường xuyên", "Học lý thuyết suông", "Bỏ cuộc khi gặp khó"], "correct": "B"},
+    {"text": "Một lập trình viên muốn nâng cao hiệu suất làm việc nên:", "options": ["Làm nhiều giờ hơn", "Tập trung vào cải thiện quy trình và loại bỏ thói quen lãng phí thời gian", "Không cần quản lý thời gian", "Làm việc mà không nghỉ"], "correct": "B"}
+]
+}

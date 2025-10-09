@@ -1,0 +1,82 @@
+{% extends 'testblock.html' %}
+
+{% block title %}{{ test_block.name }} - Test Khối Thi{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h3>{{ test_block.name }}</h3>
+            <p class="mb-0">{{ test_block.description }}</p>
+        </div>
+        <div class="card-body">
+            <p class="lead"><i class="fas fa-info-circle"></i> {{ test_block.num_questions }} câu hỏi</p>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <label for="user_name" class="form-label">Tên của bạn (tùy chọn):</label>
+                    <input type="text" class="form-control" id="user_name" name="user_name" placeholder="Nhập tên của bạn">
+                </div>
+                
+                <div class="questions-section">
+                    {% for question in questions %}
+                    <div class="card mb-4 question-card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Câu {{ forloop.counter }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">{{ question.text }}</p>
+                            
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="question_{{ question.id }}" id="q{{ question.id }}_a" value="A" required>
+                                <label class="form-check-label" for="q{{ question.id }}_a">
+                                    <strong>A.</strong> {{ question.option_a }}
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="question_{{ question.id }}" id="q{{ question.id }}_b" value="B" required>
+                                <label class="form-check-label" for="q{{ question.id }}_b">
+                                    <strong>B.</strong> {{ question.option_b }}
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="question_{{ question.id }}" id="q{{ question.id }}_c" value="C" required>
+                                <label class="form-check-label" for="q{{ question.id }}_c">
+                                    <strong>C.</strong> {{ question.option_c }}
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="question_{{ question.id }}" id="q{{ question.id }}_d" value="D" required>
+                                <label class="form-check-label" for="q{{ question.id }}_d">
+                                    <strong>D.</strong> {{ question.option_d }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-paper-plane"></i> Nộp bài
+                    </button>
+                    <a href="{% url 'testblock:test_block_list' %}" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.question-card {
+    border-left: 4px solid #007bff;
+}
+.form-check-input {
+    margin-right: 10px;
+}
+</style>
+{% endblock %}
