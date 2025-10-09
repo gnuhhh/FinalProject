@@ -12,7 +12,7 @@
         <li class="sidebar-item">
             <a href="{% url 'news' %}" class="menu-item">
                 <i class="bi bi-newspaper"></i>
-                <span>Quản lý tin tức</span>
+                <span>Quản lý bài viết</span>
             </a>
         </li>
         {% endif %}
@@ -34,7 +34,7 @@
                 <li class="submenu-item-wrapper">
                     <a href="{% url 'schedule_customer' %}" class="submenu-item">
                         <i class="bi bi-receipt"></i>
-                        <span>Lịch hẹn với khách hàng</span>
+                        <span>Lịch hẹn tư vấn</span>
                     </a>
                 </li>
             </ul>
@@ -52,15 +52,37 @@
 
         {% if request.user.groups.all.0.name == 'manager' %}
         <li class="sidebar-item">
-            <a href="{% url 'schedule_customer' %}" class="menu-item">
-                <i class="bi bi-receipt"></i>
-                <span>Lịch hẹn với khách hàng</span>
+            <a href="#" class="menu-item expandable" id="post-management">
+                <i class="bi bi-card-list"></i>
+                <span>Quản lý lịch hẹn</span>
+                <i class="bi bi-chevron-right arrow"></i>
             </a>
+            
+            <ul class="submenu" id="post-submenu">
+                <li class="submenu-item-wrapper">
+                    <a href="{% url 'schedule' %}" class="submenu-item">
+                        <i class="bi bi-newspaper"></i>
+                        <span>Lịch đăng ký của chuyên gia</span>
+                    </a>
+                </li>
+                <li class="submenu-item-wrapper">
+                    <a href="{% url 'schedule_customer' %}" class="submenu-item">
+                        <i class="bi bi-receipt"></i>
+                        <span>Lịch hẹn tư vấn</span>
+                    </a>
+                </li>
+            </ul>
         </li>
         <li class="sidebar-item">
             <a href="{% url 'expert' %}" class="menu-item">
                 <i class="bi bi-people"></i>
                 <span>Quản lý chuyên gia</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="{% url 'member' %}" class="menu-item">
+                <i class="bi bi-people-fill"></i>
+                <span>Quản lý thành viên</span>
             </a>
         </li>
         {% endif %}

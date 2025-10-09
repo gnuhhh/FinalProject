@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseForbidden
 from django.contrib import auth, messages
 from school.models import School
 from news.models import News
+from user_profile.models import Member
 from homepage.models import Expert
 from django.utils.html import strip_tags
 from django.contrib.auth.models import User
@@ -157,6 +159,8 @@ def news_activate(request, id):
 
 @login_required(login_url='admin')
 def accounts(request):
+    if request.user.groups.first().name != 'admin':
+        return HttpResponseForbidden("Bạn không có quyền truy cập trang này.")
     users = User.objects.all()
     return render(request, 'admin/account/view.html', {'users':users})
 
@@ -364,3 +368,8 @@ def expert_update(request, id):
         return redirect('expert')
     else:
         return render(request, 'admin/expert/update.html', {'expert':expert, 'title':'Cập nhật chuyên gia'})
+    
+@login_required(login_url='admin')
+def member_view(request):
+    members = Member.objects.all()
+    return render(request, 'admin/member/view.html', {'members':members})

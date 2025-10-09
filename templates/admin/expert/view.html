@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý tin tức</title>
+    <title>Quản lý chuyên gia</title>
     {% include 'components/links.html' %}
     <style>
         * {
@@ -356,28 +356,6 @@
             color: #FFC107;
         }
 
-        .action-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--hover-color);
-            color: var(--text-color);
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-right: 8px;
-            font-size: 1.1rem;
-            text-decoration: none;
-        }
-
-        .action-btn:hover {
-            background: rgba(0, 114, 188, 0.1);
-            color: var(--primary-color);
-        }
-
         .pagination {
             display: flex;
             justify-content: center;
@@ -458,13 +436,13 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>STT</th>
                                 <th>Ảnh</th>
                                 <th>Họ đệm</th>
                                 <th>Tên</th>
                                 <th>Ngày sinh</th>
-                                <th>Mô tả</th>
-                                <th>Thao tác</th>
+                                <th>Giới thiệu</th>
+                                <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
