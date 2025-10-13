@@ -145,4 +145,4 @@ VNPAY_RETURN_URL = "http://localhost:8000/advise/payment/vnpay_return/"
 VNPAY_API_URL = 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction'
 
 #ChatGPT
-OPENAI_API_KEY = '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'
+# OPENAI_API_KEY = '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'
