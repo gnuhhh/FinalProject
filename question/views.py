@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from .models import Question
 import joblib
 import os
@@ -7,6 +8,7 @@ from sklearn.ensemble import RandomForestClassifier
 import pandas as pd
 
 # Create your views here.
+@login_required(login_url='login')
 def index(request):
     questions = Question.objects.all()
     return render(request, 'question.html', {'quests':questions})

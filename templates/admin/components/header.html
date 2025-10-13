@@ -6,14 +6,15 @@
                 <span class="username">{{ user.last_name }}</span>
             </a>
             <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser">
+                {% if request.user.groups.all.0.name == 'expert' %}
                 <li>
-                    <a class="dropdown-item" href="#">
-                        <!-- <i class="fas fa-user-circle me-2"></i> -->
+                    <a class="dropdown-item" href="{% url 'expert_profile' %}">
                         <i class="bi bi-person-circle"></i>
                         Thông tin tài khoản
                     </a>
                 </li>
                 <li><hr class="dropdown-divider"></li>
+                {% endif %}
                 <li>
                     <form method="POST" action="{% url 'logout_admin' %}">
                         {% csrf_token %}

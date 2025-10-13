@@ -4,8 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý lịch hẹn</title>
-    {% include 'components/links.html' %}
+    <title>Thông tin cá nhân</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+    <!-- Main CSS File -->
+    <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
+
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
     <style>
         * {
             margin: 0;
@@ -172,25 +193,76 @@
             box-shadow: var(--card-shadow);
         }
 
-        .user-profile {
+        .search-box {
             display: flex;
             align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            padding: 5px 10px;
+            background: var(--hover-color);
             border-radius: 8px;
+            padding: 8px 16px;
+            width: 300px;
+            border: 2px solid var(--border-color);
             transition: all 0.3s ease;
         }
 
-        .user-profile:hover {
-            background: var(--hover-color);
+        .search-box:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 114, 188, 0.1);
         }
 
-        .user-profile img {
+        .search-box input {
+            border: none;
+            outline: none;
+            padding: 8px;
+            width: 100%;
+            background: transparent;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .language-select {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--hover-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .language-select:hover {
+            background: rgba(0, 114, 188, 0.1);
+        }
+
+        .notification {
+            position: relative;
+            cursor: pointer;
             width: 40px;
             height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--hover-color);
             border-radius: 50%;
-            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        .notification:hover {
+            background: rgba(0, 114, 188, 0.1);
+        }
+
+        .notification .badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #FF4C51;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
         }
 
         /* Table Styles */
@@ -246,7 +318,6 @@
             transition: all 0.3s ease;
             color: var(--text-color);
             font-size: 15px;
-            text-decoration: none;
         }
 
         .table-btn:hover {
@@ -274,23 +345,64 @@
             padding: 18px 25px;
             border: none;
             text-transform: uppercase;
-            font-size: 0.95rem;
-            letter-spacing: 0.5px;
-            white-space: normal;
-            overflow: visible;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
             position: relative;
-            vertical-align: middle;
-            text-align: left;
-            line-height: 1.3;
+        }
+
+        .table th:nth-child(1) {
+            width: 10%;
         }
         
-        .table th:nth-child(1) { width: 5%; }
-        .table th:nth-child(2) { width: 20%; }
-        .table th:nth-child(3) { width: 15%; }
-        .table th:nth-child(4) { width: 15%; }
-        .table th:nth-child(5) { width: 25%; }
-        .table th:nth-child(6) { width: 10%; }
-        .table th:nth-child(7) { width: 10%; }
+        .table th:nth-child(2) {
+            width: 20%;
+        }
+        
+        .table th:nth-child(3) {
+            width: 35%;
+        }
+        
+        .table th:nth-child(4) {
+            width: 15%;
+        }
+        
+        .table th:nth-child(5) {
+            width: 20%;
+        }
+
+        /* Tooltips for truncated headers */
+        .table th span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+
+        .table th span:hover::after {
+            content: attr(title);
+            position: absolute;
+            left: 0;
+            top: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            z-index: 10;
+            white-space: normal;
+            max-width: 200px;
+            word-wrap: break-word;
+        }
+
+        .table thead th:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+
+        .table thead th:last-child {
+            border-radius: 0 8px 8px 0;
+        }
 
         .table tbody tr {
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -305,7 +417,7 @@
         }
 
         .table td {
-            background: white;  
+            background: white;
             vertical-align: middle;
             padding: 18px 25px;
             border: none;
@@ -329,140 +441,6 @@
             border-radius: 0 8px 8px 0;
             white-space: nowrap;
         }
-        /* Table 2 Styles */
-        .table2-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 20px;
-            position: relative;
-        }
-
-        .table2-header:after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 60px;
-            height: 2px;
-            background: var(--primary-color);
-        }
-
-        .table2-title {
-            font-size: 22px;
-            font-weight: 600;
-            color: var(--primary-color);
-        }
-
-        .table2-actions {
-            display: flex;
-            gap: 15px;
-        }
-
-        .table2-btn {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 20px;
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--text-color);
-            font-size: 15px;
-            text-decoration: none;
-        }
-
-        .table2-btn:hover {
-            background: rgba(0, 114, 188, 0.1);
-            color: var(--primary-color);
-        }
-
-        .table2-container {
-            overflow-x: auto;
-            margin-bottom: 25px;
-            width: 100%;
-        }
-
-        .table2 {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 12px;
-            table-layout: fixed;
-        }
-
-        .table2 thead th {
-            background: var(--primary-color);
-            color: white;
-            font-weight: 600;
-            padding: 18px 25px;
-            border: none;
-            text-transform: uppercase;
-            font-size: 0.95rem;
-            letter-spacing: 0.5px;
-            white-space: normal;
-            overflow: visible;
-            position: relative;
-            vertical-align: middle;
-            text-align: left;
-            line-height: 1.3;
-        }
-        
-        .table2 th:nth-child(1) { width: 5%; }
-        .table2 th:nth-child(2) { width: 19%; }
-        .table2 th:nth-child(3) { width: 19%; }
-        .table2 th:nth-child(4) { width: 13%; }
-        .table2 th:nth-child(5) { width: 14%; }
-        .table2 th:nth-child(6) { width: 15%; }
-        .table2 th:nth-child(7) { width: 15%; }
-
-        .table2 tbody tr {
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            transition: all 0.2s ease;
-            margin-bottom: 8px;
-        }
-
-        .table2 tbody tr:hover {
-            transform: translateX(5px);
-            box-shadow: 0 2px 15px rgba(0, 114, 188, 0.1);
-            background: rgba(0, 114, 188, 0.02);
-        }
-
-        .table2 td {
-            background: white;  
-            vertical-align: middle;
-            padding: 18px 25px;
-            border: none;
-            color: var(--text-color);
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            hyphens: auto;
-            font-size: 1rem;
-        }
-
-        .table2 tbody tr:hover td {
-            background: rgba(0, 114, 188, 0.02);
-        }
-
-        .table2 tbody tr td:first-child {
-            border-radius: 8px 0 0 8px;
-            font-weight: 600;
-        }
-
-        .table2 tbody tr td:last-child {
-            border-radius: 0 8px 8px 0;
-            white-space: nowrap;
-        }
-
-        .news-image {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
 
         .status-badge {
             padding: 5px 10px;
@@ -473,7 +451,7 @@
             text-align: center;
         }
 
-        .status-approved {
+        .status-active {
             background: rgba(34, 197, 94, 0.1);
             color: #22C55E;
         }
@@ -483,9 +461,9 @@
             color: #FFC107;
         }
 
-        .status-cancelled {
-            background: rgba(255, 7, 7, 0.1);
-            color: #dc3545;
+        .status-inactive {
+            background: rgba(255, 76, 81, 0.1);
+            color: #FF4C51;
         }
 
         .action-btn {
@@ -502,7 +480,6 @@
             transition: all 0.2s;
             margin-right: 8px;
             font-size: 1.1rem;
-            text-decoration: none;
         }
 
         .action-btn:hover {
@@ -538,10 +515,8 @@
         .page-item:hover:not(.active) {
             background: rgba(0, 114, 188, 0.1);
         }
-        .btn:hover{
-            background-color: var(--primary-color);
-            color: var(--hover-color) !important;
-        }
+        .avatar-wrapper { width: 120px; height: 120px; border-radius: 50%; overflow: hidden; border: 1px solid #dee2e6; }
+        .avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
         @media (max-width: 992px) {
             .container {
                 flex-direction: column;
@@ -569,123 +544,107 @@
 <body>
     <div class="container">
         <!-- Sidebar -->
-        {% include '../components/sidebar.html' %}
+        {% include 'admin/components/sidebar.html' %}
         <!-- Main Content -->
         <div class="main-content">
-            {% include '../components/header.html' %}
-            <!-- Data Table -->
-            <div class="data-table-container" data-aos="fade-up">
+            {% include 'admin/components/header.html' %}
+            <section id="panel-profile" class="data-table-container">
                 <div class="table-header">
-                    <div class="table-title">Danh sách lịch hẹn</div>
-                    {% if request.user.group.all.0.name == 'expert' %}
-                    <div class="table-actions">
-                        <a href="{% url 'schedule_assignment' %}" class="table-btn">
-                            <i class="bi bi-plus"></i>
-                            Đăng ký lịch
-                        </a>
+                    <div class="table-title">Thông tin cá nhân</div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <div class="avatar-wrapper">
+                        <img id="avatarPreview" src="{% if expert.avatar %}{{ expert.avatar.url }}{% else %}{% static 'assets/img/default-avatar.png' %}{% endif %}" alt="Avatar">
                     </div>
-                    {% endif %}
+                    <div class="fw-semibold">
+                        <div>{{ expert.first_name }} {{ expert.last_name }}</div>
+                    </div>
                 </div>
-                {% if request.user.groups.all.0.name == 'expert' %}
-                <div class="table-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>STT</th>
-                                <th>Tên thành viên</th>
-                                <th>Ngày</th>
-                                <th>Thời gian</th>
-                                <th>Zoom</th>
-                                <th>Trạng thái</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for appointment in appointments %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ appointment.member.first_name }} {{ appointment.member.last_name }}</td>
-                                <td>{{ appointment.work_schedule.date|date:"d/m/Y" }}</td>
-                                <td>{{ appointment.work_schedule.work_shift.start_time|time:"H:i" }} - {{ appointment.work_schedule.work_shift.end_time|time:"H:i" }}</td>
-                                <td>ID: {{ appointment.zoom_room.zoom_id }}/Pass: {{ appointment.zoom_room.password }}</td>
-                                <td>
-                                    {% if appointment.status == 'N' %}
-                                    <span class="status-badge status-pending">Chưa thực hiện</span>
-                                    {% elif appointment.status == 'Y' %}
-                                    <span class="status-badge status-approved">Đã xong</span>
-                                    {% else %}
-                                    <span class="status-badge status-cancelled">Đang thực hiện</span>
-                                    {% endif %}
-                                </td>
-                                {% if appointment.status == 'N' %}
-                                <td>
-                                    <a href="{% url 'schedule_customer_complete' appointment.id %}" class="btn btn-sm" style="color: #0072bc; border-color: #0072bc">Xong</a>
-                                </td>
+
+                <form method="post" enctype="multipart/form-data" action="">
+                    {% csrf_token %}
+                    <div class="row g-3 align-items-center mb-3">
+                        <div class="col-md-6">
+                            <label for="avatar" class="form-label">Hình ảnh</label>
+                            <input class="form-control" type="file" id="avatar" name="avatar" accept="image/*">
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="last_name" class="form-label">Họ</label>
+                            <input type="text" id="last_name" name="first_name" class="form-control" value="{{ expert.first_name }}" placeholder="Nhập họ">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="first_name" class="form-label">Tên</label>
+                            <input type="text" id="first_name" name="last_name" class="form-control" value="{{ expert.last_name }}" placeholder="Nhập tên">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" id="email" name="email" class="form-control" value="{{ expert.email }}" placeholder="email@domain.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">Số điện thoại</label>
+                            <input type="text" id="phone" name="phone" class="form-control" value="{{ expert.phone_number }}" placeholder="Nhập số điện thoại">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label d-block">Giới tính</label>
+                            <div class="d-flex gap-3">
+                                {% if expert.gender == 'Male' %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_male" value="Male" checked>
+                                    <label class="form-check-label" for="gender_male">Nam</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_female" value="Female">
+                                    <label class="form-check-label" for="gender_female">Nữ</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_other" value="Other">
+                                    <label class="form-check-label" for="gender_other">Khác</label>
+                                </div>
+                                {% elif expert.gender == 'Female'%}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_male" value="Male">
+                                    <label class="form-check-label" for="gender_male">Nam</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_female" value="Female" checked>
+                                    <label class="form-check-label" for="gender_female">Nữ</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_other" value="Other">
+                                    <label class="form-check-label" for="gender_other">Khác</label>
+                                </div>
+                                {% else %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_male" value="Male">
+                                    <label class="form-check-label" for="gender_male">Nam</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_female" value="Female">
+                                    <label class="form-check-label" for="gender_female">Nữ</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_other" value="Other">
+                                    <label class="form-check-label" for="gender_other">Khác</label>
+                                </div>
                                 {% endif %}
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="8" class="text-center">Bạn chưa đăng ký lịch</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                {% else %}
-                <div class="table-container">
-                    <table class="table2">
-                        <thead>
-                            <tr>
-                                <th>STT</th>
-                                <th>Tên thành viên</th>
-                                <th>Tên chuyên gia</th>
-                                <th>Ngày</th>
-                                <th>Thời gian</th>
-                                <th>Zoom</th>
-                                <th>Trạng thái</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for appointment in appointments %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ appointment.member.first_name }} {{ appointment.member.last_name }}</td>
-                                <td>{{ appointment.work_schedule.expert.first_name }} {{ appointment.work_schedule.expert.last_name }}</td>
-                                <td>{{ appointment.work_schedule.date|date:"d/m/Y" }}</td>
-                                <td>{{ appointment.work_schedule.work_shift.start_time|time:"H:i" }} - {{ appointment.work_schedule.work_shift.end_time|time:"H:i" }}</td>
-                                <td>ID: {{ appointment.zoom_room.zoom_id }}
-                                    Pass: {{ appointment.zoom_room.password }}
-                                </td>
-                                <td>
-                                    {% if appointment.status == 'N' %}
-                                    <span class="status-badge status-pending">Chưa thực hiện</span>
-                                    {% elif appointment.status == 'Y' %}
-                                    <span class="status-badge status-approved">Đã xong</span>
-                                    {% else %}
-                                    <span class="status-badge status-cancelled">Đang thực hiện</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="8" class="text-center">Bạn chưa đăng ký lịch</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                {% endif %}
-
-                {% include 'components/notification.html' %}
-
-                <div class="pagination">
-                    <div class="page-item"><i class="bi bi-chevron-left"></i></div>
-                    <div class="page-item active">1</div>
-                    <div class="page-item">2</div>
-                    <div class="page-item">3</div>
-                    <div class="page-item"><i class="bi bi-chevron-right"></i></div>
-                </div>
-            </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="dob" class="form-label">Ngày sinh</label>
+                            <input type="date" id="dob" name="dob" class="form-control" value="{{ expert.birthdate|date:'Y-m-d' }}">
+                        </div>
+                    </div>
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>Lưu thay đổi</button>
+                        <a href="#" class="btn btn-outline-secondary">Hủy</a>
+                    </div>
+                </form>
+            </section>
+            {% include 'components/notification.html' %}
         </div>
     </div>
 
@@ -716,6 +675,7 @@
                 this.classList.toggle('expanded');
                 postSubmenu.classList.toggle('open');
             });
+
         });
     </script>
 </body>

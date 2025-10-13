@@ -7,11 +7,11 @@
         timer: 3000,  
         timerProgressBar: true,
     });
-{% for message in messages %}
+    {% for message in messages %}
     Toast.fire({
         icon: "{{ message.tags }}",
         title: "{{ message|escapejs }}"
     });
-{% endfor %}
+    {% endfor %}
 </script>
 {% endif %}

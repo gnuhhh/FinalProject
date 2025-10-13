@@ -48,6 +48,12 @@
                 <span>Quản lý tài khoản</span>
             </a>
         </li>
+        <li class="sidebar-item">
+            <a href="{% url 'permission' %}" class="menu-item">
+                <i class="bi bi-grid-fill"></i>
+                <span>Phân quyền</span>
+            </a>
+        </li>
         {% endif %}
 
         {% if request.user.groups.all.0.name == 'manager' %}

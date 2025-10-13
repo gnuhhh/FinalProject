@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý lịch hẹn</title>
+    <title>Phân quyền</title>
     {% include 'components/links.html' %}
     <style>
         * {
@@ -422,15 +422,13 @@
             <!-- Data Table -->
             <div class="data-table-container" data-aos="fade-up">
                 <div class="table-header">
-                    <div class="table-title">Danh sách lịch đã đăng ký</div>
-                    {% if request.user.groups.all.0.name == 'expert' %}
+                    <div class="table-title">Danh sách vai trò</div>
                     <div class="table-actions">
                         <a href="{% url 'schedule_assignment' %}" class="table-btn">
                             <i class="bi bi-plus"></i>
-                            Đăng ký lịch
+                            Thêm vai trò
                         </a>
                     </div>
-                    {% endif %}
                 </div>
                 
                 <div class="table-container">
@@ -438,40 +436,19 @@
                         <thead>
                             <tr>
                                 <th>STT</th>
-                                <th>Ngày</th>
-                                <th>Thời gian</th>
-                                <th>Trạng thái</th>
+                                <th>Vai trò</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for s in schedule %}
+                            {% for group in groups %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ s.date }}</td>
-                                <td>{{ s.work_shift }}</td>
+                                <td>{{ group.name }}</td>
                                 <td>
-                                    {% if s.status == 'Y' %}
-                                    <span class="status-badge status-approved">Đã được duyệt</span>
-                                    {% elif s.status == 'P' %}
-                                    <span class="status-badge status-pending">Đang chờ duyệt</span>
-                                    {% else %}
-                                    <span class="status-badge status-cancelled">Đã hủy</span>
-                                    {% endif %}
+                                    <a href="#" class="btn btn-sm" style="border-color: #0072bc; color: #0072bc">Sửa</a>
+                                    <a href="#" class="btn btn-sm btn-outline-danger">Xóa</a>
                                 </td>
-                                {% if request.user.groups.all.0.name == 'expert'%}
-                                <td>
-                                    {% if s.status == 'P' %}
-                                    <a href="{% url 'schedule_cancel_approve' s.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn hủy lịch này?')">Hủy</a>
-                                    {% endif %}
-                                </td>
-                                {% else %}
-                                <td>
-                                    {% if s.status == 'P' %}
-                                    <a href="{% url 'schedule_cancel_approve' s.id %}" class="btn btn-sm btn-outline-success">Duyệt</a>
-                                    {% endif %}
-                                </td>
-                                {% endif %}
                             </tr>
                             {% empty %}
                             <tr>

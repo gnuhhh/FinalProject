@@ -6,7 +6,7 @@ from news.models import News
 from user_profile.models import Member
 from homepage.models import Expert
 from django.utils.html import strip_tags
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group, Permission
 from advise.models import WorkShift, WorkSchedule, Appointment
 from datetime import datetime, date
 from django.contrib.auth.decorators import login_required
@@ -101,7 +101,11 @@ def information_delete(request, id):
 
 @login_required(login_url='admin')
 def news(request):
-    news_list = News.objects.all().order_by('id')
+    if request.user.groups.first().name == 'manager':
+        news_list = News.objects.all().order_by('id')
+    else:
+        author = request.user.first_name + ' ' + request.user.last_name
+        news_list = News.objects.filter(author=author).order_by('id')
     return render(request, 'admin/news/view.html', {'news_list':news_list})
 
 @login_required(login_url='admin')
@@ -122,9 +126,6 @@ def news_create(request):
 
 @login_required(login_url='admin')
 def news_update(request, id):
-    if not request.user.has_perm('news.update_news'):
-        messages.error(request, 'Bạn không có quyền thực hiện thao tác này')
-        return redirect('news')
     new = News.objects.get(id=id)
     if request.method == 'POST':
         if 'image' in request.FILES:
@@ -373,3 +374,26 @@ def expert_update(request, id):
 def member_view(request):
     members = Member.objects.all()
     return render(request, 'admin/member/view.html', {'members':members})
+
+@login_required(login_url='admin')
+def expert_profile(request):
+    expert = Expert.objects.get(id=request.user.id)
+    if request.method == 'POST':
+        if 'avatar' in request.FILES:
+            expert.avatar = request.FILES['avatar']
+        expert.first_name = request.POST['first_name']
+        expert.last_name = request.POST['last_name']
+        expert.email = request.POST['email']
+        expert.phone_number = request.POST['phone']
+        expert.gender = request.POST['gender']
+        if request.POST['dob']:
+            expert.birthdate = request.POST['dob']
+        expert.save()
+        messages.success(request, "Thay đổi thành công")
+        return redirect('expert_profile')
+    else:
+        return render(request, 'admin/expert/profile.html', {'expert':expert})
+    
+def permission(request):
+    groups = Group.objects.prefetch_related('permissions').all()
+    return render(request, 'admin/permission/view.html', {'groups':groups})

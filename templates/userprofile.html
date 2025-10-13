@@ -154,25 +154,7 @@
                             <input type="date" id="dob" name="dob" class="form-control" value="{{ member.birthdate|date:'Y-m-d' }}">
                         </div>
                     </div>
-                    
-                    {% if messages %}
-                    <script>
-                        const Toast = Swal.mixin({
-                            toast: true,
-                            position: "top-end",
-                            showConfirmButton: false,
-                            timer: 3000,  
-                            timerProgressBar: true,
-                        });
-                    {% for message in messages %}
-                        Toast.fire({
-                            icon: "{{ message.tags }}",
-                            title: "{{ message|escapejs }}",
-                        });
-                    {% endfor %}
-                    </script>
-                    {% endif %}
-
+                    {% include 'components/notification.html' %}
                     <div class="mt-4 d-flex gap-2">
                         <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>Lưu thay đổi</button>
                         <a href="#" class="btn btn-outline-secondary">Hủy</a>
