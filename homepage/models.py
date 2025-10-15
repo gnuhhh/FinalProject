@@ -17,3 +17,12 @@ class Expert(User):
         return self.first_name + ' ' + self.last_name
     class Meta:
         db_table = "Experts"
+
+class ChatHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+    response = models.TextField()
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.user.last_name}: {self.message}"
