@@ -30,3 +30,5 @@ class SchoolMajor(models.Model):
     major = models.ForeignKey(Major, on_delete=models.CASCADE)
     point = models.FloatField(null=True, verbose_name='Điểm chuẩn')
     admission_targets = models.IntegerField(null=True, verbose_name='Chỉ tiêu')
+    admission_combination = models.CharField(max_length=100, null=True, verbose_name='Tổ hợp xét tuyển', default='A00, A01, D01')    
+    admission_year = models.PositiveSmallIntegerField(max_length=4, null=True, default=2023, verbose_name='Năm tuyển sinh')

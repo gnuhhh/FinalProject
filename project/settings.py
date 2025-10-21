@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     "django_extensions",
     "testblock",
     'admission_predictor',
-    'daihoc_compare'
+    'daihoc_compare',
+    'channels'
 ]
 
 MIDDLEWARE = [

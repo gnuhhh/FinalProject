@@ -37,7 +37,7 @@ def index(request):
     if request.method == 'POST':
         message = request.POST.get('message', '').strip()
         if not message:
-            return JsonResponse({'error': 'Thiếu nội dung tin nhắn.'}, status=400)
+            return JsonResponse({'error': 'Thiếu nội dung tin nhắn.'})
         try:
             response = asking_ai(message)
             if not response:
@@ -68,7 +68,7 @@ def get_chat_history(request):
                 'created_at': chat.created_at.strftime('%d/%m/%Y %H:%M')
             })
         return JsonResponse({'chat_history': history_data})
-    return JsonResponse({'error': 'Method not allowed'}, status=405)
+    return JsonResponse({'error': 'Method not allowed'})
 
 def news_detail(request, slug):
     new = get_object_or_404(News, slug=slug)
