@@ -1,247 +1,709 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
-{% include 'components/header.html' %}
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>{{ news.title }} - Cổng thông tin tuyển sinh Toàn Quốc</title>
+    <meta name="description" content="{{ news.content|truncatewords:30 }}">
+    <meta name="keywords" content="tin tức tuyển sinh, {{ news.title }}">
+    {% include 'components/links.html' %}
+</head>
 
-<body class="index-page">
-  {% include 'components/navbar-top.html' %}
-  
-  <main class="main">
-    <!-- News Detail Section -->
-    <section class="news-detail section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 mx-auto">
-            <!-- News Header -->
-            <div class="news-header text-center mb-5" data-aos="fade-up">
-              <h1 class="news-title">{{ news.title }}</h1>
-              <div class="news-meta">
-                <span class="author"><i class="bi bi-person"></i> {{ news.author }}</span>
-                <span class="date"><i class="bi bi-calendar"></i> {{ news.created_at|date:"d/m/Y" }}</span>
-                {% if news.updated_at %}
-                <span class="updated">Cập nhật: {{ news.updated_at|date:"d/m/Y" }}</span>
-                {% endif %}
-              </div>
+<body class="news-detail-page">
+    {% include 'components/navbar-top.html' %}
+    
+    <main class="main">
+        <!-- Breadcrumb -->
+        <section class="breadcrumb-section">
+            <div class="container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'index' %}">Trang chủ</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'news' %}">Tin tức</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ news.title|truncatewords:5 }}</li>
+                    </ol>
+                </nav>
             </div>
+        </section>
 
-            <!-- News Image -->
-            {% if news.image %}
-            <div class="news-image mb-4" data-aos="fade-up" data-aos-delay="100">
-              <img src="{{ news.image.url }}" alt="{{ news.title }}" class="img-fluid rounded">
-            </div>
-            {% endif %}
+        <!-- News Detail Content -->
+        <section class="news-detail-content section">
+            <div class="container">
+                <div class="row">
+                    <!-- Main Content -->
+                    <div class="col-lg-8">
+                        <article class="news-article" data-aos="fade-up">
+                            <!-- Article Header -->
+                            <header class="article-header">
+                                <h1 class="article-title">{{ news.title }}</h1>
+                                <div class="article-meta">
+                                    <div class="meta-item">
+                                        <i class="bi bi-person"></i>
+                                        <span>{{ news.author }}</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="bi bi-calendar"></i>
+                                        <span>{{ news.created_at|date:"d/m/Y H:i" }}</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="bi bi-clock"></i>
+                                        <span>{{ news.created_at|timesince }} trước</span>
+                                    </div>
+                                </div>
+                            </header>
 
-            <!-- News Content -->
-            <div class="news-content" data-aos="fade-up" data-aos-delay="200">
-              {{ news.content|safe }}
-            </div>
+                            <!-- Article Image -->
+                            {% if news.image %}
+                            <div class="article-image">
+                                <img src="{{ news.image.url }}" alt="{{ news.title }}" class="img-fluid">
+                            </div>
+                            {% endif %}
 
-            <!-- News Tags -->
-            {% if news.tags %}
-            <div class="news-tags mt-4" data-aos="fade-up" data-aos-delay="300">
-              <h5>Tags:</h5>
-              <div class="tags">
-                {% for tag in news.tags.all %}
-                <a href="#" class="tag">{{ tag.name }}</a>
-                {% endfor %}
-              </div>
-            </div>
-            {% endif %}
+                            <!-- Article Content -->
+                            <div class="article-content">
+                                {{ news.content|linebreaks }}
+                            </div>
 
-            <!-- Navigation -->
-            <div class="news-navigation mt-5" data-aos="fade-up" data-aos-delay="400">
-              <div class="row">
-                <div class="col-6">
-                  {% if previous_news %}
-                  <a href="{% url 'news_detail' previous_news.id %}" class="nav-link prev">
-                    <i class="bi bi-arrow-left"></i>
-                    <span>{{ previous_news.title }}</span>
-                  </a>
-                  {% endif %}
+                            <!-- Article Footer -->
+                            <footer class="article-footer">
+                                <div class="article-tags">
+                                    <span class="tag-label">Tags:</span>
+                                    <a href="#" class="tag">Tuyển sinh</a>
+                                    <a href="#" class="tag">Đại học</a>
+                                    <a href="#" class="tag">Thông tin</a>
+                                </div>
+                                
+                                <div class="article-share">
+                                    <span class="share-label">Chia sẻ:</span>
+                                    <div class="share-buttons">
+                                        <a href="#" class="share-btn facebook" title="Chia sẻ lên Facebook">
+                                            <i class="bi bi-facebook"></i>
+                                        </a>
+                                        <a href="#" class="share-btn twitter" title="Chia sẻ lên Twitter">
+                                            <i class="bi bi-twitter"></i>
+                                        </a>
+                                        <a href="#" class="share-btn linkedin" title="Chia sẻ lên LinkedIn">
+                                            <i class="bi bi-linkedin"></i>
+                                        </a>
+                                        <a href="#" class="share-btn copy" title="Sao chép link">
+                                            <i class="bi bi-link-45deg"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </footer>
+                        </article>
+
+                        <!-- Related News -->
+                        {% if related_news %}
+                        <section class="related-news" data-aos="fade-up" data-aos-delay="100">
+                            <h3 class="section-title">Tin tức liên quan</h3>
+                            <div class="related-news-grid">
+                                {% for related in related_news %}
+                                <div class="related-news-item">
+                                    <div class="related-news-image">
+                                        <a href="{% url 'news_detail' related.slug %}">
+                                            <img src="{{ related.image.url }}" alt="{{ related.title }}">
+                                        </a>
+                                    </div>
+                                    <div class="related-news-content">
+                                        <h4 class="related-news-title">
+                                            <a href="{% url 'news_detail' related.slug %}">{{ related.title }}</a>
+                                        </h4>
+                                        <span class="related-news-date">{{ related.created_at|date:"d/m/Y" }}</span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </section>
+                        {% endif %}
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="col-lg-4">
+                        <div class="news-sidebar">
+                            <!-- Recent News -->
+                            <div class="sidebar-widget recent-news-widget" data-aos="fade-up" data-aos-delay="100">
+                                <h4 class="widget-title">Tin tức gần đây</h4>
+                                <div class="recent-news-list">
+                                    {% for recent_news in recent_news_list %}
+                                    <div class="recent-news-item">
+                                        <div class="recent-news-image">
+                                            <a href="{% url 'news_detail' recent_news.slug %}">
+                                                <img src="{{ recent_news.image.url }}" alt="{{ recent_news.title }}">
+                                            </a>
+                                        </div>
+                                        <div class="recent-news-content">
+                                            <h5 class="recent-news-title">
+                                                <a href="{% url 'news_detail' recent_news.slug %}">{{ recent_news.title|truncatewords:8 }}</a>
+                                            </h5>
+                                            <span class="recent-news-date">{{ recent_news.created_at|date:"d/m/Y" }}</span>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- Categories -->
+                            <div class="sidebar-widget categories-widget" data-aos="fade-up" data-aos-delay="200">
+                                <h4 class="widget-title">Danh mục</h4>
+                                <ul class="categories-list">
+                                    <li><a href="#">Tuyển sinh đại học <span>(12)</span></a></li>
+                                    <li><a href="#">Thông báo chung <span>(8)</span></a></li>
+                                    <li><a href="#">Hướng dẫn <span>(15)</span></a></li>
+                                    <li><a href="#">Sự kiện <span>(6)</span></a></li>
+                                    <li><a href="#">Học bổng <span>(9)</span></a></li>
+                                </ul>
+                            </div>
+
+                            <!-- Contact Info -->
+                            <div class="sidebar-widget contact-widget" data-aos="fade-up" data-aos-delay="300">
+                                <h4 class="widget-title">Liên hệ tư vấn</h4>
+                                <div class="contact-info">
+                                    <p><i class="bi bi-telephone"></i> 0987 654 321</p>
+                                    <p><i class="bi bi-envelope"></i> info@thongtintuyensinh.edu.vn</p>
+                                    <a href="{% url 'advise' %}" class="btn btn-primary">Đặt lịch tư vấn</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-6 text-end">
-                  {% if next_news %}
-                  <a href="{% url 'news_detail' next_news.id %}" class="nav-link next">
-                    <span>{{ next_news.title }}</span>
-                    <i class="bi bi-arrow-right"></i>
-                  </a>
-                  {% endif %}
-                </div>
-              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
+        </section>
+    </main>
 
-  {% include 'components/footer.html' %}
+    {% include 'components/footer.html' %}
 
-  <!-- Scroll Top -->
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
-    <i class="bi bi-arrow-up-short"></i>
-  </a>
+    <!-- Vendor JS Files -->
+    <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/php-email-form/validate.js' %}"></script>
+    <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+    <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
 
-  <!-- Vendor JS Files -->
-  <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-  <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
-  <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
+    <!-- Main JS File -->
+    <script src="{% static 'assets/js/main.js' %}"></script>
 
-  <!-- Main JS File -->
-  <script src="{% static 'assets/js/main.js' %}"></script>
+    <style>
+        /* News Detail Page Styles */
+        .news-detail-page {
+            background: #f8f9fa;
+        }
 
-  <style>
-    .news-detail {
-      padding: 80px 0;
-      background: #f8f9fa;
-    }
+        .breadcrumb-section {
+            background: white;
+            padding: 20px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
 
-    .news-header {
-      margin-bottom: 40px;
-    }
+        .breadcrumb {
+            margin: 0;
+            background: none;
+            padding: 0;
+        }
 
-    .news-title {
-      font-size: 36px;
-      font-weight: 700;
-      color: #2c384e;
-      margin-bottom: 20px;
-      line-height: 1.3;
-    }
+        .breadcrumb-item a {
+            color: #0072bc;
+            text-decoration: none;
+        }
 
-    .news-meta {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      color: #6c757d;
-      font-size: 14px;
-    }
+        .breadcrumb-item.active {
+            color: #6c757d;
+        }
 
-    .news-meta span {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
+        .news-detail-content {
+            padding: 40px 0 80px;
+        }
 
-    .news-image {
-      margin-bottom: 30px;
-    }
+        .news-article {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
 
-    .news-image img {
-      width: 100%;
-      height: auto;
-      border-radius: 15px;
-      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
-    }
+        .article-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f8f9fa;
+        }
 
-    .news-content {
-      font-size: 16px;
-      line-height: 1.8;
-      color: #2c384e;
-    }
+        .article-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2c384e;
+            line-height: 1.3;
+            margin-bottom: 20px;
+        }
 
-    .news-content p {
-      margin-bottom: 20px;
-    }
+        .article-meta {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
 
-    .news-content img {
-      max-width: 100%;
-      height: auto;
-      margin: 20px 0;
-      border-radius: 10px;
-    }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #6c757d;
+            font-size: 14px;
+        }
 
-    .news-tags {
-      padding: 20px 0;
-      border-top: 1px solid #e9ecef;
-      border-bottom: 1px solid #e9ecef;
-    }
+        .meta-item i {
+            color: #0072bc;
+        }
 
-    .news-tags h5 {
-      font-size: 18px;
-      margin-bottom: 15px;
-      color: #2c384e;
-    }
+        .article-image {
+            margin: 30px 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
 
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
+        .article-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
 
-    .tag {
-      display: inline-block;
-      padding: 5px 15px;
-      background: rgba(0, 114, 188, 0.1);
-      color: #0072bc;
-      border-radius: 20px;
-      font-size: 14px;
-      text-decoration: none;
-      transition: all 0.3s;
-    }
+        .article-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #2c384e;
+            margin: 30px 0;
+        }
 
-    .tag:hover {
-      background: #0072bc;
-      color: #fff;
-    }
+        .article-content p {
+            margin-bottom: 20px;
+        }
 
-    .news-navigation {
-      padding: 30px 0;
-      border-top: 1px solid #e9ecef;
-    }
+        .article-content h2,
+        .article-content h3,
+        .article-content h4 {
+            color: #0072bc;
+            margin: 30px 0 15px;
+            font-weight: 600;
+        }
 
-    .nav-link {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #2c384e;
-      text-decoration: none;
-      transition: all 0.3s;
-    }
+        .article-content ul,
+        .article-content ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
 
-    .nav-link.prev {
-      justify-content: flex-start;
-    }
+        .article-content li {
+            margin-bottom: 8px;
+        }
 
-    .nav-link.next {
-      justify-content: flex-end;
-    }
+        .article-footer {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #f8f9fa;
+        }
 
-    .nav-link span {
-      font-size: 14px;
-      max-width: 200px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+        .article-tags {
+            margin-bottom: 20px;
+        }
 
-    .nav-link:hover {
-      color: #0072bc;
-    }
+        .tag-label {
+            font-weight: 600;
+            color: #2c384e;
+            margin-right: 10px;
+        }
 
-    @media (max-width: 768px) {
-      .news-title {
-        font-size: 28px;
-      }
+        .tag {
+            display: inline-block;
+            background: #f8f9fa;
+            color: #0072bc;
+            padding: 5px 12px;
+            border-radius: 15px;
+            text-decoration: none;
+            font-size: 14px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+        }
 
-      .news-meta {
-        flex-direction: column;
-        gap: 10px;
-      }
+        .tag:hover {
+            background: #0072bc;
+            color: white;
+        }
 
-      .nav-link span {
-        max-width: 150px;
-      }
-    }
-  </style>
+        .article-share {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      AOS.init({
-        duration: 1000,
-        once: true
-      });
-    });
-  </script>
+        .share-label {
+            font-weight: 600;
+            color: #2c384e;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .share-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .share-btn.facebook {
+            background: #3b5998;
+        }
+
+        .share-btn.twitter {
+            background: #1da1f2;
+        }
+
+        .share-btn.linkedin {
+            background: #0077b5;
+        }
+
+        .share-btn.copy {
+            background: #6c757d;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Related News */
+        .related-news {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c384e;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #0072bc;
+        }
+
+        .related-news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .related-news-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .related-news-item:hover {
+            background: #f8f9fa;
+        }
+
+        .related-news-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .related-news-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .related-news-content {
+            flex-grow: 1;
+        }
+
+        .related-news-title {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .related-news-title a {
+            color: #2c384e;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .related-news-title a:hover {
+            color: #0072bc;
+        }
+
+        .related-news-date {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        /* Sidebar Styles */
+        .news-sidebar {
+            padding-left: 30px;
+        }
+
+        .sidebar-widget {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .widget-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c384e;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #0072bc;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: #0072bc;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover {
+            background: #005a99;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .recent-news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .recent-news-item {
+            display: flex;
+            gap: 15px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .recent-news-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .recent-news-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .recent-news-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .recent-news-content {
+            flex-grow: 1;
+        }
+
+        .recent-news-title {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .recent-news-title a {
+            color: #2c384e;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .recent-news-title a:hover {
+            color: #0072bc;
+        }
+
+        .recent-news-date {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .categories-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .categories-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .categories-list li:last-child {
+            border-bottom: none;
+        }
+
+        .categories-list a {
+            color: #2c384e;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .categories-list a:hover {
+            color: #0072bc;
+        }
+
+        .categories-list span {
+            background: #f8f9fa;
+            color: #6c757d;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .contact-info p {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #2c384e;
+        }
+
+        .contact-info i {
+            color: #0072bc;
+            width: 20px;
+        }
+
+        .contact-info .btn {
+            width: 100%;
+            padding: 12px;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 991px) {
+            .news-sidebar {
+                padding-left: 0;
+                margin-top: 40px;
+            }
+
+            .related-news-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .article-title {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .news-article {
+                padding: 25px;
+            }
+
+            .article-title {
+                font-size: 24px;
+            }
+
+            .article-meta {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .article-share {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .related-news-item {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .related-news-image {
+                width: 100%;
+                height: 150px;
+            }
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize AOS
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true
+            });
+
+            // Copy link functionality
+            const copyBtn = document.querySelector('.share-btn.copy');
+            if (copyBtn) {
+                copyBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navigator.clipboard.writeText(window.location.href).then(function() {
+                        // Show success message
+                        const originalHTML = copyBtn.innerHTML;
+                        copyBtn.innerHTML = '<i class="bi bi-check"></i>';
+                        copyBtn.style.background = '#28a745';
+                        
+                        setTimeout(function() {
+                            copyBtn.innerHTML = originalHTML;
+                            copyBtn.style.background = '#6c757d';
+                        }, 2000);
+                    });
+                });
+            }
+
+            // Social sharing
+            const shareButtons = document.querySelectorAll('.share-btn:not(.copy)');
+            shareButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const url = encodeURIComponent(window.location.href);
+                    const title = encodeURIComponent(document.title);
+                    
+                    if (this.classList.contains('facebook')) {
+                        window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+                    } else if (this.classList.contains('twitter')) {
+                        window.open(`https://twitter.com/intent/tweet?url=${url}&text=${title}`, '_blank');
+                    } else if (this.classList.contains('linkedin')) {
+                        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
-</html> 
+
+</html>

@@ -9,8 +9,8 @@
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="{% url 'index' %}" class="{% if request.path == '/'%}active{% endif %}">Trang chủ<br></a></li>
-          <li><a href="#" class="{% if request.path == '/'%}active{% endif %}">Tin nổi bật<br></a></li>
-          <li class="dropdown"><a href="{% url 'school' %}" class="{% if request.path == '/school/' or request.path == '/school/ha-noi' or request.path == '/school/tp-hcm'%}active{% endif %}"><span>Tuyển sinh</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+          <li><a href="{% url 'news' %}" class="{% if 'news' in request.path %}active{% endif %}">Tin nổi bật<br></a></li>
+          <li class="dropdown"><a href="{% url 'school' %}" class="{% if request.path == '/school/' or request.path == '/school/hanoi/' or request.path == '/school/tphcm/'%}active{% endif %}"><span>Tuyển sinh</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
             <ul>
               <li><a href="{% url 'school_hanoi' %}">Hà Nội</a></li>
               <li><a href="{% url 'school_tphcm' %}">TPHCM</a></li>
@@ -18,13 +18,13 @@
           </li>
           <li class="dropdown">
             <a href="#" class="{% if 'test-khoi' in request.path or 'test' in request.path %}active{% endif %}">
-                <span>Định Hướng Học Tập</span> <i class="bi bi-chevron-down toggle-dropdown"></i>
+                <span>Định hướng học tập</span> <i class="bi bi-chevron-down toggle-dropdown"></i>
             </a>
             <ul>
                 <!-- Test Khối -->
                 <li class="dropdown">
                     <a href="{% url 'testblock:test_block_list' %}">
-                        <span>Test Khối Thi</span> <i class="bi bi-chevron-right toggle-dropdown"></i>
+                        <span>Test khối thi</span> <i class="bi bi-chevron-right toggle-dropdown"></i>
                     </a>
                     <ul>
                         <li><a href="{% url 'testblock:test_block_list' %}">Tất cả khối thi</a></li>
@@ -39,7 +39,7 @@
                 <!-- Test Chuyên Ngành - Sử dụng URL thực tế từ testapp -->
                 <li class="dropdown">
                     <a href="{% url 'testapp:test_list' %}">
-                        <span>Test Chuyên Ngành</span> <i class="bi bi-chevron-right toggle-dropdown"></i>
+                        <span>Test chuyên ngành</span> <i class="bi bi-chevron-right toggle-dropdown"></i>
                     </a>
                     <ul>
                         <li><a href="{% url 'testapp:test_list' %}">Tất cả chuyên ngành</a></li>

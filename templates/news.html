@@ -1,0 +1,645 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Tin tức nổi bật - Cổng thông tin tuyển sinh Toàn Quốc</title>
+    <meta name="description" content="Cập nhật tin tức mới nhất về tuyển sinh đại học, cao đẳng và các thông tin quan trọng cho thí sinh">
+    <meta name="keywords" content="tin tức tuyển sinh, thông tin đại học, tuyển sinh 2025">
+    {% include 'components/links.html' %}
+</head>
+
+<body class="news-page">
+    {% include 'components/navbar-top.html' %}
+    
+    <main class="main">
+        <!-- News Content Section -->
+        <section id="news-content" class="news-content section">
+            <div class="container">
+                <div class="row">
+                    <!-- Main News Grid -->
+                    <div class="col-lg-8">
+                        <div class="news-grid">
+                            {% for news_item in news_list %}
+                            <article class="news-card" data-aos="fade-up" data-aos-delay="100">
+                                <div class="news-image">
+                                    <a href="{% url 'news_detail' news_item.slug %}">
+                                        <img src="{{ news_item.image.url }}" alt="{{ news_item.title }}" class="img-fluid">
+                                    </a>
+                                    <div class="news-date">
+                                        <span class="day">{{ news_item.created_at.day }}</span>
+                                        <span class="month">Th{{ news_item.created_at.month }}</span>
+                                    </div>
+                                </div>
+                                <div class="news-content">
+                                    <h3 class="news-title">
+                                        <a href="{% url 'news_detail' news_item.slug %}">{{ news_item.title }}</a>
+                                    </h3>
+                                    <p class="news-excerpt">
+                                        {{ news_item.content|truncatewords:25 }}
+                                    </p>
+                                    <div class="news-meta">
+                                        <span><i class="bi bi-person"></i> {{ news_item.author }}</span>
+                                        <span><i class="bi bi-calendar"></i> {{ news_item.created_at|date:"d/m/Y" }}</span>
+                                    </div>
+                                    <a href="{% url 'news_detail' news_item.slug %}" class="read-more">
+                                        Đọc thêm <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </article>
+                            {% empty %}
+                            <div class="empty-news text-center">
+                                <i class="bi bi-newspaper"></i>
+                                <h3>Chưa có tin tức nào</h3>
+                                <p>Hiện tại chưa có bài viết nào được đăng. Vui lòng quay lại sau!</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Pagination -->
+                        {% if news_list.has_other_pages %}
+                        <nav aria-label="Phân trang tin tức" class="news-pagination">
+                            <ul class="pagination justify-content-center">
+                                {% if news_list.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ news_list.previous_page_number }}">
+                                        <i class="bi bi-chevron-left"></i> Trước
+                                    </a>
+                                </li>
+                                {% endif %}
+
+                                {% for num in news_list.paginator.page_range %}
+                                    {% if news_list.number == num %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ num }}</span>
+                                    </li>
+                                    {% elif num > news_list.number|add:'-3' and num < news_list.number|add:'3' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                    </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if news_list.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ news_list.next_page_number }}">
+                                        Sau <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="col-lg-4">
+                        <div class="news-sidebar">
+                            <!-- Search Box -->
+                            <div class="sidebar-widget search-widget" data-aos="fade-up" data-aos-delay="100">
+                                <h4 class="widget-title">Tìm kiếm tin tức</h4>
+                                <form class="search-form" method="GET" action="{% url 'news' %}">
+                                    <div class="input-group">
+                                        <input type="text" name="search" class="form-control" placeholder="Nhập từ khóa..." value="{{ request.GET.search }}">
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="bi bi-search"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Recent News -->
+                            <div class="sidebar-widget recent-news-widget" data-aos="fade-up" data-aos-delay="200">
+                                <h4 class="widget-title">Tin tức gần đây</h4>
+                                <div class="recent-news-list">
+                                    {% for recent_news in recent_news_list %}
+                                    <div class="recent-news-item">
+                                        <div class="recent-news-image">
+                                            <a href="{% url 'news_detail' recent_news.slug %}">
+                                                <img src="{{ recent_news.image.url }}" alt="{{ recent_news.title }}">
+                                            </a>
+                                        </div>
+                                        <div class="recent-news-content">
+                                            <h5 class="recent-news-title">
+                                                <a href="{% url 'news_detail' recent_news.slug %}">{{ recent_news.title|truncatewords:8 }}</a>
+                                            </h5>
+                                            <span class="recent-news-date">{{ recent_news.created_at|date:"d/m/Y" }}</span>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- Categories -->
+                            <div class="sidebar-widget categories-widget" data-aos="fade-up" data-aos-delay="300">
+                                <h4 class="widget-title">Danh mục</h4>
+                                <ul class="categories-list">
+                                    <li><a href="#">Tuyển sinh đại học <span>(12)</span></a></li>
+                                    <li><a href="#">Thông báo chung <span>(8)</span></a></li>
+                                    <li><a href="#">Hướng dẫn <span>(15)</span></a></li>
+                                    <li><a href="#">Sự kiện <span>(6)</span></a></li>
+                                    <li><a href="#">Học bổng <span>(9)</span></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    {% include 'components/footer.html' %}
+
+    <!-- Vendor JS Files -->
+    <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/php-email-form/validate.js' %}"></script>
+    <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+    <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/purecounter/purecounter_vanilla.js' %}"></script>
+
+    <!-- Main JS File -->
+    <script src="{% static 'assets/js/main.js' %}"></script>
+
+    <style>
+        /* News Page Styles */
+        .news-page {
+            background: #f8f9fa;
+        }
+
+        .news-hero {
+            background: linear-gradient(135deg, #0072bc 0%, #005a99 100%);
+            color: white;
+            padding: 100px 0 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .news-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('{% static "assets/img/background-1.jpg" %}') center/cover;
+            opacity: 0.1;
+            z-index: 1;
+        }
+
+        .news-hero .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .news-hero-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .news-hero-description {
+            font-size: 20px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .news-content {
+            padding: 80px 0;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .news-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 114, 188, 0.2);
+        }
+
+        .news-image {
+            position: relative;
+            overflow: hidden;
+            height: 220px;
+        }
+
+        .news-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+
+        .news-card:hover .news-image img {
+            transform: scale(1.1);
+        }
+
+        .news-date {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(0, 114, 188, 0.9);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .news-date .day {
+            display: block;
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .news-date .month {
+            display: block;
+            font-size: 14px;
+            margin-top: 2px;
+        }
+
+        .news-content {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-title {
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        .news-title a {
+            color: #2c384e;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .news-title a:hover {
+            color: #0072bc;
+        }
+
+        .news-excerpt {
+            color: #6c757d;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .news-meta {
+            display: flex;
+            gap: 20px;
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .news-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .read-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #0072bc;
+            font-weight: 500;
+            text-decoration: none;
+            transition: gap 0.3s;
+            margin-top: auto;
+        }
+
+        .read-more:hover {
+            gap: 10px;
+            color: #005a99;
+        }
+
+        .empty-news {
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .empty-news i {
+            font-size: 64px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .empty-news h3 {
+            color: #2c384e;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .empty-news p {
+            color: #6c757d;
+            font-size: 18px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar Styles */
+        .news-sidebar {
+            padding-left: 30px;
+        }
+
+        .sidebar-widget {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .widget-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2c384e;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #0072bc;
+        }
+
+        .search-form .input-group {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .search-form .form-control {
+            border: 2px solid #e9ecef;
+            border-right: none;
+            padding: 12px 15px;
+        }
+
+        .search-form .form-control:focus {
+            border-color: #0072bc;
+            box-shadow: none;
+        }
+
+        .search-form .btn {
+            border: 2px solid #0072bc;
+            background: #0072bc;
+            padding: 12px 20px;
+        }
+
+        .recent-news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .recent-news-item {
+            display: flex;
+            gap: 15px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .recent-news-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .recent-news-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .recent-news-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .recent-news-content {
+            flex-grow: 1;
+        }
+
+        .recent-news-title {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .recent-news-title a {
+            color: #2c384e;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .recent-news-title a:hover {
+            color: #0072bc;
+        }
+
+        .recent-news-date {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .categories-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .categories-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .categories-list li:last-child {
+            border-bottom: none;
+        }
+
+        .categories-list a {
+            color: #2c384e;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .categories-list a:hover {
+            color: #0072bc;
+        }
+
+        .categories-list span {
+            background: #f8f9fa;
+            color: #6c757d;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .newsletter-form .input-group {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .newsletter-form .form-control {
+            border: 2px solid #e9ecef;
+            border-right: none;
+            padding: 12px 15px;
+        }
+
+        .newsletter-form .form-control:focus {
+            border-color: #0072bc;
+            box-shadow: none;
+        }
+
+        .newsletter-form .btn {
+            border: 2px solid #0072bc;
+            background: #0072bc;
+            padding: 12px 20px;
+        }
+
+        /* Pagination Styles */
+        .news-pagination {
+            margin-top: 50px;
+        }
+
+        .pagination {
+            gap: 5px;
+        }
+
+        .page-link {
+            border: 2px solid #e9ecef;
+            color: #2c384e;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .page-link:hover {
+            background: #0072bc;
+            border-color: #0072bc;
+            color: white;
+        }
+
+        .page-item.active .page-link {
+            background: #0072bc;
+            border-color: #0072bc;
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 991px) {
+            .news-sidebar {
+                padding-left: 0;
+                margin-top: 50px;
+            }
+
+            .news-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .news-hero-title {
+                font-size: 36px;
+            }
+
+            .news-hero-description {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .news-hero {
+                padding: 80px 0 60px;
+            }
+
+            .news-hero-title {
+                font-size: 28px;
+            }
+
+            .news-hero-description {
+                font-size: 16px;
+            }
+
+            .news-content {
+                padding: 60px 0;
+            }
+
+            .sidebar-widget {
+                padding: 20px;
+            }
+
+            .recent-news-item {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .recent-news-image {
+                width: 100%;
+                height: 150px;
+            }
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize AOS
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true
+            });
+
+            // Search form enhancement
+            const searchForm = document.querySelector('.search-form');
+            if (searchForm) {
+                searchForm.addEventListener('submit', function(e) {
+                    const searchInput = this.querySelector('input[name="search"]');
+                    if (searchInput.value.trim() === '') {
+                        e.preventDefault();
+                        searchInput.focus();
+                    }
+                });
+            }
+
+            // Newsletter form
+            const newsletterForm = document.querySelector('.newsletter-form');
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = this.querySelector('input[type="email"]').value;
+                    if (email.trim() !== '') {
+                        alert('Cảm ơn bạn đã đăng ký nhận tin!');
+                        this.reset();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

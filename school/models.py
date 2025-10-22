@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 # Create your models here.
 class School(models.Model):
     schoolId = models.CharField(max_length=10)
@@ -19,7 +19,7 @@ class School(models.Model):
         return self.schoolName
     
 class Major(models.Model):
-    major_name = models.CharField(max_length=100, verbose_name='Tên ngành')
+    major_name = models.CharField(max_length=100, verbose_name='Tên ngành', unique=True)
     schools = models.ManyToManyField(School, through='SchoolMajor')
 
     def __str__(self):
@@ -31,4 +31,8 @@ class SchoolMajor(models.Model):
     point = models.FloatField(null=True, verbose_name='Điểm chuẩn')
     admission_targets = models.IntegerField(null=True, verbose_name='Chỉ tiêu')
     admission_combination = models.CharField(max_length=100, null=True, verbose_name='Tổ hợp xét tuyển', default='A00, A01, D01')    
-    admission_year = models.PositiveSmallIntegerField(max_length=4, null=True, default=2023, verbose_name='Năm tuyển sinh')
+    admission_year = models.PositiveSmallIntegerField(validators=[MinValueValidator(2023), MaxValueValidator(2025)], null=True, default=2023, verbose_name='Năm tuyển sinh')
+    is_high_quality = models.BooleanField(default=False, verbose_name='Chương trình chất lượng cao')
+
+    def __str__(self):
+        return self.school.schoolName + " - " + self.major.major_name + " - " + str(self.admission_year) + " - " + ("CLC" if self.is_high_quality else "Đại trà")

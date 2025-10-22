@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class UniversityConfig(AppConfig):
+class ChatConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "university"
+    name = "chat"

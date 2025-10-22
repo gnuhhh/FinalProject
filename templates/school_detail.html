@@ -76,6 +76,13 @@
             margin-bottom: 30px;
             box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
         }
+        .majors-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+        }
         .section-title {
             color: #0072bc;
             font-size: 1.5rem;
@@ -201,6 +208,67 @@
         .back-button i {
             margin-right: 10px;
         }
+        .filter-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .filter-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: end;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 200px;
+        }
+        .filter-group label {
+            color: #2c384e;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .filter-select {
+            padding: 10px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background: white;
+            color: #2c384e;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        .filter-select:focus {
+            outline: none;
+            border-color: #0072bc;
+            box-shadow: 0 0 0 3px rgba(0, 114, 188, 0.1);
+        }
+        .clear-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            height: fit-content;
+        }
+        .clear-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+        .major-card.hidden {
+            display: none;
+        }
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -248,19 +316,52 @@
             <div class="admission-info" data-aos="fade-up">
                 <h2 class="section-title">Thông tin tuyển sinh</h2>
                 {{ school.content|safe }}
-                <h3 class="section-title">Danh sách ngành tuyển sinh</h3>
-                {% for school_major in school_majors %}
-                <div class="major-list">
-                    <div class="major-card">
+            </div>
+
+            <!-- Danh sách ngành tuyển sinh -->
+            <div class="majors-section" data-aos="fade-up">
+                <h2 class="section-title">Danh sách ngành tuyển sinh</h2>
+                
+                <!-- Bộ lọc -->
+                <div class="filter-section">
+                    <div class="filter-controls">
+                        <div class="filter-group">
+                            <label for="year-filter">Lọc theo năm:</label>
+                            <select id="year-filter" class="filter-select">
+                                <option value="">Tất cả năm</option>
+                                {% for year in unique_years %}
+                                <option value="{{ year }}">{{ year }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="program-filter">Lọc theo chương trình:</label>
+                            <select id="program-filter" class="filter-select">
+                                <option value="">Tất cả chương trình</option>
+                                <option value="false">Đại trà</option>
+                                <option value="true">Chất lượng cao</option>
+                            </select>
+                        </div>
+                        <button id="clear-filters" class="clear-btn">Xóa bộ lọc</button>
+                    </div>
+                </div>
+
+                <div class="major-list" id="major-list">
+                    {% for school_major in school_majors %}
+                    <div class="major-card" 
+                         data-year="{{ school_major.admission_year }}" 
+                         data-program="{{ school_major.is_high_quality|yesno:'true,false' }}">
                         <div class="major-name">{{ school_major.major.major_name }}</div>
                         <div class="major-details">
                             <p><strong>Chỉ tiêu:</strong>&nbsp;{{ school_major.admission_targets }}</p>
-                            <p><strong>Điểm chuẩn 2023:</strong>&nbsp;{{ school_major.point }}</p>
-                            <p><strong>Tổ hợp xét tuyển:</strong>&nbsp;A00</p>
+                            <p><strong>Điểm chuẩn {{ school_major.admission_year }}:</strong>&nbsp;{{ school_major.point }}</p>
+                            <p><strong>Tổ hợp xét tuyển:</strong>&nbsp;{{ school_major.admission_combination }}</p>
+                            <p><strong>Năm tuyển sinh:</strong>&nbsp;{{ school_major.admission_year }}</p>
+                            <p><strong>Chương trình:</strong>&nbsp;{% if school_major.is_high_quality %}Chất lượng cao{% else %}Đại trà{% endif %}</p>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
 
             <div class="contact-info" data-aos="fade-up">
@@ -292,6 +393,71 @@
         AOS.init({
             duration: 1000,
             once: true
+        });
+
+        // Bộ lọc danh sách ngành
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearFilter = document.getElementById('year-filter');
+            const programFilter = document.getElementById('program-filter');
+            const clearBtn = document.getElementById('clear-filters');
+            const majorCards = document.querySelectorAll('.major-card');
+            const majorList = document.getElementById('major-list');
+
+            function filterMajors() {
+                const selectedYear = yearFilter.value;
+                const selectedProgram = programFilter.value;
+                let visibleCount = 0;
+
+                majorCards.forEach(card => {
+                    const cardYear = card.getAttribute('data-year');
+                    const cardProgram = card.getAttribute('data-program');
+                    
+                    let showCard = true;
+
+                    // Lọc theo năm
+                    if (selectedYear && cardYear !== selectedYear) {
+                        showCard = false;
+                    }
+
+                    // Lọc theo chương trình
+                    if (selectedProgram && cardProgram !== selectedProgram) {
+                        showCard = false;
+                    }
+
+                    if (showCard) {
+                        card.classList.remove('hidden');
+                        visibleCount++;
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+
+                // Hiển thị thông báo nếu không có kết quả
+                let noResultsMsg = document.querySelector('.no-results');
+                if (visibleCount === 0) {
+                    if (!noResultsMsg) {
+                        noResultsMsg = document.createElement('div');
+                        noResultsMsg.className = 'no-results';
+                        noResultsMsg.textContent = 'Không tìm thấy ngành nào phù hợp với bộ lọc';
+                        majorList.appendChild(noResultsMsg);
+                    }
+                } else {
+                    if (noResultsMsg) {
+                        noResultsMsg.remove();
+                    }
+                }
+            }
+
+            // Xử lý sự kiện thay đổi bộ lọc
+            yearFilter.addEventListener('change', filterMajors);
+            programFilter.addEventListener('change', filterMajors);
+
+            // Xử lý nút xóa bộ lọc
+            clearBtn.addEventListener('click', function() {
+                yearFilter.value = '';
+                programFilter.value = '';
+                filterMajors();
+            });
         });
     </script>
 </body>

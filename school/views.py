@@ -16,4 +16,10 @@ def school_tphcm(request):
 def school_by_id(request, id):
     school = School.objects.get(id=id)
     school_majors = SchoolMajor.objects.filter(school=school).select_related('major')
-    return render(request, 'school_detail.html', {'school':school, 'school_majors':school_majors})
+    # Lấy danh sách các năm duy nhất để tạo dropdown
+    unique_years = SchoolMajor.objects.filter(school=school).values_list('admission_year', flat=True).distinct().order_by('admission_year')
+    return render(request, 'school_detail.html', {
+        'school': school, 
+        'school_majors': school_majors,
+        'unique_years': unique_years
+    })

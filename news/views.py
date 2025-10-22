@@ -1,42 +1,47 @@
-# from django.shortcuts import render, get_object_or_404, redirect
-# from django.contrib.auth.decorators import login_required
-# from .models import News
-# from .forms import NewsForm
+from django.shortcuts import render, get_object_or_404
+from django.core.paginator import Paginator
+from django.db.models import Q
+from .models import News
 
-# @login_required
-# def news(request):
-#     news_list = News.objects.all()
-#     return render(request, 'admin/news/view.html', {'news_list':news_list})
+def news_list(request):
+    """Hiển thị danh sách tin tức với phân trang và tìm kiếm"""
+    # Lấy tất cả tin tức đang hoạt động
+    news_queryset = News.objects.filter(is_active=True).order_by('-created_at')
+    
+    # Xử lý tìm kiếm
+    search_query = request.GET.get('search', '')
+    if search_query:
+        news_queryset = news_queryset.filter(
+            Q(title__icontains=search_query) | 
+            Q(content__icontains=search_query)
+        )
+    
+    # Phân trang
+    paginator = Paginator(news_queryset, 6)  # 6 bài viết mỗi trang
+    page_number = request.GET.get('page')
+    news_list = paginator.get_page(page_number)
+    
+    # Lấy tin tức gần đây cho sidebar
+    recent_news_list = News.objects.filter(is_active=True).order_by('-created_at')[:5]
+    
+    context = {
+        'news_list': news_list,
+        'recent_news_list': recent_news_list,
+        'search_query': search_query,
+    }
+    
+    return render(request, 'news.html', context)
 
-# @login_required
-# def news_create(request):
-#     if request.method == 'POST':
-#         form = NewsForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             news = form.save(commit=False)
-#             news.author = request.user
-#             news.save()
-#             return redirect('news_list')
-#     else:
-#         form = NewsForm()
-#     return render(request, 'news/create.html', {'form': form})
-
-# @login_required
-# def news_edit(request, pk):
-#     news = get_object_or_404(News, pk=pk)
-#     if request.method == 'POST':
-#         form = NewsForm(request.POST, request.FILES, instance=news)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('news_list')
-#     else:
-#         form = NewsForm(instance=news)
-#     return render(request, 'news/edit.html', {'form': form, 'news': news})
-
-# @login_required
-# def news_delete(request, pk):
-#     news = get_object_or_404(News, pk=pk)
-#     if request.method == 'POST':
-#         news.delete()
-#         return redirect('news_list')
-#     return render(request, 'news/delete.html', {'news': news})
+def news_detail(request, slug):
+    """Hiển thị chi tiết bài viết"""
+    news = get_object_or_404(News, slug=slug, is_active=True)
+    
+    # Lấy tin tức liên quan
+    related_news = News.objects.filter(is_active=True).exclude(id=news.id).order_by('-created_at')[:3]
+    
+    context = {
+        'news': news,
+        'related_news': related_news,
+    }
+    
+    return render(request, 'news/detail.html', context)
