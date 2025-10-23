@@ -33,12 +33,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.humanize",
+    "django_htmx",
     "homepage",
     "login",
     "register",
@@ -64,6 +67,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = "project.urls"
@@ -84,7 +88,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "project.wsgi.application"
+# WSGI_APPLICATION = "project.wsgi.application"
 ASGI_APPLICATION = "project.asgi.application"
 
 # Database
@@ -127,6 +131,7 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
+TIME_ZONE = 'Asia/Ho_Chi_Minh'
 
 
 # Static files (CSS, JavaScript, Images)
@@ -146,4 +151,6 @@ VNPAY_HASH_SECRET_KEY = "BURUZ0U4NK5UG8QAN4BJW8DPRHGU4SYT"
 VNPAY_PAYMENT_URL = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
 VNPAY_RETURN_URL = "http://localhost:8000/advise/payment/vnpay_return/"
 VNPAY_API_URL = 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction'
+
+
 

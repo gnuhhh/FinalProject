@@ -1,0 +1,16 @@
+{% load tz %}
+{% if chat_message.sender == request.user %}
+<div class="msg-row me">
+<div class="msg-bubble me">
+    <div>{{ chat_message.message }}</div>
+    <span class="msg-meta">{% localtime on %}{{ chat_message.created_at }}{% endlocaltime %}</span>
+</div>
+</div>
+{% else %}
+<div class="msg-row other">
+<div class="msg-bubble other">
+    <div>{{ chat_message.message }}</div>
+    <span class="msg-meta">{{ chat_message.created_at }}</span>
+</div>
+</div>
+{% endif %}
