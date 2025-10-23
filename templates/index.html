@@ -294,13 +294,14 @@
       </button>
     </div>
     <div id="chatbot-messages" class="chatbot-messages">
-      {% if request.user.is_authenticated and chat_history %}
+      {% if chat_history %}
+      <div class="chatbot-message bot">Xin chào! Bạn muốn được tư vấn về ngành, trường hay hình thức xét tuyển?</div>
         {% for chat in chat_history %}
           <div class="chatbot-message user">{{ chat.message }}</div>
           <div class="chatbot-message bot">{{ chat.response }}</div>
         {% endfor %}
       {% else %}
-        <div class="chatbot-message bot">Xin chào! Bạn muốn được tư vấn về ngành, trường hay hình thức xét tuyển?</div>
+      <div class="chatbot-message bot">Xin chào! Bạn muốn được tư vấn về ngành, trường hay hình thức xét tuyển?</div>
       {% endif %}
     </div>
     <form id="chatbot-form" class="chatbot-form" autocomplete="off">

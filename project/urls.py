@@ -32,4 +32,5 @@ urlpatterns = [
     path('du-doan-dai-hoc/', include('admission_predictor.urls')),
     path('compare/', include('daihoc_compare.urls')),
     path('news/', include('news.urls')),
+    path('chat/', include('chat.urls')),
 ]

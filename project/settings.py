@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     "testblock",
     'admission_predictor',
     'daihoc_compare',
-    'channels'
+    'channels',
+    'chat'
 ]
 
 MIDDLEWARE = [
