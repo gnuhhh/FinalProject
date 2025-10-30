@@ -63,7 +63,7 @@
             <div id="chatBody" class="chat-body">
               {% if chat_messages %}
                 {% for chat_message in chat_messages %}
-                {% include 'chat/chat_message.html' %}
+                {% include 'chat/chat_message.html' with chat_message=chat_message user=request.user %}
                 {% endfor %}
               {% else %}
                 <div class="msg-row">
@@ -75,7 +75,7 @@
               {% endif %}
             </div>
 
-            <form id="chatForm" class="chat-input" autocomplete="off" hx-post="{% url 'chat_view' %}" hx-target="#chatBody" hx-swap="beforeend">
+            <form id="chatForm" class="chat-input" autocomplete="off">
               {% csrf_token %}
               <textarea name="message" id="chatInput" class="chat-textarea" rows="1" placeholder="Nhập tin nhắn... (Enter để gửi)" maxlength="1000"></textarea>
               <button id="sendBtn" type="submit" class="send-btn">Gửi</button>
@@ -104,6 +104,10 @@
       const form = document.getElementById('chatForm');
       const input = document.getElementById('chatInput');
       const sendBtn = document.getElementById('sendBtn');
+      const roomName = 'test-group2';
+      const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+      const wsUrl = `${protocol}://${window.location.host}/ws/chatroom/${roomName}/`;
+      let socket;
 
       function autoGrow(el) {
         el.style.height = 'auto';
@@ -134,40 +138,53 @@
         input.disabled = sending;
       }
 
+      function connectSocket() {
+        socket = new WebSocket(wsUrl);
+
+        socket.onopen = function () {
+          // Connected
+        };
+
+        socket.onmessage = function (event) {
+          const html = event.data;
+          // Append server-rendered HTML message
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = html;
+          // Move children to chatBody to avoid nesting wrappers
+          while (wrapper.firstChild) {
+            chatBody.appendChild(wrapper.firstChild);
+          }
+          scrollToBottom();
+        };
+
+        socket.onclose = function () {
+          // Try to reconnect after a short delay
+          setTimeout(connectSocket, 1500);
+        };
+
+        socket.onerror = function () {
+          // No-op
+        };
+      }
+
+      connectSocket();
+
       // Submit handler
-      form.addEventListener('submit', async function (e) {
+      form.addEventListener('submit', function (e) {
         e.preventDefault();
         const text = (input.value || '').trim();
         if (!text) return;
 
-        setSendingState(true);
-        renderMessage({ text, isMe: true });
-        input.value = ''; 
-        autoGrow(input);
-
-        try {
-          const formData = new FormData();
-          formData.append('message', text);
-          formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
-
-          const response = await fetch(window.location.href, {
-            method: 'POST',
-            body: formData,
-            headers: {
-              'X-Requested-With': 'XMLHttpRequest'
-            }
-          });
-
-          if (response.ok) {
-            // Reload page to show new messages
-            window.location.reload();
-          } else {
-            console.error('Error sending message');
+        if (socket && socket.readyState === WebSocket.OPEN) {
+          try {
+            socket.send(JSON.stringify({ message: text }));
+            input.value = '';
+            autoGrow(input);
+          } catch (err) {
+            console.error('WS send error:', err);
           }
-        } catch (error) {
-          console.error('Error:', error);
-        } finally {
-          setSendingState(false);
+        } else {
+          console.error('WebSocket not connected');
         }
       });
 

@@ -1,5 +1,5 @@
 {% load tz %}
-{% if chat_message.sender == request.user %}
+{% if chat_message.sender == user %}
 <div class="msg-row me">
 <div class="msg-bubble me">
     <div>{{ chat_message.message }}</div>
