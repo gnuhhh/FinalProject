@@ -189,7 +189,7 @@
                                 <td>{{ appointment.work_schedule.work_shift.start_time|time:"H:i" }} - {{ appointment.work_schedule.work_shift.end_time|time:"H:i" }}</td>
                                 <td>ID: {{appointment.zoom_room.zoom_id}}/Pass: {{ appointment.zoom_room.password }}</td>
                                 <td><span class="status-badge {% if appointment.status == 'N' or appointment.status == 'P' %}status-pending{% else %}status-completed{% endif %}">{% if appointment.status == 'N' %}Chưa thực hiện{% elif appointment.status == 'P' %}Đang thực hiện{% else %}Đã xong{% endif %}</span></td>
-                                {% if appointment.status == 'N' %}
+                                {% if appointment.status == 'N' and appointment.is_greater_than_3hours%}
                                 <td>
                                     <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc muốn hủy lịch hẹn này?');">Hủy</button>
                                 </td>

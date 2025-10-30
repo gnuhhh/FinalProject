@@ -6,9 +6,6 @@ from django.conf import settings
 from advise.vnpay import vnpay
 import hashlib
 import hmac
-import urllib.parse
-import string
-import random
 from homepage.models import Expert
 from user_profile.models import Member
 from .models import WorkSchedule, Appointment, Invoice, Room
