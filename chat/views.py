@@ -7,6 +7,7 @@ from .models import *
 def chat_view(request):
     chat_group = get_object_or_404(ChatGroup, group_name='test-group2')
     chat_messages = chat_group.message.all().order_by('created_at')
+    chat_messages_sender = GroupMessage.objects.exclude(sender=request.user)
     if request.method == 'POST':
         message_content = request.POST.get('message')
         if message_content:
@@ -15,4 +16,4 @@ def chat_view(request):
         # if request.htmx:
         #     return render(request, 'chat/partials/chat_message_p.html', {'message': group_message, 'user': request.user})
     else:    
-        return render(request, 'chat/chat.html', {'chat_messages': chat_messages})
+        return render(request, 'chat/chat.html', {'chat_messages': chat_messages, 'chat_messages_sender': chat_messages_sender})

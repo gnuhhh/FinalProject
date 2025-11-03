@@ -53,9 +53,9 @@
         <div class="chat-page" data-expert-id="{{ expert_id|default:1 }}">
           <div class="chat-card">
             <div class="chat-header">
-              <img class="expert-avatar" src="{% static 'assets/img/trainers/trainer-1.jpg' %}" alt="Chuyên gia" />
+              <img class="expert-avatar" src="{% if request.user.groups.all.0.name == 'expert' %}{{ chat_messages_sender.0.sender.member.avatar.url }}{% else %}{{ chat_messages_sender.0.sender.expert.avatar.url }}{% endif %}" alt="Chuyên gia" />
               <div>
-                <div class="expert-name">{{ expert_name|default:"Chuyên gia tư vấn" }}</div>
+                <div class="expert-name">{{ chat_messages_sender.0.sender.first_name }} {{ chat_messages_sender.0.sender.last_name }}</div>
                 <div class="expert-sub">Trực tuyến • Phản hồi nhanh</div>
               </div>
             </div>

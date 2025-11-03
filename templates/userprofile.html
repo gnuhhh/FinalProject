@@ -36,6 +36,10 @@
             background: rgba(255, 193, 7, 0.1);
             color: #FFC107;
         }
+        .btn.chat:hover{
+            background-color: #2C384E;
+            color: var(--hover-color)!important;
+        }
         @media (max-width: 992px) { .container { flex-direction: column; } .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); } }
 
     </style>
@@ -187,7 +191,9 @@
                                 <td>{{ appointment.work_schedule.expert.first_name }} {{ appointment.work_schedule.expert.last_name }}</td>
                                 <td>{{ appointment.work_schedule.date|date:"d/m/Y" }}</td>
                                 <td>{{ appointment.work_schedule.work_shift.start_time|time:"H:i" }} - {{ appointment.work_schedule.work_shift.end_time|time:"H:i" }}</td>
-                                <td>ID: {{appointment.zoom_room.zoom_id}}/Pass: {{ appointment.zoom_room.password }}</td>
+                                <td>
+                                    <a href="{% url 'chat_view' %}" class="btn btn-sm chat" style="border-color: #2C384E; color: #2C384E">Nhắn tin</a>
+                                </td>
                                 <td><span class="status-badge {% if appointment.status == 'N' or appointment.status == 'P' %}status-pending{% else %}status-completed{% endif %}">{% if appointment.status == 'N' %}Chưa thực hiện{% elif appointment.status == 'P' %}Đang thực hiện{% else %}Đã xong{% endif %}</span></td>
                                 {% if appointment.status == 'N' and appointment.is_greater_than_3hours%}
                                 <td>
