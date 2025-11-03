@@ -9,7 +9,7 @@
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="{% url 'index' %}" class="{% if request.path == '/'%}active{% endif %}">Trang chủ<br></a></li>
-          <li><a href="{% url 'news' %}" class="{% if 'news' in request.path %}active{% endif %}">Tin nổi bật<br></a></li>
+          <li><a href="{% url 'news_homepage' %}" class="{% if 'news' in request.path %}active{% endif %}">Tin nổi bật<br></a></li>
           <li class="dropdown"><a href="{% url 'school' %}" class="{% if request.path == '/school/' or request.path == '/school/hanoi/' or request.path == '/school/tphcm/'%}active{% endif %}"><span>Tuyển sinh</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
             <ul>
               <li><a href="{% url 'school_hanoi' %}">Hà Nội</a></li>
