@@ -192,7 +192,7 @@
                                 <td>{{ appointment.work_schedule.date|date:"d/m/Y" }}</td>
                                 <td>{{ appointment.work_schedule.work_shift.start_time|time:"H:i" }} - {{ appointment.work_schedule.work_shift.end_time|time:"H:i" }}</td>
                                 <td>
-                                    <a href="{% url 'chat_view' %}" class="btn btn-sm chat" style="border-color: #2C384E; color: #2C384E">Nhắn tin</a>
+                                    <a href="{% url 'chat_view' %}" class="btn btn-sm chat" style="border-color: #2C384E; color: #2C384E">Tư vấn</a>
                                 </td>
                                 <td><span class="status-badge {% if appointment.status == 'N' or appointment.status == 'P' %}status-pending{% else %}status-completed{% endif %}">{% if appointment.status == 'N' %}Chưa thực hiện{% elif appointment.status == 'P' %}Đang thực hiện{% else %}Đã xong{% endif %}</span></td>
                                 {% if appointment.status == 'N' and appointment.is_greater_than_3hours%}

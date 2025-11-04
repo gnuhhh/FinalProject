@@ -1,6 +1,7 @@
 from django.db import models
 from homepage.models import Expert
 from user_profile.models import Member
+from chat.models import ChatGroup
 from datetime import timedelta, datetime
 # Create your models here.
 class WorkShift(models.Model):
