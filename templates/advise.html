@@ -404,9 +404,10 @@
                     } else {
                         daySlots.innerHTML = dayData.schedules.map(schedule => {
                             const isBooked = schedule.is_booked;
+                            const isOutdated = schedule.is_outdate;
                             const timeStr = `${schedule.start_time} - ${schedule.end_time}`;
                             return `
-                                <div class="time-slot ${isBooked ? 'booked' : ''}" 
+                                <div class="time-slot ${(isBooked || isOutdated) ? 'booked' : ''}" 
                                      data-schedule-id="${schedule.id}"
                                      data-date="${dayData.date}"
                                      data-time="${timeStr}"

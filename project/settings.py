@@ -56,7 +56,9 @@ INSTALLED_APPS = [
     'admission_predictor',
     'daihoc_compare',
     'channels',
-    'chat'
+    'chat',
+    'prediction',
+    'Voice'
 ]
 
 MIDDLEWARE = [
@@ -152,8 +154,8 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 #vnpay config
-VNPAY_TMN_CODE = "IBJV6YOK"
-VNPAY_HASH_SECRET_KEY = "BURUZ0U4NK5UG8QAN4BJW8DPRHGU4SYT"
+VNPAY_TMN_CODE = "NTK0SK58"
+VNPAY_HASH_SECRET_KEY = "0RYJ79XEJOSH6JS31YL6CHNHYUBS747M"
 VNPAY_PAYMENT_URL = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
 VNPAY_RETURN_URL = "http://localhost:8000/advise/payment/vnpay_return/"
 VNPAY_API_URL = 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction'

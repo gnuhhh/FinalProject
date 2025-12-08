@@ -60,6 +60,10 @@
                 <i class="bi bi-calendar-event"></i>
                 <span>Lịch hẹn</span>
             </a>
+            <a class="menu-item" id="menu-invoices" href="#">
+                <i class="bi bi-calendar-event"></i>
+                <span>Lịch sử thanh toán</span>
+            </a>
         </aside>
 
         <!-- Main Content -->
@@ -179,7 +183,7 @@
                                 <th><span title="Tên chuyên gia">Tên chuyên gia</span></th>
                                 <th><span title="Ngày">Ngày</span></th>
                                 <th><span title="Thời gian">Thời gian</span></th>
-                                <th><span title="Zoom">Zoom</span></th>
+                                <th><span title="Zoom">Tư vấn</span></th>
                                 <th><span title="Trạng thái">Trạng thái</span></th>
                                 <th><span title="Hủy">Hủy</span></th>
                             </tr>
@@ -192,14 +196,43 @@
                                 <td>{{ appointment.work_schedule.date|date:"d/m/Y" }}</td>
                                 <td>{{ appointment.work_schedule.work_shift.start_time|time:"H:i" }} - {{ appointment.work_schedule.work_shift.end_time|time:"H:i" }}</td>
                                 <td>
-                                    <a href="{% url 'chat_view' %}" class="btn btn-sm chat" style="border-color: #2C384E; color: #2C384E">Tư vấn</a>
+                                    <a href="{% url 'chat_view' appointment.id %}" class="btn btn-sm chat" style="border-color: #2C384E; color: #2C384E">Tư vấn</a>
                                 </td>
                                 <td><span class="status-badge {% if appointment.status == 'N' or appointment.status == 'P' %}status-pending{% else %}status-completed{% endif %}">{% if appointment.status == 'N' %}Chưa thực hiện{% elif appointment.status == 'P' %}Đang thực hiện{% else %}Đã xong{% endif %}</span></td>
-                                {% if appointment.status == 'N' and appointment.is_greater_than_3hours%}
                                 <td>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc muốn hủy lịch hẹn này?');">Hủy</button>
-                                </td>
+                                {% if appointment.status == 'N' and appointment.is_greater_than_3hours%}
+                                    <a href="{% url 'cancel_appointment' appointment.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn hủy lịch này?')">Hủy</a>
                                 {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="panel-invoices" class="data-table-container" style="display:none;">
+                <div class="table-header">
+                    <div class="table-title">Lịch hẹn</div>
+                </div>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th><span title="STT">STT</span></th>
+                                <th><span title="Tên chuyên gia">Mã hóa đơn</span></th>
+                                <th><span title="Ngày">Giá</span></th>
+                                <th><span title="Thời gian">Trạng thái</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for invoice in invoices %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ invoice.invoice_id }}</td>
+                                <td>{{ invoice.price }}</td>
+                                <td>{% if invoice.status == 'Y' %}Đã thanh toán{% else %}Chưa thanh toán{% endif %}</td>
+                                
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -219,17 +252,19 @@
         // Chuyển đổi panel theo sidebar
         const menuProfile = document.getElementById('menu-profile');
         const menuAppointments = document.getElementById('menu-appointments');
+        const menuInvoices = document.getElementById('menu-invoices');
         const panelProfile = document.getElementById('panel-profile');
         const panelAppointments = document.getElementById('panel-appointments');
+        const panelInvoices = document.getElementById('panel-invoices');
 
         function setActive(menu) {
             [menuProfile, menuAppointments].forEach(m => m.classList.remove('active'));
             menu.classList.add('active');
         }
 
-        menuProfile.addEventListener('click', function(e) { e.preventDefault(); setActive(menuProfile); panelProfile.style.display = ''; panelAppointments.style.display = 'none'; });
-        menuAppointments.addEventListener('click', function(e) { e.preventDefault(); setActive(menuAppointments); panelProfile.style.display = 'none'; panelAppointments.style.display = ''; });
-
+        menuProfile.addEventListener('click', function(e) { e.preventDefault(); setActive(menuProfile); panelProfile.style.display = ''; panelAppointments.style.display = 'none'; panelInvoices.style.display = 'none';});
+        menuAppointments.addEventListener('click', function(e) { e.preventDefault(); setActive(menuAppointments); panelProfile.style.display = 'none'; panelAppointments.style.display = ''; panelInvoices.style.display = 'none';});
+        menuInvoices.addEventListener('click', function(e) { e.preventDefault(); setActive(menuAppointments); panelProfile.style.display = 'none'; panelAppointments.style.display = 'none'; panelInvoices.style.display = '';});
         // Xem trước ảnh đại diện
         const inputAvatar = document.getElementById('avatar');
         const previewImg = document.getElementById('avatarPreview');

@@ -33,4 +33,6 @@ urlpatterns = [
     path('compare/', include('daihoc_compare.urls')),
     path('news/', include('news.urls')),
     path('chat/', include('chat.urls')),
+    path('prediction/', include('prediction.urls')),
+    path('Voice/', include('Voice.urls')),
 ]

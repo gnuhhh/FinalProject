@@ -1,211 +1,300 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ title }}</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #2c3e50, #34495e);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-        
-        .header h1 {
-            font-size: 2.2em;
-            margin-bottom: 10px;
-        }
-        
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-        
-        .content {
-            padding: 40px;
-        }
-        
-        .form-group {
-            margin-bottom: 25px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #2c3e50;
-            font-size: 1.1em;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-size: 1em;
-            transition: all 0.3s ease;
-        }
-        
-        .form-control:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
-            outline: none;
-        }
-        
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<style>
+    .predictor-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .predictor-header {
+        text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+    }
+    
+    .predictor-header h1 {
+        font-size: 2.8rem;
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+    
+    .predictor-header p {
+        font-size: 1.2rem;
+        color: #7f8c8d;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+    
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #f8f9fa;
+        color: #495057;
+        text-decoration: none;
+        padding: 12px 25px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        margin-bottom: 30px;
+        border: 1px solid #e9ecef;
+    }
+    
+    .back-btn:hover {
+        background: #e9ecef;
+        color: #2c3e50;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        text-decoration: none;
+    }
+    
+    .form-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+        margin-bottom: 40px;
+        border: 1px solid #e9ecef;
+    }
+    
+    .form-header {
+        background: #f8f9fa;
+        color: #495057;
+        padding: 25px 30px;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .form-header h2 {
+        font-size: 1.8rem;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #2c3e50;
+    }
+    
+    .form-content {
+        padding: 40px;
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #2c3e50;
+        font-size: 1.1em;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 1em;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+    
+    .form-control:focus {
+        border-color: #6c757d;
+        box-shadow: 0 0 0 4px rgba(108, 117, 125, 0.1);
+        outline: none;
+        background: white;
+    }
+    
+    .score-inputs {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+    
+    .score-input {
+        text-align: center;
+    }
+    
+    .score-input label {
+        color: #495057;
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: block;
+    }
+    
+    .score-input input {
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.2em;
+        background: white;
+    }
+    
+    .submit-btn {
+        background: #495057;
+        color: white;
+        border: none;
+        padding: 18px 40px;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 1.2em;
+        font-weight: bold;
+        width: 100%;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+    }
+    
+    .submit-btn:hover {
+        background: #343a40;
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+    
+    .info-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border: 1px solid #e9ecef;
+    }
+    
+    .info-card h3 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-size: 1.4rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .info-features {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #495057;
+        font-weight: 500;
+        padding: 8px 0;
+    }
+    
+    .feature-item i {
+        color: #6c757d;
+        font-size: 1.1rem;
+    }
+    
+    .total-score {
+        background: #6c757d;
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        font-size: 1.3em;
+        font-weight: bold;
+        margin: 25px 0;
+        display: none;
+        transition: all 0.3s ease;
+    }
+    
+    .total-score.high {
+        background: linear-gradient(135deg, #28a745, #20c997);
+    }
+    
+    .total-score.medium {
+        background: linear-gradient(135deg, #ffc107, #ffb300);
+    }
+    
+    .total-score.low {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+    }
+    
+    @media (max-width: 768px) {
         .score-inputs {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+            grid-template-columns: 1fr;
         }
         
-        .score-input {
-            text-align: center;
+        .form-content {
+            padding: 25px 20px;
         }
         
-        .score-input input {
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.2em;
+        .predictor-header h1 {
+            font-size: 2.2rem;
         }
         
         .submit-btn {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            border: none;
-            padding: 18px 40px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 1.2em;
-            font-weight: bold;
-            width: 100%;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
-            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 1.1em;
         }
-        
-        .submit-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
-        }
-        
-        .home-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-decoration: none;
-            padding: 14px 28px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            border: none;
-            cursor: pointer;
-            margin-bottom: 25px;
-        }
-        
-        .home-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-            color: white;
-            text-decoration: none;
-        }
-        
-        .info-box {
-            background: #e7f3ff;
-            border: 2px solid #b3d9ff;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 25px;
-        }
-        
-        .info-box h3 {
-            color: #0066cc;
-            margin-bottom: 10px;
-        }
-        
-        .total-score {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
-            color: white;
+    }
+    
+    @media (max-width: 576px) {
+        .predictor-container {
             padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            font-size: 1.3em;
-            font-weight: bold;
-            margin: 20px 0;
-            display: none;
         }
         
-        @media (max-width: 768px) {
-            .content {
-                padding: 20px;
-            }
-            
-            .score-inputs {
-                grid-template-columns: 1fr;
-            }
-            
-            .header {
-                padding: 20px;
-            }
-            
-            .header h1 {
-                font-size: 1.8em;
-            }
-            
-            .home-btn {
-                padding: 12px 20px;
-                font-size: 14px;
-            }
+        .form-header {
+            padding: 20px;
         }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🎓 Dự đoán khả năng đậu Đại học</h1>
-            <p>Nhập điểm 3 môn để xem các trường phù hợp với bạn</p>
-        </div>
+        
+        .form-header h2 {
+            font-size: 1.5rem;
+        }
+    }
+</style>
 
-        <div class="content">
-            <!-- Nút Quay lại trang chủ -->
-            <a href="http://127.0.0.1:8000/" class="home-btn">
-                <span style="font-size: 18px;">←</span>
-                Quay lại trang chủ
-            </a>
+<div class="predictor-container">
+    <div class="predictor-header">
+        <h1>🎓 Dự Đoán Khả Năng Đậu Đại Học</h1>
+        <p>Nhập điểm 3 môn để xem các trường phù hợp với bạn</p>
+    </div>
 
-            <div class="info-box">
-                <h3>📊 Hướng dẫn sử dụng</h3>
-                <p>• Nhập điểm 3 môn theo khối thi của bạn</p>
-                <p>• Hệ thống sẽ so sánh với điểm chuẩn 2024 của các trường</p>
-                <p>• Kết quả được phân loại theo khả năng đậu: Cao - Trung bình - Thấp</p>
+    <a href="http://127.0.0.1:8000/" class="back-btn">
+        <span style="font-size: 18px;">←</span>
+        Quay lại trang chủ
+    </a>
+
+    <div class="info-card">
+        <h3>📊 Hướng dẫn sử dụng</h3>
+        <div class="info-features">
+            <div class="feature-item">
+                <i>📝</i>
+                <span>Nhập điểm 3 môn theo khối thi của bạn</span>
             </div>
+            <div class="feature-item">
+                <i>🔍</i>
+                <span>Hệ thống sẽ so sánh với điểm chuẩn 2024 của các trường</span>
+            </div>
+            <div class="feature-item">
+                <i>🎯</i>
+                <span>Kết quả được phân loại theo khả năng đậu: Cao - Trung bình - Thấp</span>
+            </div>
+        </div>
+    </div>
 
+    <div class="form-container">
+        <div class="form-header">
+            <h2><i>📝</i> Nhập Thông Tin Điểm Thi</h2>
+            <p>Chọn khối thi và nhập điểm 3 môn tương ứng</p>
+        </div>
+        
+        <div class="form-content">
             <form id="predictForm" method="POST" action="{% url 'admission_predictor:predict_admission_result' %}">
                 {% csrf_token %}
                 
@@ -230,94 +319,101 @@
                 </div>
 
                 <div class="total-score" id="totalScore">
-                    Tổng điểm: <span id="totalScoreValue">0</span>
+                    <div>Tổng điểm: <span id="totalScoreValue">0</span></div>
+                    <small id="scoreLevel" style="opacity: 0.9; font-size: 0.8em;"></small>
                 </div>
 
                 <button type="submit" class="submit-btn">
-                    🎯 Dự đoán khả năng đậu
+                    <span>🎯</span> Dự Đoán Khả Năng Đậu
                 </button>
             </form>
         </div>
     </div>
+</div>
 
-    <script>
-        const subjectMapping = {
-            'A00': ['Toán', 'Vật lý', 'Hóa học'],
-            'A01': ['Toán', 'Vật lý', 'Tiếng Anh'],
-            'B00': ['Toán', 'Hóa học', 'Sinh học'],
-            'C00': ['Ngữ văn', 'Lịch sử', 'Địa lý'],
-            'D01': ['Toán', 'Ngữ văn', 'Tiếng Anh'],
-            'D07': ['Toán', 'Hóa học', 'Tiếng Anh']
-        };
+<script>
+    const subjectMapping = {
+        'A00': ['Toán', 'Vật lý', 'Hóa học'],
+        'A01': ['Toán', 'Vật lý', 'Tiếng Anh'],
+        'B00': ['Toán', 'Hóa học', 'Sinh học'],
+        'C00': ['Ngữ văn', 'Lịch sử', 'Địa lý'],
+        'D01': ['Toán', 'Ngữ văn', 'Tiếng Anh'],
+        'D07': ['Toán', 'Hóa học', 'Tiếng Anh']
+    };
 
-        const scoreInputs = document.getElementById('scoreInputs');
-        const blockSelect = document.getElementById('block');
-        const totalScoreDiv = document.getElementById('totalScore');
-        const totalScoreValue = document.getElementById('totalScoreValue');
+    const scoreInputs = document.getElementById('scoreInputs');
+    const blockSelect = document.getElementById('block');
+    const totalScoreDiv = document.getElementById('totalScore');
+    const totalScoreValue = document.getElementById('totalScoreValue');
+    const scoreLevel = document.getElementById('scoreLevel');
 
-        // Cập nhật môn học khi chọn khối
-        blockSelect.addEventListener('change', function() {
-            const selectedBlock = this.value;
-            updateSubjectInputs(selectedBlock);
+    // Cập nhật môn học khi chọn khối
+    blockSelect.addEventListener('change', function() {
+        const selectedBlock = this.value;
+        updateSubjectInputs(selectedBlock);
+    });
+
+    function updateSubjectInputs(block) {
+        if (!block) {
+            scoreInputs.innerHTML = '<div class="score-input"><p style="color: #6c757d; font-style: italic;">Vui lòng chọn khối thi trước</p></div>';
+            totalScoreDiv.style.display = 'none';
+            return;
+        }
+
+        const subjects = subjectMapping[block];
+        let inputsHTML = '';
+
+        subjects.forEach((subject, index) => {
+            inputsHTML += `
+                <div class="score-input">
+                    <label for="subject_${index + 1}">${subject}</label>
+                    <input type="number" 
+                            class="form-control" 
+                            id="subject_${index + 1}" 
+                            name="subject_${index + 1}_score"
+                            min="0" max="10" step="0.1" 
+                            placeholder="0.0"
+                            required
+                            oninput="calculateTotalScore()">
+                </div>
+            `;
         });
 
-        function updateSubjectInputs(block) {
-            if (!block) {
-                scoreInputs.innerHTML = '<div class="score-input"><p>Vui lòng chọn khối thi trước</p></div>';
-                totalScoreDiv.style.display = 'none';
-                return;
-            }
+        scoreInputs.innerHTML = inputsHTML;
+        totalScoreDiv.style.display = 'block';
+        calculateTotalScore();
+    }
 
-            const subjects = subjectMapping[block];
-            let inputsHTML = '';
-
-            subjects.forEach((subject, index) => {
-                inputsHTML += `
-                    <div class="score-input">
-                        <label for="subject_${index + 1}">${subject}</label>
-                        <input type="number" 
-                                class="form-control" 
-                                id="subject_${index + 1}" 
-                                name="subject_${index + 1}_score"
-                                min="0" max="10" step="0.1" 
-                                placeholder="0.0"
-                                required
-                                oninput="calculateTotalScore()">
-                    </div>
-                `;
-            });
-
-            scoreInputs.innerHTML = inputsHTML;
-            totalScoreDiv.style.display = 'block';
-            calculateTotalScore();
-        }
-
-        function calculateTotalScore() {
-            let total = 0;
-            const inputs = scoreInputs.querySelectorAll('input[type="number"]');
-            
-            inputs.forEach(input => {
-                const value = parseFloat(input.value) || 0;
-                total += value;
-            });
-
-            totalScoreValue.textContent = total.toFixed(1);
-            
-            // Đổi màu theo điểm
-            if (total >= 24) {
-                totalScoreDiv.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
-            } else if (total >= 18) {
-                totalScoreDiv.style.background = 'linear-gradient(135deg, #ffc107, #ffb300)';
-            } else {
-                totalScoreDiv.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a52)';
-            }
-        }
-
-        // Khởi tạo ban đầu
-        updateSubjectInputs('');
+    function calculateTotalScore() {
+        let total = 0;
+        const inputs = scoreInputs.querySelectorAll('input[type="number"]');
         
-        // Debug info
-        console.log('🔍 Dự đoán khả năng đậu - Form initialized');
-    </script>
-</body>
-</html>
+        inputs.forEach(input => {
+            const value = parseFloat(input.value) || 0;
+            total += value;
+        });
+
+        totalScoreValue.textContent = total.toFixed(1);
+        
+        // Đổi màu và hiển thị mức độ theo điểm
+        totalScoreDiv.className = 'total-score';
+        
+        if (total >= 24) {
+            totalScoreDiv.classList.add('high');
+            scoreLevel.textContent = '🎉 Khả năng đậu CAO';
+        } else if (total >= 18) {
+            totalScoreDiv.classList.add('medium');
+            scoreLevel.textContent = '👍 Khả năng đậu TRUNG BÌNH';
+        } else {
+            totalScoreDiv.classList.add('low');
+            scoreLevel.textContent = '💪 Cần cố gắng thêm';
+        }
+    }
+
+    // Khởi tạo ban đầu
+    updateSubjectInputs('');
+    
+    // Debug info
+    console.log('🔍 Dự đoán khả năng đậu - Form initialized');
+</script>
+{% endblock %}

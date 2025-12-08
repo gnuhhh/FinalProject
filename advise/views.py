@@ -8,7 +8,7 @@ import hashlib
 import hmac
 from homepage.models import Expert
 from user_profile.models import Member
-from .models import WorkSchedule, Appointment, Invoice, Room
+from .models import WorkSchedule, Appointment, Invoice, Room, ChatGroup
 from decimal import Decimal
 from datetime import date, timedelta, datetime
 # Regex for extracting invoice id from vnp_TxnRef
@@ -132,7 +132,8 @@ def expert_schedule(request):
                 'id': schedule.id,
                 'start_time': schedule.work_shift.start_time.strftime('%H:%M'),
                 'end_time': schedule.work_shift.end_time.strftime('%H:%M'),
-                'is_booked': schedule.is_booked
+                'is_booked': schedule.is_booked,
+                'is_outdate': schedule.check_date()
             })
         
         schedule_data.append({
@@ -166,9 +167,14 @@ def payment(request):
         except WorkSchedule.DoesNotExist:
             return HttpResponseBadRequest('Invalid schedule_id')
         
+        # chat_group = ChatGroup.objects.get(group_name = 'test-group')
+        chat_group = ChatGroup.objects.filter(message__sender__in = [member, work_schedule.expert]).first()
+        if not chat_group:
+            chat_group = ChatGroup.objects.create(group_name = 'test-group')
         appointment = Appointment.objects.create(
             member=member,
-            work_schedule=work_schedule
+            work_schedule=work_schedule,
+            chat_group=chat_group
             )
         appointment.save()
 

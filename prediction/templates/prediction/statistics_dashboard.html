@@ -1,0 +1,3291 @@
+<!-- prediction/templates/prediction/statistics_dashboard.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Thống kê Tuyển sinh Toàn quốc - Cổng thông tin tuyển sinh{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h1 class="mb-3"><i class="bi bi-bar-chart-fill me-2"></i>Thống kê Tuyển sinh Toàn quốc</h1>
+                    <p class="mb-0">Phân tích dữ liệu từ {{ total_universities }} trường và {{ total_majors }} ngành học</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hiển thị lỗi nếu có -->
+    {% if error %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-danger">
+                <h5><i class="bi bi-exclamation-triangle"></i> Lỗi tải dữ liệu</h5>
+                <p class="mb-0">{{ error }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Thống kê tổng quan -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <h3 class="text-primary">{{ total_universities }}</h3>
+                    <p class="mb-0">Trường Đại học</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h3 class="text-success">{{ total_majors }}</h3>
+                    <p class="mb-0">Ngành học</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h3 class="text-info">{{ total_criteria }}</h3>
+                    <p class="mb-0">Chỉ tiêu tuyển sinh</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <h3 class="text-warning">{{ score_stats.avg_score|default:0|floatformat:2 }}</h3>
+                    <p class="mb-0">Điểm chuẩn TB</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bộ lọc nâng cao - ĐÃ ĐƯỢC NÂNG CẤP -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0"><i class="bi bi-funnel me-2"></i>Bộ lọc nâng cao - Lọc dữ liệu thông minh</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="form-label"><strong>📍 Vùng miền:</strong></label>
+                            <select class="form-select" id="regionFilter">
+                                <option value="all">🌍 Tất cả vùng</option>
+                                <option value="Miền Bắc">🗻 Miền Bắc</option>
+                                <option value="Miền Trung">🏞️ Miền Trung</option>
+                                <option value="Miền Nam">🌴 Miền Nam</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"><strong>🎓 Khối thi:</strong></label>
+                            <select class="form-select" id="blockFilter">
+                                <option value="all">📚 Tất cả khối</option>
+                                <option value="A00">🔢 A00 (Toán, Lý, Hóa)</option>
+                                <option value="A01">🔤 A01 (Toán, Lý, Anh)</option>
+                                <option value="B00">🧪 B00 (Toán, Hóa, Sinh)</option>
+                                <option value="C00">📖 C00 (Văn, Sử, Địa)</option>
+                                <option value="D01">📝 D01 (Toán, Văn, Anh)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"><strong>📅 Năm tuyển sinh:</strong></label>
+                            <select class="form-select" id="yearFilter">
+                                <option value="all">🗓️ Tất cả năm</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"><strong>⚡ Tùy chọn nâng cao:</strong></label>
+                            <div class="d-grid gap-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="highDemandFilter" value="high-demand">
+                                    <label class="form-check-label" for="highDemandFilter">
+                                        🚀 Ngành nhu cầu cao
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="newMajorFilter" value="new-major">
+                                    <label class="form-check-label" for="newMajorFilter">
+                                        🔥 Ngành mới
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-8">
+                            <div class="filter-info bg-light p-2 rounded small">
+                                <i class="bi bi-info-circle text-primary"></i>
+                                <strong>Bộ lọc sẽ áp dụng cho:</strong> Biểu đồ thống kê, Bảng xếp hạng, và Tính năng so sánh ngành học
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary" id="applyFilters">
+                                    <i class="bi bi-funnel"></i> Áp dụng bộ lọc
+                                </button>
+                                <button class="btn btn-outline-secondary" id="resetFilters">
+                                    <i class="bi bi-arrow-clockwise"></i> Đặt lại
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bộ chuyển đổi biểu đồ -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-sliders me-2"></i>Tùy chọn hiển thị biểu đồ</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-label"><strong>Biểu đồ Vùng miền:</strong></label>
+                            <select class="form-select" id="regionChartType">
+                                <option value="pie">⭕ Biểu đồ tròn</option>
+                                <option value="doughnut">🍩 Biểu đồ Doughnut</option>
+                                <option value="bar">📊 Biểu đồ cột</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"><strong>Biểu đồ Xu hướng:</strong></label>
+                            <select class="form-select" id="trendChartType">
+                                <option value="line">📈 Biểu đồ đường</option>
+                                <option value="bar">📊 Biểu đồ cột</option>
+                                <option value="area">🟦 Biểu đồ vùng</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"><strong>Biểu đồ Khối thi:</strong></label>
+                            <select class="form-select" id="blockChartType">
+                                <option value="bar">📊 Biểu đồ cột</option>
+                                <option value="line">📈 Biểu đồ đường kết hợp</option>
+                                <option value="radar">🛡️ Biểu đồ Radar</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biểu đồ thống kê -->
+    <div class="row mb-4">
+        <!-- Biểu đồ phân bổ vùng miền -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-pie-chart me-2"></i>Phân bổ theo Vùng miền</h5>
+                    <div class="chart-actions">
+                        <button class="btn btn-sm btn-outline-secondary" onclick="downloadChart('regionChart')">
+                            <i class="bi bi-download"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="regionChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Biểu đồ xu hướng qua các năm -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Xu hướng Tuyển sinh</h5>
+                    <div class="chart-actions">
+                        <button class="btn btn-sm btn-outline-secondary" onclick="downloadChart('yearlyChart')">
+                            <i class="bi bi-download"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="yearlyChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biểu đồ phân bổ theo khối thi -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-bar-chart me-2"></i>Phân bổ theo Khối thi</h5>
+                    <div class="chart-actions">
+                        <button class="btn btn-sm btn-outline-secondary" onclick="downloadChart('blockChart')">
+                            <i class="bi bi-download"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="blockChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TÍNH NĂNG SO SÁNH NGÀNH HỌC -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-compass me-2"></i>So Sánh Ngành Học - Tìm Sự Lựa Chọn Tối Ưu</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="card h-100">
+                                <div class="card-header bg-primary text-white">
+                                    <h6 class="mb-0">📊 Ngành 1</h6>
+                                </div>
+                                <div class="card-body">
+                                    <select class="form-select mb-3" id="compareMajor1">
+                                        <option value="">-- Chọn ngành để so sánh --</option>
+                                    </select>
+                                    <div id="major1Details" class="major-comparison-details">
+                                        <div class="text-center text-muted">
+                                            <i class="bi bi-arrow-left" style="font-size: 2rem;"></i>
+                                            <p class="mt-2">Chọn ngành thứ nhất</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2 d-flex align-items-center justify-content-center">
+                            <div class="text-center">
+                                <div class="vs-badge bg-warning text-dark px-3 py-2 rounded-pill mb-3">
+                                    <strong>VS</strong>
+                                </div>
+                                <button class="btn btn-primary btn-sm" onclick="compareSelectedMajors()">
+                                    <i class="bi bi-arrow-left-right"></i> So sánh
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm mt-2" onclick="clearComparison()">
+                                    <i class="bi bi-x-circle"></i> Xóa
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-5">
+                            <div class="card h-100">
+                                <div class="card-header bg-success text-white">
+                                    <h6 class="mb-0">📈 Ngành 2</h6>
+                                </div>
+                                <div class="card-body">
+                                    <select class="form-select mb-3" id="compareMajor2">
+                                        <option value="">-- Chọn ngành để so sánh --</option>
+                                    </select>
+                                    <div id="major2Details" class="major-comparison-details">
+                                        <div class="text-center text-muted">
+                                            <i class="bi bi-arrow-right" style="font-size: 2rem;"></i>
+                                            <p class="mt-2">Chọn ngành thứ hai</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Kết quả so sánh chi tiết -->
+                    <div class="row mt-4" id="comparisonResults" style="display: none;">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0"><i class="bi bi-bar-chart-line me-2"></i>Kết Quả So Sánh Chi Tiết</h6>
+                                    <button class="btn btn-sm btn-outline-dark" onclick="downloadComparisonChart()">
+                                        <i class="bi bi-download"></i> Tải biểu đồ
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Biểu đồ so sánh -->
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <canvas id="majorComparisonChart" height="250"></canvas>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Bảng so sánh chi tiết -->
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Tiêu chí</th>
+                                                    <th id="comparisonMajor1Name">Ngành 1</th>
+                                                    <th id="comparisonMajor2Name">Ngành 2</th>
+                                                    <th>Đánh giá</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="comparisonTableBody">
+                                                <!-- Dữ liệu sẽ được thêm bằng JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <!-- Phân tích và khuyến nghị -->
+                                    <div class="row mt-4">
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-header bg-info text-white">
+                                                    <h6 class="mb-0">💡 Phân tích</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div id="comparisonAnalysis">
+                                                        <!-- Phân tích sẽ được thêm ở đây -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-header bg-success text-white">
+                                                    <h6 class="mb-0">🎯 Khuyến nghị</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div id="comparisonRecommendation">
+                                                        <!-- Khuyến nghị sẽ được thêm ở đây -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chức năng Hướng nghiệp Thông minh -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Hướng Nghiệp Thông Minh - Định Hướng Tương Lai</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Progress Steps -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="progress-steps">
+                                <div class="step active" data-step="1">
+                                    <div class="step-number">1</div>
+                                    <div class="step-label">Thông Tin Cá Nhân</div>
+                                </div>
+                                <div class="step" data-step="2">
+                                    <div class="step-number">2</div>
+                                    <div class="step-label">Sở Thích & Năng Lực</div>
+                                </div>
+                                <div class="step" data-step="3">
+                                    <div class="step-number">3</div>
+                                    <div class="step-label">Mục Tiêu Nghề Nghiệp</div>
+                                </div>
+                                <div class="step" data-step="4">
+                                    <div class="step-number">4</div>
+                                    <div class="step-label">Kết Quả & Đề Xuất</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bước 1: Thông tin cá nhân -->
+                    <div class="career-step active" id="step1">
+                        <h6 class="text-success mb-3">📝 Bước 1: Thông Tin Cá Nhân</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>🎓 Khối thi chính:</strong></label>
+                                    <select class="form-select" id="careerBlock" required>
+                                        <option value="">-- Chọn khối thi --</option>
+                                        <option value="A00">A00 (Toán, Lý, Hóa)</option>
+                                        <option value="A01">A01 (Toán, Lý, Anh)</option>
+                                        <option value="B00">B00 (Toán, Hóa, Sinh)</option>
+                                        <option value="C00">C00 (Văn, Sử, Địa)</option>
+                                        <option value="D01">D01 (Toán, Văn, Anh)</option>
+                                        <option value="D07">D07 (Toán, Hóa, Anh)</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>📊 Điểm thi dự kiến:</strong></label>
+                                    <input type="number" class="form-control" id="expectedScore" 
+                                           placeholder="Nhập điểm dự kiến (0-30)" min="0" max="30" step="0.5" required>
+                                    <div class="form-text">Dựa trên kết quả thi thử hoặc năng lực hiện tại</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>📍 Khu vực ưu tiên:</strong></label>
+                                    <select class="form-select" id="preferredRegion">
+                                        <option value="all">Không ưu tiên</option>
+                                        <option value="Miền Bắc">Miền Bắc</option>
+                                        <option value="Miền Trung">Miền Trung</option>
+                                        <option value="Miền Nam">Miền Nam</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>💰 Ngân sách học tập:</strong></label>
+                                    <select class="form-select" id="budget">
+                                        <option value="all">Tất cả mức học phí</option>
+                                        <option value="low">Dưới 10 triệu/năm</option>
+                                        <option value="medium">10-20 triệu/năm</option>
+                                        <option value="high">Trên 20 triệu/năm</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-12 text-end">
+                                <button class="btn btn-success" onclick="nextStep(1)">
+                                    Tiếp theo <i class="bi bi-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bước 2: Sở thích và năng lực -->
+                    <div class="career-step" id="step2" style="display: none;">
+                        <h6 class="text-success mb-3">❤️ Bước 2: Sở Thích & Thế Mạnh</h6>
+                        
+                        <!-- Sở thích -->
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <label class="form-label"><strong>Chọn 3-5 lĩnh vực bạn quan tâm nhất:</strong></label>
+                                <div class="interests-grid" id="interestsContainer">
+                                    <!-- Interests will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kỹ năng -->
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <label class="form-label"><strong>🎯 Đánh giá kỹ năng của bạn (1-10 điểm):</strong></label>
+                                <div class="skills-assessment">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="skill-item">
+                                                <label class="form-label">Tư duy logic & Toán học</label>
+                                                <div class="d-flex align-items-center">
+                                                    <input type="range" class="form-range skill-slider" id="skillLogic" min="1" max="10" value="5">
+                                                    <span class="skill-value ms-3" id="skillLogicValue">5</span>
+                                                </div>
+                                            </div>
+                                            <div class="skill-item">
+                                                <label class="form-label">Giao tiếp & Ngôn ngữ</label>
+                                                <div class="d-flex align-items-center">
+                                                    <input type="range" class="form-range skill-slider" id="skillCommunication" min="1" max="10" value="5">
+                                                    <span class="skill-value ms-3" id="skillCommunicationValue">5</span>
+                                                </div>
+                                            </div>
+                                            <div class="skill-item">
+                                                <label class="form-label">Sáng tạo & Nghệ thuật</label>
+                                                <div class="d-flex align-items-center">
+                                                    <input type="range" class="form-range skill-slider" id="skillCreativity" min="1" max="10" value="5">
+                                                    <span class="skill-value ms-3" id="skillCreativityValue">5</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="skill-item">
+                                                <label class="form-label">Lãnh đạo & Quản lý</label>
+                                                <div class="d-flex align-items-center">
+                                                    <input type="range" class="form-range skill-slider" id="skillLeadership" min="1" max="10" value="5">
+                                                    <span class="skill-value ms-3" id="skillLeadershipValue">5</span>
+                                                </div>
+                                            </div>
+                                            <div class="skill-item">
+                                                <label class="form-label">Kỹ thuật & Công nghệ</label>
+                                                <div class="d-flex align-items-center">
+                                                    <input type="range" class="form-range skill-slider" id="skillTechnical" min="1" max="10" value="5">
+                                                    <span class="skill-value ms-3" id="skillTechnicalValue">5</span>
+                                                </div>
+                                            </div>
+                                            <div class="skill-item">
+                                                <label class="form-label">Nghiên cứu & Phân tích</label>
+                                                <div class="d-flex align-items-center">
+                                                    <input type="range" class="form-range skill-slider" id="skillResearch" min="1" max="10" value="5">
+                                                    <span class="skill-value ms-3" id="skillResearchValue">5</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <button class="btn btn-outline-secondary" onclick="prevStep(2)">
+                                    <i class="bi bi-arrow-left"></i> Quay lại
+                                </button>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <button class="btn btn-success" onclick="nextStep(2)">
+                                    Tiếp theo <i class="bi bi-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bước 3: Mục tiêu nghề nghiệp -->
+                    <div class="career-step" id="step3" style="display: none;">
+                        <h6 class="text-success mb-3">🎯 Bước 3: Mục Tiêu & Định Hướng</h6>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>Mục tiêu nghề nghiệp chính:</strong></label>
+                                    <select class="form-select" id="careerGoal" required>
+                                        <option value="">-- Chọn mục tiêu --</option>
+                                        <option value="high-salary">💰 Thu nhập cao</option>
+                                        <option value="stability">🏛️ Ổn định lâu dài</option>
+                                        <option value="creativity">🎨 Sáng tạo, đổi mới</option>
+                                        <option value="leadership">👨‍💼 Vị trí lãnh đạo</option>
+                                        <option value="social-impact">🌍 Tác động xã hội</option>
+                                        <option value="flexibility">🕐 Linh hoạt, tự do</option>
+                                        <option value="research">🔬 Nghiên cứu chuyên sâu</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>Môi trường làm việc ưa thích:</strong></label>
+                                    <select class="form-select" id="workEnvironment">
+                                        <option value="any">Không ưu tiên</option>
+                                        <option value="office">Văn phòng</option>
+                                        <option value="remote">Làm việc từ xa</option>
+                                        <option value="field">Thực địa/Laboratory</option>
+                                        <option value="creative">Môi trường sáng tạo</option>
+                                        <option value="academic">Môi trường học thuật</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>📈 Mức độ cạnh tranh mong muốn:</strong></label>
+                                    <select class="form-select" id="competitionLevel">
+                                        <option value="low">Cạnh tranh thấp</option>
+                                        <option value="medium" selected>Cạnh tranh trung bình</option>
+                                        <option value="high">Cạnh tranh cao</option>
+                                        <option value="very-high">Cạnh tranh rất cao</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>⏱️ Thời gian đào tạo ưu tiên:</strong></label>
+                                    <select class="form-select" id="trainingDuration">
+                                        <option value="any">Không ưu tiên</option>
+                                        <option value="short">Ngắn hạn (3-4 năm)</option>
+                                        <option value="medium">Trung bình (4-5 năm)</option>
+                                        <option value="long">Dài hạn (5-6 năm)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tính cách làm việc -->
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <label class="form-label"><strong>🧠 Đánh giá tính cách làm việc:</strong></label>
+                                <div class="personality-assessment">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="personality-item">
+                                                <label class="form-label">Làm việc nhóm vs Độc lập</label>
+                                                <input type="range" class="form-range personality-slider" id="personalityTeamwork" min="1" max="10" value="5">
+                                                <div class="d-flex justify-content-between small text-muted">
+                                                    <span>Độc lập</span>
+                                                    <span>Nhóm</span>
+                                                </div>
+                                            </div>
+                                            <div class="personality-item">
+                                                <label class="form-label">Chi tiết vs Tổng quan</label>
+                                                <input type="range" class="form-range personality-slider" id="personalityDetail" min="1" max="10" value="5">
+                                                <div class="d-flex justify-content-between small text-muted">
+                                                    <span>Tổng quan</span>
+                                                    <span>Chi tiết</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="personality-item">
+                                                <label class="form-label">Ổn định vs Thay đổi</label>
+                                                <input type="range" class="form-range personality-slider" id="personalityStability" min="1" max="10" value="5">
+                                                <div class="d-flex justify-content-between small text-muted">
+                                                    <span>Thay đổi</span>
+                                                    <span>Ổn định</span>
+                                                </div>
+                                            </div>
+                                            <div class="personality-item">
+                                                <label class="form-label">Lý thuyết vs Thực hành</label>
+                                                <input type="range" class="form-range personality-slider" id="personalityPractical" min="1" max="10" value="5">
+                                                <div class="d-flex justify-content-between small text-muted">
+                                                    <span>Lý thuyết</span>
+                                                    <span>Thực hành</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <button class="btn btn-outline-secondary" onclick="prevStep(3)">
+                                    <i class="bi bi-arrow-left"></i> Quay lại
+                                </button>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <button class="btn btn-success w-50" id="analyzeCareer">
+                                    <i class="bi bi-search me-2"></i>Phân Tích
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bước 4: Kết quả hướng nghiệp -->
+                    <div class="career-step" id="step4" style="display: none;">
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h5 class="text-success" id="resultTitle">Kết Quả Phân Tích Hướng Nghiệp</h5>
+                                        <p class="mb-0" id="resultSubtitle">Dựa trên thông tin và nguyện vọng của bạn</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Biểu đồ độ phù hợp -->
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0">📊 Độ Phù Hợp Ngành Học</h6>
+                                        <button class="btn btn-sm btn-light" onclick="downloadChart('careerChart')">
+                                            <i class="bi bi-download"></i>
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="careerChart" height="250"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Phân tích cá nhân -->
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header bg-warning text-dark">
+                                        <h6 class="mb-0">📈 Phân Tích Hồ Sơ</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="personalAnalysis">
+                                            <div class="mb-3">
+                                                <p class="mb-2"><strong>👤 Hồ sơ của bạn:</strong></p>
+                                                <ul class="list-unstyled small mb-3">
+                                                    <li>• <strong>Khối thi:</strong> <span id="analysisBlock">--</span></li>
+                                                    <li>• <strong>Điểm dự kiến:</strong> <span id="analysisScore">--</span></li>
+                                                    <li>• <strong>Khu vực ưu tiên:</strong> <span id="analysisRegion">--</span></li>
+                                                    <li>• <strong>Sở thích:</strong> <span id="analysisInterests">--</span></li>
+                                                </ul>
+                                            </div>
+                                            <div class="mb-3">
+                                                <p class="mb-2"><strong>🎯 Mục tiêu:</strong></p>
+                                                <p id="analysisGoal" class="small">--</p>
+                                            </div>
+                                            <div id="careerRecommendation">
+                                                <p class="mb-2"><strong>💡 Khuyến nghị chính:</strong></p>
+                                                <p id="recommendationText" class="small">Đang phân tích...</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Thống kê chi tiết -->
+                        <div class="row mt-3">
+                            <div class="col-md-3">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <h3 id="matchPercentage" class="text-success">--%</h3>
+                                        <p class="mb-0 small">Độ phù hợp trung bình</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <h3 id="salaryRange" class="text-primary">--</h3>
+                                        <p class="mb-0 small">Lương khởi điểm TB</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <h3 id="growthPotential" class="text-info">--</h3>
+                                        <p class="mb-0 small">Tiềm năng phát triển</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <h3 id="demandLevel" class="text-warning">--</h3>
+                                        <p class="mb-0 small">Mức độ nhu cầu</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Biểu đồ so sánh đa chiều -->
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0">🔄 So Sánh Đa Chiều</h6>
+                                        <button class="btn btn-sm btn-outline-secondary" onclick="downloadChart('comparisonChart')">
+                                            <i class="bi bi-download"></i>
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="comparisonChart" height="250"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Danh sách ngành học chi tiết -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0">📋 Chi Tiết Các Ngành Học Đề Xuất</h6>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="exportCareerResults()">
+                                            <i class="bi bi-download"></i> Xuất kết quả
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row" id="majorDetails">
+                                            <!-- Dữ liệu sẽ được thêm bằng JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Các trường đề xuất -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">🏫 Các Trường Đào Tạo Phù Hợp</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-sm" id="universityTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Tên trường</th>
+                                                        <th>Ngành đề xuất</th>
+                                                        <th>Điểm chuẩn</th>
+                                                        <th>Học phí</th>
+                                                        <th>Đánh giá</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="universityTableBody">
+                                                    <!-- Dữ liệu sẽ được thêm bằng JavaScript -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hành động tiếp theo -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h6>🎯 Hành Động Tiếp Theo</h6>
+                                        <div class="row mt-3">
+                                            <div class="col-md-3">
+                                                <button class="btn btn-outline-primary w-100 mb-2" onclick="saveCareerProfile()">
+                                                    <i class="bi bi-save"></i> Lưu kết quả
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <button class="btn btn-outline-success w-100 mb-2" onclick="retakeAssessment()">
+                                                    <i class="bi bi-arrow-repeat"></i> Làm lại
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <button class="btn btn-outline-info w-100 mb-2" onclick="shareResults()">
+                                                    <i class="bi bi-share"></i> Chia sẻ
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <button class="btn btn-outline-warning w-100 mb-2" onclick="showDetailedReport()">
+                                                    <i class="bi bi-file-text"></i> Báo cáo
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bảng xếp hạng mở rộng -->
+    <div class="row">
+        <!-- Top trường nhiều ngành nhất -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-trophy me-2"></i>Top 10 Trường nhiều ngành</h5>
+                    <span class="badge bg-primary">Đa dạng</span>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tên trường</th>
+                                    <th>Số ngành</th>
+                                    <th>Vùng</th>
+                                </tr>
+                            </thead>
+                            <tbody id="universityRankingBody">
+                                {% for uni in top_universities %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ uni.name }}</td>
+                                    <td><span class="badge bg-primary">{{ uni.major_count }}</span></td>
+                                    <td><small class="text-muted">{{ uni.region|default:"-" }}</small></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">Không có dữ liệu</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top ngành hot -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-star me-2"></i>Top 10 Ngành phổ biến</h5>
+                    <span class="badge bg-success">Hot</span>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tên ngành</th>
+                                    <th>Số trường</th>
+                                    <th>Khối chính</th>
+                                </tr>
+                            </thead>
+                            <tbody id="majorRankingBody">
+                                {% for major in top_majors %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ major.name }}</td>
+                                    <td><span class="badge bg-success">{{ major.uni_count }}</span></td>
+                                    <td><small class="text-muted">{{ major.blocks|default:"-" }}</small></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">Không có dữ liệu</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// ==================== BIẾN TOÀN CỤC ====================
+let regionChart, yearlyChart, blockChart, careerChart, comparisonChart, majorComparisonChart;
+let currentStep = 1;
+let allMajors = [];
+
+// Dữ liệu mẫu - Trong thực tế sẽ được truyền từ Django
+const regionData = [
+    { name: 'Miền Bắc', uni_count: 45 },
+    { name: 'Miền Trung', uni_count: 25 },
+    { name: 'Miền Nam', uni_count: 60 }
+];
+
+const yearlyData = [
+    { year: 2022, total_quota: 450000, avg_score: 22.5 },
+    { year: 2023, total_quota: 480000, avg_score: 23.0 },
+    { year: 2024, total_quota: 520000, avg_score: 23.5 }
+];
+
+const topUniversities = [
+    { name: 'ĐH Bách Khoa Hà Nội', major_count: 45, region: 'Miền Bắc' },
+    { name: 'ĐH Quốc gia Hà Nội', major_count: 42, region: 'Miền Bắc' },
+    { name: 'ĐH Quốc gia TPHCM', major_count: 40, region: 'Miền Nam' },
+    { name: 'ĐH Cần Thơ', major_count: 35, region: 'Miền Nam' },
+    { name: 'ĐH Đà Nẵng', major_count: 32, region: 'Miền Trung' },
+    { name: 'ĐH Huế', major_count: 30, region: 'Miền Trung' },
+    { name: 'ĐH Sư phạm Hà Nội', major_count: 28, region: 'Miền Bắc' },
+    { name: 'ĐH Kinh tế Quốc dân', major_count: 25, region: 'Miền Bắc' },
+    { name: 'ĐH Ngoại thương', major_count: 22, region: 'Miền Bắc' },
+    { name: 'ĐH Y Hà Nội', major_count: 20, region: 'Miền Bắc' }
+];
+
+const topMajors = [
+    { name: 'Công nghệ Thông tin', uni_count: 35, blocks: ['A00', 'A01', 'D01'], demand: 'high', isNew: false },
+    { name: 'Quản trị Kinh doanh', uni_count: 32, blocks: ['A00', 'A01', 'D01'], demand: 'medium', isNew: false },
+    { name: 'Kỹ thuật Điện tử', uni_count: 28, blocks: ['A00', 'A01'], demand: 'high', isNew: false },
+    { name: 'Ngôn ngữ Anh', uni_count: 25, blocks: ['D01', 'D14'], demand: 'medium', isNew: false },
+    { name: 'Kế toán', uni_count: 22, blocks: ['A00', 'A01', 'D01'], demand: 'medium', isNew: false },
+    { name: 'Y khoa', uni_count: 18, blocks: ['B00'], demand: 'very-high', isNew: false },
+    { name: 'Luật', uni_count: 16, blocks: ['C00', 'D01'], demand: 'medium', isNew: false },
+    { name: 'Trí tuệ Nhân tạo', uni_count: 12, blocks: ['A00', 'A01'], demand: 'very-high', isNew: true },
+    { name: 'Khoa học Dữ liệu', uni_count: 10, blocks: ['A00', 'A01'], demand: 'high', isNew: true },
+    { name: 'Marketing số', uni_count: 8, blocks: ['A00', 'A01', 'D01'], demand: 'high', isNew: true }
+];
+
+// Dữ liệu hoàn chỉnh cho hướng nghiệp
+const careerInterests = [
+    { value: 'technology', name: 'Công nghệ Thông tin', emoji: '🖥️', description: 'Lập trình, phần mềm, AI' },
+    { value: 'engineering', name: 'Kỹ thuật - Công nghệ', emoji: '⚙️', description: 'Cơ khí, điện tử, xây dựng' },
+    { value: 'business', name: 'Kinh doanh - Quản lý', emoji: '💼', description: 'Marketing, tài chính, quản trị' },
+    { value: 'health', name: 'Y tế - Sức khỏe', emoji: '🏥', description: 'Bác sĩ, dược sĩ, điều dưỡng' },
+    { value: 'education', name: 'Giáo dục - Đào tạo', emoji: '📚', description: 'Giáo viên, giảng viên, đào tạo' },
+    { value: 'art', name: 'Nghệ thuật - Sáng tạo', emoji: '🎨', description: 'Thiết kế, âm nhạc, điện ảnh' },
+    { value: 'science', name: 'Khoa học - Nghiên cứu', emoji: '🔬', description: 'Vật lý, hóa học, sinh học' },
+    { value: 'law', name: 'Luật - Pháp lý', emoji: '⚖️', description: 'Luật sư, tư vấn pháp lý' },
+    { value: 'social', name: 'Xã hội - Nhân văn', emoji: '👥', description: 'Tâm lý, xã hội học, báo chí' },
+    { value: 'environment', name: 'Môi trường - Tài nguyên', emoji: '🌱', description: 'Môi trường, nông nghiệp' }
+];
+
+// ==================== KHỞI TẠO ====================
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("✅ Đang khởi tạo dashboard...");
+    initializeCharts();
+    initializeCareerAssessment();
+    initializeComparisonFeature();
+    setupEventListeners();
+    console.log("✅ Khởi tạo dashboard hoàn tất");
+});
+
+// ==================== BỘ LỌC NÂNG CAO - PHIÊN BẢN HOẠT ĐỘNG ====================
+
+function applyFilters() {
+    console.log("🔍 Đang áp dụng bộ lọc thực tế...");
+    showNotification('🔄 Đang lọc dữ liệu...', 'info');
+    
+    const region = document.getElementById('regionFilter').value;
+    const block = document.getElementById('blockFilter').value;
+    const year = document.getElementById('yearFilter').value;
+    const highDemand = document.getElementById('highDemandFilter').checked;
+    const newMajor = document.getElementById('newMajorFilter').checked;
+    
+    // Lọc dữ liệu biểu đồ
+    filterCharts(region, block, year);
+    
+    // Lọc dữ liệu bảng xếp hạng
+    filterRankings(region, block, highDemand, newMajor);
+    
+    // Lọc tính năng so sánh
+    filterComparisonFeature(block);
+    
+    setTimeout(() => {
+        let filterText = `✅ Đã áp dụng bộ lọc:`;
+        if (region !== 'all') filterText += ` Vùng ${region}`;
+        if (block !== 'all') filterText += ` Khối ${block}`;
+        if (year !== 'all') filterText += ` Năm ${year}`;
+        if (highDemand) filterText += ` Ngành hot`;
+        if (newMajor) filterText += ` Ngành mới`;
+        
+        showNotification(filterText, 'success');
+    }, 1000);
+}
+
+function filterCharts(region, block, year) {
+    console.log("📊 Lọc biểu đồ với:", { region, block, year });
+    
+    // Lọc biểu đồ vùng miền
+    if (region !== 'all') {
+        const filteredRegionData = regionData.filter(item => 
+            item.name.toLowerCase().includes(region.toLowerCase())
+        );
+        updateRegionChart(filteredRegionData);
+    } else {
+        updateRegionChart(regionData);
+    }
+    
+    // Lọc biểu đồ theo năm
+    if (year !== 'all') {
+        const filteredYearlyData = yearlyData.filter(item => 
+            item.year.toString() === year
+        );
+        updateYearlyChart(filteredYearlyData);
+    } else {
+        updateYearlyChart(yearlyData);
+    }
+    
+    // Lọc biểu đồ khối thi
+    if (block !== 'all') {
+        const filteredBlockData = filterBlockData(block);
+        updateBlockChart(filteredBlockData);
+    } else {
+        updateBlockChart(getAllBlockData());
+    }
+}
+
+function filterRankings(region, block, highDemand, newMajor) {
+    console.log("🏆 Lọc bảng xếp hạng với:", { region, block, highDemand, newMajor });
+    
+    // Lọc top trường
+    let filteredUniversities = [...topUniversities];
+    if (region !== 'all') {
+        filteredUniversities = filteredUniversities.filter(uni => 
+            uni.region && uni.region.toLowerCase().includes(region.toLowerCase())
+        );
+    }
+    updateUniversityRanking(filteredUniversities);
+    
+    // Lọc top ngành
+    let filteredMajors = [...topMajors];
+    if (block !== 'all') {
+        filteredMajors = filteredMajors.filter(major => 
+            major.blocks && major.blocks.includes(block)
+        );
+    }
+    if (highDemand) {
+        filteredMajors = filteredMajors.filter(major => 
+            major.demand === 'high' || major.demand === 'very-high'
+        );
+    }
+    if (newMajor) {
+        filteredMajors = filteredMajors.filter(major => 
+            major.isNew === true
+        );
+    }
+    updateMajorRanking(filteredMajors);
+}
+
+function filterComparisonFeature(block) {
+    console.log("🔄 Lọc tính năng so sánh với khối:", block);
+    
+    if (block !== 'all') {
+        // Chỉ hiển thị ngành thuộc khối được chọn
+        const filteredMajors = allMajors.filter(major => major.block === block);
+        updateComparisonDropdowns(filteredMajors);
+    } else {
+        // Hiển thị tất cả ngành
+        updateComparisonDropdowns(allMajors);
+    }
+}
+
+// ==================== HÀM CẬP NHẬT GIAO DIỆN ====================
+
+function updateRegionChart(data) {
+    const ctx = document.getElementById('regionChart');
+    if (!ctx) return;
+    
+    if (regionChart) {
+        regionChart.destroy();
+    }
+    
+    const chartType = document.getElementById('regionChartType').value;
+    const labels = data.map(r => r.name);
+    const chartData = data.map(r => r.uni_count);
+    
+    regionChart = new Chart(ctx, {
+        type: chartType,
+        data: {
+            labels: labels,
+            datasets: [{
+                data: chartData,
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
+                borderWidth: 2,
+                hoverOffset: 15
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Phân bổ trường theo vùng ${data.length > 0 ? '(Đã lọc)' : ''}`,
+                    font: { size: 16, weight: 'bold' }
+                },
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+}
+
+function updateYearlyChart(data) {
+    const ctx = document.getElementById('yearlyChart');
+    if (!ctx) return;
+    
+    if (yearlyChart) {
+        yearlyChart.destroy();
+    }
+    
+    const chartType = document.getElementById('trendChartType').value;
+    const labels = data.map(item => `Năm ${item.year}`);
+    const quotas = data.map(item => item.total_quota);
+    const scores = data.map(item => item.avg_score);
+    const isArea = chartType === 'area';
+    const actualType = isArea ? 'line' : chartType;
+
+    yearlyChart = new Chart(ctx, {
+        type: actualType,
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Tổng chỉ tiêu',
+                    data: quotas,
+                    borderColor: '#36A2EB',
+                    backgroundColor: isArea ? 'rgba(54,162,235,0.3)' : 'rgba(54,162,235,0.8)',
+                    yAxisID: 'y',
+                    fill: isArea,
+                    tension: 0.4
+                },
+                {
+                    label: 'Điểm chuẩn TB',
+                    data: scores,
+                    borderColor: '#FF6384',
+                    backgroundColor: isArea ? 'rgba(255,99,132,0.3)' : 'rgba(255,99,132,0.8)',
+                    yAxisID: 'y1',
+                    fill: isArea,
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Xu hướng tuyển sinh ${data.length > 0 ? '(Đã lọc)' : ''}`,
+                    font: { size: 16, weight: 'bold' }
+                }
+            },
+            scales: {
+                y: { 
+                    type: 'linear', 
+                    position: 'left', 
+                    title: { display: true, text: 'Chỉ tiêu tuyển sinh' } 
+                },
+                y1: { 
+                    type: 'linear', 
+                    position: 'right', 
+                    grid: { drawOnChartArea: false }, 
+                    title: { display: true, text: 'Điểm chuẩn' } 
+                }
+            }
+        }
+    });
+}
+
+function updateBlockChart(data) {
+    const ctx = document.getElementById('blockChart');
+    if (!ctx) return;
+    
+    if (blockChart) {
+        blockChart.destroy();
+    }
+    
+    const chartType = document.getElementById('blockChartType').value;
+    const labels = Object.keys(data);
+    const quotas = Object.values(data).map(d => d.quota);
+    
+    const datasets = [{
+        label: 'Chỉ tiêu tuyển sinh',
+        data: quotas,
+        backgroundColor: 'rgba(54, 162, 235, 0.8)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+    }];
+
+    blockChart = new Chart(ctx, {
+        type: chartType === 'radar' ? 'radar' : 'bar',
+        data: {
+            labels: labels,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Phân bổ chỉ tiêu theo khối thi ${labels.length > 0 ? '(Đã lọc)' : ''}`,
+                    font: { size: 16, weight: 'bold' }
+                }
+            }
+        }
+    });
+}
+
+function updateUniversityRanking(universities) {
+    const tbody = document.getElementById('universityRankingBody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    if (universities.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" class="text-center text-muted">
+                    <i class="bi bi-search"></i> Không tìm thấy trường phù hợp
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    universities.slice(0, 10).forEach((uni, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${uni.name}</td>
+            <td><span class="badge bg-primary">${uni.major_count}</span></td>
+            <td><small class="text-muted">${uni.region || '-'}</small></td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function updateMajorRanking(majors) {
+    const tbody = document.getElementById('majorRankingBody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    if (majors.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" class="text-center text-muted">
+                    <i class="bi bi-search"></i> Không tìm thấy ngành phù hợp
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    majors.slice(0, 10).forEach((major, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${major.name}</td>
+            <td><span class="badge bg-success">${major.uni_count}</span></td>
+            <td><small class="text-muted">${major.blocks ? major.blocks.join(', ') : '-'}</small></td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// ==================== TÍNH NĂNG SO SÁNH NGÀNH HỌC ====================
+
+function initializeComparisonFeature() {
+    console.log("🔄 Đang khởi tạo tính năng so sánh ngành học...");
+    
+    // Lấy tất cả ngành học từ dữ liệu có sẵn
+    allMajors = getAllMajorsForComparison();
+    
+    // Điền danh sách ngành vào dropdown
+    populateComparisonDropdowns();
+    
+    // Thiết lập event listeners
+    setupComparisonEventListeners();
+    
+    console.log("✅ Tính năng so sánh đã được khởi tạo");
+}
+
+function getAllMajorsForComparison() {
+    const careerMajors = {
+        'A00': [
+            { 
+                name: 'Công nghệ Thông tin', 
+                score: 24.5, 
+                baseMatch: 95, 
+                salary: '15-30 triệu', 
+                growth: 'Rất cao',
+                description: 'Ngành học về công nghệ, lập trình, và hệ thống thông tin',
+                skills: ['Lập trình', 'Phân tích hệ thống', 'Toán học', 'Sáng tạo'],
+                personality: ['Chi tiết', 'Logic', 'Đổi mới', 'Tỉ mỉ'],
+                universities: [
+                    { name: 'ĐH Bách Khoa HN', score: 28.5, tuition: '18-25 triệu', rating: 5 },
+                    { name: 'ĐH Công nghệ', score: 26.0, tuition: '15-20 triệu', rating: 4 },
+                    { name: 'ĐH FPT', score: 24.0, tuition: '25-30 triệu', rating: 4 }
+                ],
+                demand: 'Rất cao',
+                future: 'AI, Blockchain, IoT'
+            },
+            { 
+                name: 'Kỹ thuật Điện tử - Viễn thông', 
+                score: 23.0, 
+                baseMatch: 88, 
+                salary: '12-25 triệu', 
+                growth: 'Cao',
+                description: 'Thiết kế và phát triển hệ thống điện tử, viễn thông',
+                skills: ['Mạch điện', 'Lập trình nhúng', 'Tín hiệu số', 'Kỹ thuật'],
+                personality: ['Kỹ thuật', 'Tỉ mỉ', 'Giải quyết vấn đề', 'Thực tế'],
+                universities: [
+                    { name: 'ĐH Bách Khoa HN', score: 26.5, tuition: '18-25 triệu', rating: 5 },
+                    { name: 'HV Công nghệ Bưu chính Viễn thông', score: 24.0, tuition: '16-22 triệu', rating: 4 }
+                ],
+                demand: 'Cao',
+                future: '5G, IoT, Smart Devices'
+            },
+            { 
+                name: 'Kỹ thuật Cơ khí', 
+                score: 22.0, 
+                baseMatch: 82, 
+                salary: '10-20 triệu', 
+                growth: 'Trung bình',
+                description: 'Thiết kế, chế tạo và vận hành hệ thống cơ khí',
+                skills: ['Thiết kế CAD/CAM', 'Gia công', 'Cơ học', 'Vật liệu'],
+                personality: ['Thực tế', 'Tỉ mỉ', 'Kỹ thuật', 'Sáng tạo'],
+                universities: [
+                    { name: 'ĐH Bách Khoa HN', score: 25.0, tuition: '18-25 triệu', rating: 4 },
+                    { name: 'ĐH Giao thông Vận tải', score: 22.5, tuition: '15-20 triệu', rating: 4 }
+                ],
+                demand: 'Trung bình',
+                future: 'Robot, Tự động hóa'
+            }
+        ],
+        'B00': [
+            { 
+                name: 'Y khoa', 
+                score: 28.5, 
+                baseMatch: 98, 
+                salary: '15-35 triệu', 
+                growth: 'Rất cao',
+                description: 'Đào tạo bác sĩ đa khoa với kiến thức y học toàn diện',
+                skills: ['Chẩn đoán', 'Phẫu thuật', 'Giao tiếp', 'Phân tích'],
+                personality: ['Tỉ mỉ', 'Nhân văn', 'Chịu áp lực', 'Cẩn thận'],
+                universities: [
+                    { name: 'ĐH Y Hà Nội', score: 29.0, tuition: '20-28 triệu', rating: 5 },
+                    { name: 'ĐH Y Dược TPHCM', score: 28.5, tuition: '18-25 triệu', rating: 5 }
+                ],
+                demand: 'Rất cao',
+                future: 'Y học cá nhân hóa, Telemedicine'
+            },
+            { 
+                name: 'Dược học', 
+                score: 26.0, 
+                baseMatch: 92, 
+                salary: '12-25 triệu', 
+                growth: 'Cao',
+                description: 'Nghiên cứu và phát triển thuốc, dược phẩm',
+                skills: ['Hóa học', 'Phân tích', 'Nghiên cứu', 'Giao tiếp'],
+                personality: ['Tỉ mỉ', 'Cẩn thận', 'Khoa học', 'Nhân văn'],
+                universities: [
+                    { name: 'ĐH Dược Hà Nội', score: 27.0, tuition: '18-25 triệu', rating: 5 },
+                    { name: 'ĐH Y Dược TPHCM', score: 26.5, tuition: '16-22 triệu', rating: 4 }
+                ],
+                demand: 'Cao',
+                future: 'Dược phẩm sinh học, Medicine'
+            }
+        ],
+        'C00': [
+            { 
+                name: 'Báo chí - Truyền thông', 
+                score: 21.5, 
+                baseMatch: 85, 
+                salary: '8-18 triệu', 
+                growth: 'Trung bình',
+                description: 'Đào tạo nhà báo, chuyên viên truyền thông đa phương tiện',
+                skills: ['Viết lách', 'Giao tiếp', 'Sáng tạo', 'Phân tích'],
+                personality: ['Sáng tạo', 'Năng động', 'Giao tiếp', 'Nhạy bén'],
+                universities: [
+                    { name: 'Học viện Báo chí và Tuyên truyền', score: 25.0, tuition: '12-18 triệu', rating: 4 },
+                    { name: 'ĐH Khoa học Xã hội & Nhân văn', score: 22.0, tuition: '10-15 triệu', rating: 4 }
+                ],
+                demand: 'Trung bình',
+                future: 'Truyền thông số, Content Creator'
+            }
+        ]
+    };
+
+    const allMajors = [];
+    Object.keys(careerMajors).forEach(block => {
+        careerMajors[block].forEach(major => {
+            allMajors.push({
+                ...major,
+                block: block,
+                id: `${block}_${major.name.replace(/\s+/g, '_')}`
+            });
+        });
+    });
+    
+    return allMajors;
+}
+
+function populateComparisonDropdowns(majors = allMajors) {
+    const select1 = document.getElementById('compareMajor1');
+    const select2 = document.getElementById('compareMajor2');
+    
+    if (!select1 || !select2) return;
+    
+    // Lưu giá trị đang chọn
+    const current1 = select1.value;
+    const current2 = select2.value;
+    
+    // Xóa options cũ
+    while (select1.options.length > 1) select1.remove(1);
+    while (select2.options.length > 1) select2.remove(1);
+    
+    // Thêm options mới
+    majors.forEach(major => {
+        const option1 = new Option(`${major.name} (${major.block})`, major.id);
+        const option2 = new Option(`${major.name} (${major.block})`, major.id);
+        
+        select1.add(option1);
+        select2.add(option2);
+    });
+    
+    // Khôi phục giá trị đang chọn nếu còn tồn tại
+    if (majors.find(m => m.id === current1)) {
+        select1.value = current1;
+        showMajorDetails('major1Details', current1);
+    } else {
+        document.getElementById('major1Details').innerHTML = `
+            <div class="text-center text-muted">
+                <i class="bi bi-arrow-left" style="font-size: 2rem;"></i>
+                <p class="mt-2">Chọn ngành thứ nhất</p>
+            </div>
+        `;
+    }
+    
+    if (majors.find(m => m.id === current2)) {
+        select2.value = current2;
+        showMajorDetails('major2Details', current2);
+    } else {
+        document.getElementById('major2Details').innerHTML = `
+            <div class="text-center text-muted">
+                <i class="bi bi-arrow-right" style="font-size: 2rem;"></i>
+                <p class="mt-2">Chọn ngành thứ hai</p>
+            </div>
+        `;
+    }
+}
+
+function updateComparisonDropdowns(majors) {
+    populateComparisonDropdowns(majors);
+}
+
+function setupComparisonEventListeners() {
+    const select1 = document.getElementById('compareMajor1');
+    const select2 = document.getElementById('compareMajor2');
+    
+    if (select1 && select2) {
+        select1.addEventListener('change', function() {
+            if (this.value) {
+                showMajorDetails('major1Details', this.value);
+            }
+        });
+        
+        select2.addEventListener('change', function() {
+            if (this.value) {
+                showMajorDetails('major2Details', this.value);
+            }
+        });
+    }
+}
+
+function showMajorDetails(containerId, majorId) {
+    const container = document.getElementById(containerId);
+    const major = allMajors.find(m => m.id === majorId);
+    
+    if (!container || !major) return;
+    
+    container.innerHTML = `
+        <div class="major-preview">
+            <h6 class="text-primary">${major.name}</h6>
+            <div class="major-info-small">
+                <div class="info-item"><span>🎯 Điểm chuẩn:</span> <strong>${major.score}</strong></div>
+                <div class="info-item"><span>💰 Lương:</span> <strong>${major.salary}</strong></div>
+                <div class="info-item"><span>📈 Triển vọng:</span> <strong>${major.growth}</strong></div>
+                <div class="info-item"><span>🔥 Nhu cầu:</span> <strong>${major.demand}</strong></div>
+            </div>
+            <p class="major-desc-small">${major.description}</p>
+        </div>
+    `;
+}
+
+function compareSelectedMajors() {
+    const major1Id = document.getElementById('compareMajor1').value;
+    const major2Id = document.getElementById('compareMajor2').value;
+    
+    if (!major1Id || !major2Id) {
+        showNotification('⚠️ Vui lòng chọn đầy đủ 2 ngành để so sánh!', 'warning');
+        return;
+    }
+    
+    if (major1Id === major2Id) {
+        showNotification('⚠️ Vui lòng chọn 2 ngành khác nhau để so sánh!', 'warning');
+        return;
+    }
+    
+    console.log("🔍 Đang so sánh ngành học...");
+    showNotification('🔄 Đang phân tích và so sánh...', 'info');
+    
+    const major1 = allMajors.find(m => m.id === major1Id);
+    const major2 = allMajors.find(m => m.id === major2Id);
+    
+    if (!major1 || !major2) {
+        showNotification('❌ Không tìm thấy thông tin ngành học!', 'danger');
+        return;
+    }
+    
+    // Hiển thị kết quả so sánh
+    displayComparisonResults(major1, major2);
+    
+    // Hiển thị phần kết quả
+    document.getElementById('comparisonResults').style.display = 'block';
+    
+    // Cuộn đến phần kết quả
+    document.getElementById('comparisonResults').scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+    });
+    
+    showNotification('✅ So sánh hoàn tất!', 'success');
+}
+
+function displayComparisonResults(major1, major2) {
+    // Cập nhật tên ngành trong bảng
+    document.getElementById('comparisonMajor1Name').textContent = major1.name;
+    document.getElementById('comparisonMajor2Name').textContent = major2.name;
+    
+    // Tạo biểu đồ so sánh
+    createComparisonChart(major1, major2);
+    
+    // Tạo bảng so sánh chi tiết
+    createComparisonTable(major1, major2);
+    
+    // Tạo phân tích và khuyến nghị
+    createComparisonAnalysis(major1, major2);
+}
+
+function createComparisonChart(major1, major2) {
+    const ctx = document.getElementById('majorComparisonChart');
+    if (!ctx) return;
+    
+    if (majorComparisonChart) {
+        majorComparisonChart.destroy();
+    }
+    
+    const criteria = ['Điểm chuẩn', 'Mức lương', 'Triển vọng', 'Nhu cầu', 'Độ khó'];
+    const major1Data = [
+        parseFloat(major1.score),
+        calculateSalaryScore(major1.salary),
+        calculateGrowthScore(major1.growth),
+        calculateDemandScore(major1.demand),
+        70 // Độ khó ước tính
+    ];
+    
+    const major2Data = [
+        parseFloat(major2.score),
+        calculateSalaryScore(major2.salary),
+        calculateGrowthScore(major2.growth),
+        calculateDemandScore(major2.demand),
+        70 // Độ khó ước tính
+    ];
+    
+    majorComparisonChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: criteria,
+            datasets: [
+                {
+                    label: major1.name,
+                    data: major1Data,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(54, 162, 235, 1)'
+                },
+                {
+                    label: major2.name,
+                    data: major2Data,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(255, 99, 132, 1)'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        stepSize: 20
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'So Sánh Đa Chiều',
+                    font: { size: 16, weight: 'bold' }
+                }
+            }
+        }
+    });
+}
+
+function calculateSalaryScore(salary) {
+    if (salary.includes('30')) return 90;
+    if (salary.includes('25')) return 80;
+    if (salary.includes('20')) return 70;
+    if (salary.includes('15')) return 60;
+    if (salary.includes('12')) return 50;
+    if (salary.includes('10')) return 40;
+    return 30;
+}
+
+function calculateGrowthScore(growth) {
+    const mapping = { 'Rất cao': 90, 'Cao': 75, 'Trung bình': 60, 'Thấp': 40 };
+    return mapping[growth] || 50;
+}
+
+function calculateDemandScore(demand) {
+    const mapping = { 'Rất cao': 95, 'Cao': 80, 'Trung bình': 65, 'Thấp': 45 };
+    return mapping[demand] || 50;
+}
+
+function createComparisonTable(major1, major2) {
+    const tableBody = document.getElementById('comparisonTableBody');
+    if (!tableBody) return;
+    
+    const comparisonData = [
+        {
+            criterion: '🎯 Điểm chuẩn',
+            value1: major1.score,
+            value2: major2.score,
+            evaluation: getScoreEvaluation(major1.score, major2.score)
+        },
+        {
+            criterion: '💰 Lương khởi điểm',
+            value1: major1.salary,
+            value2: major2.salary,
+            evaluation: getSalaryEvaluation(major1.salary, major2.salary)
+        },
+        {
+            criterion: '📈 Triển vọng phát triển',
+            value1: major1.growth,
+            value2: major2.growth,
+            evaluation: getGrowthEvaluation(major1.growth, major2.growth)
+        },
+        {
+            criterion: '🔥 Nhu cầu thị trường',
+            value1: major1.demand,
+            value2: major2.demand,
+            evaluation: getDemandEvaluation(major1.demand, major2.demand)
+        },
+        {
+            criterion: '🛠️ Kỹ năng cần có',
+            value1: major1.skills.slice(0, 3).join(', '),
+            value2: major2.skills.slice(0, 3).join(', '),
+            evaluation: 'Tùy thuộc vào thế mạnh cá nhân'
+        },
+        {
+            criterion: '🎓 Số trường đào tạo',
+            value1: major1.universities.length + ' trường',
+            value2: major2.universities.length + ' trường',
+            evaluation: getUniversityEvaluation(major1.universities.length, major2.universities.length)
+        },
+        {
+            criterion: '🔮 Xu hướng tương lai',
+            value1: major1.future,
+            value2: major2.future,
+            evaluation: 'Cả hai đều có tiềm năng phát triển'
+        }
+    ];
+    
+    tableBody.innerHTML = comparisonData.map(item => `
+        <tr>
+            <td><strong>${item.criterion}</strong></td>
+            <td>${item.value1}</td>
+            <td>${item.value2}</td>
+            <td><span class="comparison-evaluation">${item.evaluation}</span></td>
+        </tr>
+    `).join('');
+}
+
+function createComparisonAnalysis(major1, major2) {
+    const analysisContainer = document.getElementById('comparisonAnalysis');
+    const recommendationContainer = document.getElementById('comparisonRecommendation');
+    
+    if (!analysisContainer || !recommendationContainer) return;
+    
+    // Phân tích
+    const analysis = generateComparisonAnalysis(major1, major2);
+    analysisContainer.innerHTML = analysis;
+    
+    // Khuyến nghị
+    const recommendation = generateComparisonRecommendation(major1, major2);
+    recommendationContainer.innerHTML = recommendation;
+}
+
+function generateComparisonAnalysis(major1, major2) {
+    let analysis = '<ul class="list-unstyled">';
+    
+    // So sánh điểm chuẩn
+    const score1 = parseFloat(major1.score);
+    const score2 = parseFloat(major2.score);
+    
+    if (Math.abs(score1 - score2) <= 1) {
+        analysis += '<li>✅ <strong>Điểm chuẩn tương đương:</strong> Cả hai ngành có mức độ cạnh tranh tương đương</li>';
+    } else if (score1 > score2) {
+        analysis += `<li>📊 <strong>${major1.name}</strong> có điểm chuẩn cao hơn, thể hiện độ cạnh tranh lớn hơn</li>`;
+    } else {
+        analysis += `<li>📊 <strong>${major2.name}</strong> có điểm chuẩn cao hơn, thể hiện độ cạnh tranh lớn hơn</li>`;
+    }
+    
+    // So sánh triển vọng
+    const growthScores = { 'Rất cao': 4, 'Cao': 3, 'Trung bình': 2, 'Thấp': 1 };
+    const growth1 = growthScores[major1.growth] || 2;
+    const growth2 = growthScores[major2.growth] || 2;
+    
+    if (growth1 === growth2) {
+        analysis += '<li>🚀 <strong>Triển vọng ngang nhau:</strong> Cả hai đều có tiềm năng phát triển tốt</li>';
+    } else if (growth1 > growth2) {
+        analysis += `<li>🚀 <strong>${major1.name}</strong> có triển vọng phát triển tốt hơn trong tương lai</li>`;
+    } else {
+        analysis += `<li>🚀 <strong>${major2.name}</strong> có triển vọng phát triển tốt hơn trong tương lai</li>`;
+    }
+    
+    // So sánh kỹ năng
+    analysis += `<li>🛠️ <strong>${major1.name}:</strong> Cần ${major1.skills.slice(0, 2).join(', ')}</li>`;
+    analysis += `<li>🛠️ <strong>${major2.name}:</strong> Cần ${major2.skills.slice(0, 2).join(', ')}</li>`;
+    
+    analysis += '</ul>';
+    return analysis;
+}
+
+function generateComparisonRecommendation(major1, major2) {
+    let recommendation = '<div class="recommendation-content">';
+    
+    const score1 = parseFloat(major1.score);
+    const score2 = parseFloat(major2.score);
+    const salary1 = calculateSalaryScore(major1.salary);
+    const salary2 = calculateSalaryScore(major2.salary);
+    const growth1 = calculateGrowthScore(major1.growth);
+    const growth2 = calculateGrowthScore(major2.growth);
+    
+    const total1 = score1 + salary1 + growth1;
+    const total2 = score2 + salary2 + growth2;
+    
+    if (Math.abs(total1 - total2) <= 10) {
+        recommendation += `
+            <div class="text-center mb-3">
+                <span class="badge bg-info">LỰA CHỌN CÂN BẰNG</span>
+            </div>
+            <p>Hai ngành có tiềm năng tương đương. Quyết định nên dựa trên:</p>
+            <ul>
+                <li>🔄 Sở thích và đam mê cá nhân</li>
+                <li>🎯 Thế mạnh và kỹ năng hiện có</li>
+                <li>📍 Định hướng nghề nghiệp dài hạn</li>
+            </ul>
+        `;
+    } else if (total1 > total2) {
+        recommendation += `
+            <div class="text-center mb-3">
+                <span class="badge bg-success">ƯU TIÊN ${major1.name.toUpperCase()}</span>
+            </div>
+            <p><strong>${major1.name}</strong> có điểm nổi bật hơn về:</p>
+            <ul>
+                <li>💰 Tiềm năng thu nhập</li>
+                <li>🚀 Triển vọng phát triển</li>
+                <li>🎯 Độ phù hợp thị trường</li>
+            </ul>
+        `;
+    } else {
+        recommendation += `
+            <div class="text-center mb-3">
+                <span class="badge bg-success">ƯU TIÊN ${major2.name.toUpperCase()}</span>
+            </div>
+            <p><strong>${major2.name}</strong> có điểm nổi bật hơn về:</p>
+            <ul>
+                <li>💰 Tiềm năng thu nhập</li>
+                <li>🚀 Triển vọng phát triển</li>
+                <li>🎯 Độ phù hợp thị trường</li>
+            </ul>
+        `;
+    }
+    
+    recommendation += '</div>';
+    return recommendation;
+}
+
+// Các hàm đánh giá
+function getScoreEvaluation(score1, score2) {
+    const num1 = parseFloat(score1);
+    const num2 = parseFloat(score2);
+    if (num1 > num2) return 'Cạnh tranh cao hơn';
+    if (num1 < num2) return 'Dễ tiếp cận hơn';
+    return 'Tương đương';
+}
+
+function getSalaryEvaluation(salary1, salary2) {
+    const score1 = calculateSalaryScore(salary1);
+    const score2 = calculateSalaryScore(salary2);
+    if (score1 > score2) return 'Thu nhập tốt hơn';
+    if (score1 < score2) return 'Thu nhập thấp hơn';
+    return 'Tương đương';
+}
+
+function getGrowthEvaluation(growth1, growth2) {
+    const mapping = { 'Rất cao': 4, 'Cao': 3, 'Trung bình': 2, 'Thấp': 1 };
+    const score1 = mapping[growth1] || 2;
+    const score2 = mapping[growth2] || 2;
+    if (score1 > score2) return 'Triển vọng tốt hơn';
+    if (score1 < score2) return 'Triển vọng thấp hơn';
+    return 'Tương đương';
+}
+
+function getDemandEvaluation(demand1, demand2) {
+    const mapping = { 'Rất cao': 4, 'Cao': 3, 'Trung bình': 2, 'Thấp': 1 };
+    const score1 = mapping[demand1] || 2;
+    const score2 = mapping[demand2] || 2;
+    if (score1 > score2) return 'Nhu cầu cao hơn';
+    if (score1 < score2) return 'Nhu cầu thấp hơn';
+    return 'Tương đương';
+}
+
+function getUniversityEvaluation(count1, count2) {
+    if (count1 > count2) return 'Nhiều lựa chọn hơn';
+    if (count1 < count2) return 'Ít lựa chọn hơn';
+    return 'Tương đương';
+}
+
+function clearComparison() {
+    document.getElementById('compareMajor1').value = '';
+    document.getElementById('compareMajor2').value = '';
+    document.getElementById('major1Details').innerHTML = `
+        <div class="text-center text-muted">
+            <i class="bi bi-arrow-left" style="font-size: 2rem;"></i>
+            <p class="mt-2">Chọn ngành thứ nhất</p>
+        </div>
+    `;
+    document.getElementById('major2Details').innerHTML = `
+        <div class="text-center text-muted">
+            <i class="bi bi-arrow-right" style="font-size: 2rem;"></i>
+            <p class="mt-2">Chọn ngành thứ hai</p>
+        </div>
+    `;
+    document.getElementById('comparisonResults').style.display = 'none';
+    
+    showNotification('🔄 Đã xóa kết quả so sánh', 'info');
+}
+
+function downloadComparisonChart() {
+    const canvas = document.getElementById('majorComparisonChart');
+    if (!canvas) {
+        showNotification('⚠️ Không tìm thấy biểu đồ để tải xuống!', 'warning');
+        return;
+    }
+
+    const link = document.createElement('a');
+    link.download = `so-sanh-nganh-hoc-${new Date().toISOString().split('T')[0]}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+
+    showNotification('📊 Đã tải xuống biểu đồ so sánh!', 'success');
+}
+
+// ==================== HÀM HỖ TRỢ ====================
+
+function filterBlockData(block) {
+    const allData = {
+        'A00': { quota: 150000, score: 24.5, majors: 45 },
+        'A01': { quota: 120000, score: 24.0, majors: 38 },
+        'B00': { quota: 80000, score: 25.2, majors: 25 },
+        'C00': { quota: 60000, score: 23.8, majors: 22 },
+        'D01': { quota: 100000, score: 23.5, majors: 35 }
+    };
+    
+    return { [block]: allData[block] };
+}
+
+function getAllBlockData() {
+    return {
+        'A00': { quota: 150000, score: 24.5, majors: 45 },
+        'A01': { quota: 120000, score: 24.0, majors: 38 },
+        'B00': { quota: 80000, score: 25.2, majors: 25 },
+        'C00': { quota: 60000, score: 23.8, majors: 22 },
+        'D01': { quota: 100000, score: 23.5, majors: 35 }
+    };
+}
+
+function resetFilters() {
+    console.log("🔄 Đặt lại tất cả bộ lọc...");
+    
+    // Reset giá trị form
+    document.getElementById('regionFilter').value = 'all';
+    document.getElementById('blockFilter').value = 'all';
+    document.getElementById('yearFilter').value = 'all';
+    document.getElementById('highDemandFilter').checked = false;
+    document.getElementById('newMajorFilter').checked = false;
+    
+    // Khôi phục dữ liệu gốc
+    updateRegionChart(regionData);
+    updateYearlyChart(yearlyData);
+    updateBlockChart(getAllBlockData());
+    updateUniversityRanking(topUniversities);
+    updateMajorRanking(topMajors);
+    updateComparisonDropdowns(allMajors);
+    
+    // Ẩn kết quả so sánh nếu đang hiển thị
+    document.getElementById('comparisonResults').style.display = 'none';
+    
+    showNotification('🔄 Đã đặt lại tất cả bộ lọc và khôi phục dữ liệu gốc', 'info');
+}
+
+// ==================== BIỂU ĐỒ THỐNG KÊ ====================
+function initializeCharts() {
+    createRegionChart();
+    createYearlyChart();
+    createBlockChart();
+}
+
+function createRegionChart() {
+    const ctx = document.getElementById('regionChart');
+    if (!ctx) return console.error("❌ Không tìm thấy canvas regionChart");
+
+    if (regionChart) regionChart.destroy();
+    const chartType = document.getElementById('regionChartType').value;
+    
+    const labels = regionData.map(r => r.name);
+    const data = regionData.map(r => r.uni_count);
+    const backgroundColors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'];
+
+    regionChart = new Chart(ctx, {
+        type: chartType,
+        data: {
+            labels,
+            datasets: [{
+                data,
+                backgroundColor: backgroundColors,
+                borderColor: '#fff',
+                borderWidth: 2,
+                hoverOffset: 15
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: { display: true, text: 'Phân bổ số trường theo vùng miền', font: { size: 16, weight: 'bold' } },
+                legend: { position: 'bottom' },
+                tooltip: {
+                    callbacks: {
+                        label: context => {
+                            const total = context.dataset.data.reduce((a,b)=>a+b,0);
+                            const percentage = ((context.raw/total)*100).toFixed(1);
+                            return `${context.label}: ${context.raw} trường (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createYearlyChart() {
+    const ctx = document.getElementById('yearlyChart');
+    if (!ctx) return console.error("❌ Không tìm thấy canvas yearlyChart");
+
+    if (yearlyChart) yearlyChart.destroy();
+    const chartType = document.getElementById('trendChartType').value;
+    
+    const labels = yearlyData.map(i => `Năm ${i.year}`);
+    const quotas = yearlyData.map(i => i.total_quota);
+    const scores = yearlyData.map(i => i.avg_score);
+    const isArea = chartType === 'area';
+    const actualType = isArea ? 'line' : chartType;
+
+    yearlyChart = new Chart(ctx, {
+        type: actualType,
+        data: {
+            labels,
+            datasets: [
+                {
+                    label: 'Tổng chỉ tiêu',
+                    data: quotas,
+                    borderColor: '#36A2EB',
+                    backgroundColor: isArea ? 'rgba(54,162,235,0.3)' : 'rgba(54,162,235,0.8)',
+                    yAxisID: 'y',
+                    fill: isArea,
+                    tension: 0.4
+                },
+                {
+                    label: 'Điểm chuẩn TB',
+                    data: scores,
+                    borderColor: '#FF6384',
+                    backgroundColor: isArea ? 'rgba(255,99,132,0.3)' : 'rgba(255,99,132,0.8)',
+                    yAxisID: 'y1',
+                    fill: isArea,
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            scales: {
+                y: { type: 'linear', position: 'left', title: { display: true, text: 'Chỉ tiêu tuyển sinh' } },
+                y1: { type: 'linear', position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Điểm chuẩn' } }
+            },
+            plugins: {
+                title: { display: true, text: 'Xu hướng tuyển sinh qua các năm', font: { size: 16, weight: 'bold' } }
+            }
+        }
+    });
+}
+
+function createBlockChart() {
+    const ctx = document.getElementById('blockChart');
+    if (!ctx) return console.error("❌ Không tìm thấy canvas blockChart");
+
+    if (blockChart) blockChart.destroy();
+    const chartType = document.getElementById('blockChartType').value;
+    const blockData = getAllBlockData();
+
+    const labels = Object.keys(blockData);
+    const quotas = Object.values(blockData).map(d => d.quota);
+    const scores = Object.values(blockData).map(d => d.score);
+    const majors = Object.values(blockData).map(d => d.majors);
+
+    const datasets = [];
+    
+    if (chartType === 'radar') {
+        datasets.push({
+            label: 'Chỉ tiêu',
+            data: quotas,
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 2
+        });
+    } else {
+        datasets.push({
+            label: 'Chỉ tiêu',
+            data: quotas,
+            backgroundColor: 'rgba(54, 162, 235, 0.8)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        });
+        
+        if (chartType === 'line') {
+            datasets.push({
+                label: 'Điểm chuẩn',
+                data: scores,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderWidth: 2,
+                tension: 0.4,
+                yAxisID: 'y1'
+            });
+        }
+    }
+
+    const scales = chartType === 'line' ? {
+        y: { beginAtZero: true, title: { display: true, text: 'Chỉ tiêu' } },
+        y1: { beginAtZero: true, position: 'right', title: { display: true, text: 'Điểm chuẩn' } }
+    } : { y: { beginAtZero: true } };
+
+    blockChart = new Chart(ctx, {
+        type: chartType === 'line' ? 'bar' : chartType,
+        data: { labels, datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: scales,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Phân bổ chỉ tiêu theo khối thi',
+                    font: { size: 16, weight: 'bold' }
+                }
+            }
+        }
+    });
+}
+
+// ==================== HƯỚNG NGHIỆP ====================
+function initializeCareerAssessment() {
+    console.log("🎯 Đang khởi tạo hệ thống hướng nghiệp...");
+    initializeInterestsGrid();
+    setupSkillSliders();
+}
+
+function setupEventListeners() {
+    console.log("🔧 Đang thiết lập event listeners...");
+    
+    // Lắng nghe thay đổi loại biểu đồ
+    document.getElementById('regionChartType')?.addEventListener('change', createRegionChart);
+    document.getElementById('trendChartType')?.addEventListener('change', createYearlyChart);
+    document.getElementById('blockChartType')?.addEventListener('change', createBlockChart);
+    
+    // Lắng nghe nút áp dụng bộ lọc
+    document.getElementById('applyFilters')?.addEventListener('click', applyFilters);
+    document.getElementById('resetFilters')?.addEventListener('click', resetFilters);
+    
+    // Lắng nghe nút phân tích hướng nghiệp
+    const analyzeBtn = document.getElementById('analyzeCareer');
+    if (analyzeBtn) {
+        analyzeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log("🔍 Bắt đầu phân tích hướng nghiệp...");
+            calculateComprehensiveRecommendations();
+        });
+    }
+    
+    console.log("✅ Thiết lập event listeners hoàn tất");
+}
+
+function setupSkillSliders() {
+    const sliders = document.querySelectorAll('.skill-slider');
+    sliders.forEach(slider => {
+        const valueSpan = document.getElementById(slider.id + 'Value');
+        if (valueSpan) {
+            valueSpan.textContent = slider.value;
+            slider.addEventListener('input', function() {
+                valueSpan.textContent = this.value;
+            });
+        }
+    });
+
+    const personalitySliders = document.querySelectorAll('.personality-slider');
+    personalitySliders.forEach(slider => {
+        slider.addEventListener('input', function() {
+            console.log(`Personality ${this.id}: ${this.value}`);
+        });
+    });
+}
+
+function initializeInterestsGrid() {
+    const container = document.getElementById('interestsContainer');
+    if (!container) {
+        console.error("❌ Không tìm thấy container interests");
+        return;
+    }
+    
+    container.innerHTML = '';
+    
+    careerInterests.forEach(interest => {
+        const interestItem = document.createElement('div');
+        interestItem.className = 'interest-item';
+        interestItem.innerHTML = `
+            <input type="checkbox" id="interest_${interest.value}" value="${interest.value}" class="interest-checkbox">
+            <label for="interest_${interest.value}" class="interest-label">
+                <span class="interest-emoji">${interest.emoji}</span>
+                <span class="interest-name">${interest.name}</span>
+                <span class="interest-desc">${interest.description}</span>
+            </label>
+        `;
+        container.appendChild(interestItem);
+    });
+
+    console.log("✅ Đã khởi tạo lưới sở thích");
+}
+
+function getSelectedInterests() {
+    const selected = [];
+    const checkboxes = document.querySelectorAll('#interestsContainer input[type="checkbox"]:checked');
+    checkboxes.forEach(checkbox => {
+        selected.push(checkbox.value);
+    });
+    console.log(`🎯 Sở thích đã chọn: ${selected.join(', ')}`);
+    return selected;
+}
+
+function nextStep(step) {
+    console.log(`➡️ Chuyển đến bước ${step + 1}`);
+    if (!validateStep(step)) return;
+    showStep(step + 1);
+}
+
+function prevStep(step) {
+    console.log(`⬅️ Quay lại bước ${step - 1}`);
+    showStep(step - 1);
+}
+
+function showStep(step) {
+    console.log(`📋 Hiển thị bước ${step}`);
+    const steps = document.querySelectorAll('.career-step');
+    if (!steps.length) {
+        console.error("❌ Không tìm thấy career steps");
+        return;
+    }
+
+    steps.forEach((s, i) => {
+        s.style.display = 'none';
+    });
+    
+    const currentStepElement = document.getElementById(`step${step}`);
+    if (currentStepElement) {
+        currentStepElement.style.display = 'block';
+        console.log(`✅ Đã hiển thị bước ${step}`);
+    } else {
+        console.error(`❌ Không tìm thấy step${step}`);
+    }
+
+    const indicators = document.querySelectorAll('.step');
+    indicators.forEach((el, i) => {
+        el.classList.remove('active', 'completed');
+        if (i + 1 === step) {
+            el.classList.add('active');
+        } else if (i + 1 < step) {
+            el.classList.add('completed');
+        }
+    });
+
+    currentStep = step;
+    console.log(`🔢 Current step được cập nhật: ${currentStep}`);
+}
+
+function validateStep(step) {
+    console.log(`✓ Kiểm tra bước ${step}`);
+    
+    if (step === 1) {
+        const blockInput = document.getElementById('careerBlock');
+        const scoreInput = document.getElementById('expectedScore');
+        
+        if (!blockInput || !scoreInput) {
+            console.error("❌ Không tìm thấy input fields");
+            return true;
+        }
+
+        if (!blockInput.value) {
+            showNotification('⚠️ Vui lòng chọn khối thi!', 'warning');
+            return false;
+        }
+        
+        if (scoreInput.value === '' || isNaN(parseFloat(scoreInput.value))) {
+            showNotification('⚠️ Vui lòng nhập điểm dự kiến hợp lệ!', 'warning');
+            return false;
+        }
+
+        const score = parseFloat(scoreInput.value);
+        if (score < 0 || score > 30) {
+            showNotification('⚠️ Điểm phải trong khoảng 0-30!', 'warning');
+            return false;
+        }
+
+        console.log(`✓ Bước 1 hợp lệ: Khối ${blockInput.value}, Điểm ${score}`);
+        return true;
+    }
+    
+    if (step === 2) {
+        const selected = document.querySelectorAll('#interestsContainer input[type="checkbox"]:checked');
+        if (selected.length < 3) {
+            showNotification('⚠️ Vui lòng chọn ít nhất 3 sở thích để tiếp tục!', 'warning');
+            return false;
+        }
+        console.log(`✓ Bước 2 hợp lệ: ${selected.length} sở thích`);
+        return true;
+    }
+    
+    if (step === 3) {
+        const goalInput = document.getElementById('careerGoal');
+        if (!goalInput || !goalInput.value) {
+            showNotification('⚠️ Vui lòng chọn mục tiêu nghề nghiệp!', 'warning');
+            return false;
+        }
+        console.log(`✓ Bước 3 hợp lệ: Mục tiêu ${goalInput.value}`);
+        return true;
+    }
+    
+    return true;
+}
+
+function calculateComprehensiveRecommendations() {
+    console.log("🚀 Bắt đầu tính toán đề xuất...");
+    
+    try {
+        const userProfile = collectUserData();
+        if (!userProfile) {
+            console.error("❌ Không thể thu thập dữ liệu người dùng");
+            showNotification('❌ Vui lòng điền đầy đủ thông tin!', 'warning');
+            return;
+        }
+
+        console.log("📊 Dữ liệu người dùng:", userProfile);
+        showNotification('🚀 Đang phân tích hồ sơ của bạn...', 'info');
+
+        setTimeout(() => {
+            try {
+                const results = getRecommendations(userProfile);
+                console.log("✅ Kết quả phân tích:", results);
+                
+                if (results && results.length > 0) {
+                    displayComprehensiveResults(results, userProfile);
+                    showStep(4);
+                    showNotification('✅ Phân tích hoàn tất! Đã tìm thấy ' + results.length + ' ngành phù hợp', 'success');
+                } else {
+                    showNotification('❌ Không tìm thấy ngành học phù hợp. Vui lòng thử lại với thông tin khác.', 'warning');
+                }
+            } catch (error) {
+                console.error("❌ Lỗi trong quá trình phân tích:", error);
+                showNotification('❌ Có lỗi xảy ra khi phân tích: ' + error.message, 'danger');
+            }
+        }, 2000);
+        
+    } catch (error) {
+        console.error("❌ Lỗi toàn bộ quá trình phân tích:", error);
+        showNotification('❌ Lỗi hệ thống! Vui lòng thử lại sau.', 'danger');
+    }
+}
+
+function collectUserData() {
+    try {
+        const block = document.getElementById('careerBlock').value;
+        const expectedScore = parseFloat(document.getElementById('expectedScore').value);
+        const interests = getSelectedInterests();
+        const goal = document.getElementById('careerGoal').value;
+        const region = document.getElementById('preferredRegion').value;
+        const budget = document.getElementById('budget').value;
+
+        console.log("📝 Thu thập dữ liệu:", { block, expectedScore, interests, goal, region, budget });
+
+        return {
+            block,
+            expectedScore,
+            interests,
+            goal,
+            region,
+            budget
+        };
+    } catch (e) {
+        console.error("❌ Lỗi khi thu thập dữ liệu:", e);
+        showNotification('❌ Lỗi khi thu thập thông tin! Vui lòng kiểm tra lại.', 'danger');
+        return null;
+    }
+}
+
+function getRecommendations(profile) {
+    console.log("🔍 Tìm kiếm đề xuất cho profile:", profile);
+    
+    const careerMajors = {
+        'A00': [
+            { 
+                name: 'Công nghệ Thông tin', 
+                score: 24.5, 
+                baseMatch: 95, 
+                salary: '15-30 triệu', 
+                growth: 'Rất cao',
+                description: 'Ngành học về công nghệ, lập trình, và hệ thống thông tin',
+                skills: ['Lập trình', 'Phân tích hệ thống', 'Toán học', 'Sáng tạo'],
+                personality: ['Chi tiết', 'Logic', 'Đổi mới', 'Tỉ mỉ'],
+                universities: [
+                    { name: 'ĐH Bách Khoa HN', score: 28.5, tuition: '18-25 triệu', rating: 5 },
+                    { name: 'ĐH Công nghệ', score: 26.0, tuition: '15-20 triệu', rating: 4 },
+                    { name: 'ĐH FPT', score: 24.0, tuition: '25-30 triệu', rating: 4 }
+                ],
+                demand: 'Rất cao',
+                future: 'AI, Blockchain, IoT'
+            },
+            { 
+                name: 'Kỹ thuật Điện tử - Viễn thông', 
+                score: 23.0, 
+                baseMatch: 88, 
+                salary: '12-25 triệu', 
+                growth: 'Cao',
+                description: 'Thiết kế và phát triển hệ thống điện tử, viễn thông',
+                skills: ['Mạch điện', 'Lập trình nhúng', 'Tín hiệu số', 'Kỹ thuật'],
+                personality: ['Kỹ thuật', 'Tỉ mỉ', 'Giải quyết vấn đề', 'Thực tế'],
+                universities: [
+                    { name: 'ĐH Bách Khoa HN', score: 26.5, tuition: '18-25 triệu', rating: 5 },
+                    { name: 'HV Công nghệ Bưu chính Viễn thông', score: 24.0, tuition: '16-22 triệu', rating: 4 }
+                ],
+                demand: 'Cao',
+                future: '5G, IoT, Smart Devices'
+            }
+        ],
+        'B00': [
+            { 
+                name: 'Y khoa', 
+                score: 28.5, 
+                baseMatch: 98, 
+                salary: '15-35 triệu', 
+                growth: 'Rất cao',
+                description: 'Đào tạo bác sĩ đa khoa với kiến thức y học toàn diện',
+                skills: ['Chẩn đoán', 'Phẫu thuật', 'Giao tiếp', 'Phân tích'],
+                personality: ['Tỉ mỉ', 'Nhân văn', 'Chịu áp lực', 'Cẩn thận'],
+                universities: [
+                    { name: 'ĐH Y Hà Nội', score: 29.0, tuition: '20-28 triệu', rating: 5 },
+                    { name: 'ĐH Y Dược TPHCM', score: 28.5, tuition: '18-25 triệu', rating: 5 }
+                ],
+                demand: 'Rất cao',
+                future: 'Y học cá nhân hóa, Telemedicine'
+            }
+        ]
+    };
+    
+    let majors = careerMajors[profile.block] || [];
+    console.log(`📚 Tìm thấy ${majors.length} ngành cho khối ${profile.block}`);
+    
+    if (majors.length === 0) {
+        majors = Object.values(careerMajors).flat();
+        console.log(`📚 Sử dụng tất cả ${majors.length} ngành từ tất cả khối`);
+    }
+
+    if (!Array.isArray(majors)) {
+        console.error("❌ majors không phải là mảng:", majors);
+        majors = [];
+    }
+
+    console.log(`🎯 Bắt đầu tính toán cho ${majors.length} ngành`);
+
+    const scoredMajors = majors.map(major => {
+        const scoredMajor = {...major};
+        let match = 0;
+
+        try {
+            // So khớp điểm thi (40%)
+            const scoreDiff = Math.abs(parseFloat(scoredMajor.score) - parseFloat(profile.expectedScore));
+            if (scoreDiff <= 1) match += 40;
+            else if (scoreDiff <= 2) match += 35;
+            else if (scoreDiff <= 3) match += 30;
+            else if (scoreDiff <= 4) match += 25;
+            else if (scoreDiff <= 5) match += 20;
+            else match += 10;
+
+            // So khớp sở thích (30%)
+            const interests = Array.isArray(profile.interests) ? profile.interests : [];
+            interests.forEach(interest => {
+                const interestLower = interest.toLowerCase();
+                const majorNameLower = scoredMajor.name ? scoredMajor.name.toLowerCase() : '';
+                const majorDescLower = scoredMajor.description ? scoredMajor.description.toLowerCase() : '';
+                
+                if (majorNameLower.includes(interestLower) || 
+                    majorDescLower.includes(interestLower)) {
+                    match += 6;
+                }
+            });
+
+            // So khớp mục tiêu (30%)
+            if (profile.goal === 'high-salary' && scoredMajor.salary && (scoredMajor.salary.includes('30') || scoredMajor.salary.includes('25'))) {
+                match += 30;
+            } else if (profile.goal === 'stability' && (scoredMajor.growth === 'Rất cao' || scoredMajor.growth === 'Cao')) {
+                match += 30;
+            } else if (profile.goal === 'creativity' && scoredMajor.personality && scoredMajor.personality.some(p => p.includes('Sáng tạo') || p.includes('Đổi mới'))) {
+                match += 30;
+            } else if (profile.goal === 'leadership' && scoredMajor.personality && scoredMajor.personality.some(p => p.includes('Lãnh đạo') || p.includes('Quản lý'))) {
+                match += 30;
+            } else if (profile.goal === 'research' && scoredMajor.future && (scoredMajor.future.includes('AI') || scoredMajor.future.includes('Nghiên cứu'))) {
+                match += 30;
+            } else if (profile.goal === 'social-impact' && scoredMajor.description && scoredMajor.description.includes('xã hội')) {
+                match += 30;
+            } else {
+                match += 15;
+            }
+
+            scoredMajor.finalMatch = Math.min(100, Math.round(match));
+            console.log(`📊 ${scoredMajor.name}: ${scoredMajor.finalMatch}% phù hợp`);
+            
+        } catch (error) {
+            console.error(`❌ Lỗi khi tính điểm cho ${scoredMajor.name}:`, error);
+            scoredMajor.finalMatch = 50;
+        }
+
+        return scoredMajor;
+    });
+
+    const sortedMajors = scoredMajors
+        .filter(major => major && major.finalMatch !== undefined)
+        .sort((a, b) => b.finalMatch - a.finalMatch)
+        .slice(0, 6);
+    
+    console.log(`🏆 Top ${sortedMajors.length} ngành phù hợp nhất:`, sortedMajors.map(m => `${m.name} (${m.finalMatch}%)`));
+    
+    return sortedMajors;
+}
+
+function displayComprehensiveResults(results, userProfile) {
+    console.log("🎨 Bắt đầu hiển thị kết quả...");
+    
+    const resultContainer = document.getElementById('step4');
+    if (!resultContainer) {
+        console.error("❌ Không tìm thấy container kết quả");
+        return;
+    }
+
+    updatePersonalAnalysis(userProfile);
+    createCareerChart(results);
+    createHướngNghiệpComparisonChart(results, userProfile);
+    updateCareerStats(results);
+    displayMajorDetails(results);
+    displayUniversityRecommendations(results);
+    
+    console.log("✅ Đã hiển thị tất cả kết quả");
+}
+
+function updatePersonalAnalysis(userProfile) {
+    console.log("👤 Cập nhật phân tích cá nhân...");
+    
+    document.getElementById('analysisBlock').textContent = userProfile.block || 'Chưa chọn';
+    document.getElementById('analysisScore').textContent = userProfile.expectedScore || '—';
+    document.getElementById('analysisRegion').textContent = userProfile.region || 'Không ưu tiên';
+    document.getElementById('analysisInterests').textContent = userProfile.interests.join(', ') || '—';
+    
+    const goalText = document.getElementById('careerGoal').options[document.getElementById('careerGoal').selectedIndex]?.text || '—';
+    document.getElementById('analysisGoal').textContent = goalText;
+}
+
+function createCareerChart(results) {
+    const ctx = document.getElementById('careerChart');
+    if (!ctx) {
+        console.error("❌ Không tìm thấy canvas careerChart");
+        return;
+    }
+
+    if (careerChart) {
+        careerChart.destroy();
+    }
+
+    const labels = results.map(r => r.name);
+    const data = results.map(r => r.finalMatch);
+
+    console.log("📈 Tạo biểu đồ career với dữ liệu:", { labels, data });
+
+    careerChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [{
+                label: 'Độ phù hợp (%)',
+                data,
+                backgroundColor: data.map(v => v >= 85 ? '#28a745' : v >= 70 ? '#ffc107' : '#dc3545'),
+                borderWidth: 2,
+                borderRadius: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Top ngành học phù hợp nhất',
+                    font: { size: 16, weight: 'bold' }
+                },
+                legend: { display: false }
+            },
+            scales: {
+                y: { 
+                    beginAtZero: true, 
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: 'Độ phù hợp (%)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Ngành học'
+                    }
+                }
+            }
+        }
+    });
+    
+    console.log("✅ Đã tạo biểu đồ career thành công");
+}
+
+function createHướngNghiệpComparisonChart(results, userProfile) {
+    const ctx = document.getElementById('comparisonChart');
+    if (!ctx) {
+        console.error("❌ Không tìm thấy canvas comparisonChart");
+        return;
+    }
+
+    if (comparisonChart) {
+        comparisonChart.destroy();
+    }
+
+    const top3 = results.slice(0, 3);
+    const labels = ['Điểm thi', 'Sở thích', 'Mục tiêu', 'Kỹ năng', 'Tính cách'];
+
+    const datasets = top3.map((r, i) => ({
+        label: r.name,
+        data: [
+            Math.min(100, Math.round(r.finalMatch * 0.3)),
+            Math.min(100, Math.round(r.finalMatch * 0.3)),
+            Math.min(100, Math.round(r.finalMatch * 0.2)),
+            Math.min(100, Math.round(r.finalMatch * 0.1)),
+            Math.min(100, Math.round(r.finalMatch * 0.1))
+        ],
+        fill: true,
+        backgroundColor: `rgba(${50 + i*60}, ${150 - i*40}, 220, 0.2)`,
+        borderColor: `rgba(${50 + i*60}, ${150 - i*40}, 220, 1)`,
+        borderWidth: 2,
+        pointBackgroundColor: `rgba(${50 + i*60}, ${150 - i*40}, 220, 1)`,
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: `rgba(${50 + i*60}, ${150 - i*40}, 220, 1)`
+    }));
+
+    comparisonChart = new Chart(ctx, {
+        type: 'radar',
+        data: { labels, datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { 
+                r: { 
+                    beginAtZero: true, 
+                    max: 100,
+                    ticks: {
+                        stepSize: 20
+                    }
+                } 
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'So sánh chi tiết độ phù hợp',
+                    font: { size: 14 }
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+    
+    console.log("✅ Đã tạo biểu đồ comparison thành công");
+}
+
+function updateCareerStats(results) {
+    if (!results || results.length === 0) {
+        console.error("❌ Không có kết quả để cập nhật thống kê");
+        return;
+    }
+
+    const avgMatch = Math.round(results.reduce((sum, r) => sum + r.finalMatch, 0) / results.length);
+    const avgSalary = calculateAverageSalary(results);
+    const avgGrowth = calculateAverageGrowth(results);
+    const avgDemand = calculateAverageDemand(results);
+    const topMajor = results[0];
+
+    document.getElementById('matchPercentage').textContent = `${avgMatch}%`;
+    document.getElementById('salaryRange').textContent = avgSalary;
+    document.getElementById('growthPotential').textContent = avgGrowth;
+    document.getElementById('demandLevel').textContent = avgDemand;
+
+    let recommendation = '';
+    if (topMajor.finalMatch >= 90) {
+        recommendation = `🎯 <b>${topMajor.name}</b> là lựa chọn xuất sắc với độ phù hợp ${topMajor.finalMatch}%`;
+    } else if (topMajor.finalMatch >= 80) {
+        recommendation = `👍 <b>${topMajor.name}</b> rất phù hợp với bạn (${topMajor.finalMatch}%)`;
+    } else if (topMajor.finalMatch >= 70) {
+        recommendation = `💡 <b>${topMajor.name}</b> là lựa chọn khá tốt (${topMajor.finalMatch}%)`;
+    } else {
+        recommendation = `🤔 <b>${topMajor.name}</b> có thể cân nhắc (${topMajor.finalMatch}%)`;
+    }
+
+    document.getElementById('recommendationText').innerHTML = recommendation;
+    
+    console.log("📊 Đã cập nhật thống kê:", { avgMatch, avgSalary, avgGrowth, avgDemand });
+}
+
+function calculateAverageSalary(results) {
+    const salaries = results.map(r => {
+        const range = r.salary.split('-');
+        const min = parseInt(range[0]);
+        const max = parseInt(range[1] || range[0]);
+        return (min + max) / 2;
+    });
+    const avg = salaries.reduce((a, b) => a + b, 0) / salaries.length;
+    return `${Math.round(avg)}-${Math.round(avg * 1.5)} triệu`;
+}
+
+function calculateAverageGrowth(results) {
+    const mapping = { 'Rất cao': 5, 'Cao': 4, 'Trung bình': 3, 'Thấp': 2 };
+    const avgScore = results.reduce((sum, r) => sum + (mapping[r.growth] || 3), 0) / results.length;
+    if (avgScore >= 4.5) return 'Rất cao';
+    if (avgScore >= 3.5) return 'Cao';
+    if (avgScore >= 2.5) return 'Trung bình';
+    return 'Thấp';
+}
+
+function calculateAverageDemand(results) {
+    const mapping = { 'Rất cao': 5, 'Cao': 4, 'Trung bình': 3, 'Thấp': 2 };
+    const avgScore = results.reduce((sum, r) => sum + (mapping[r.demand] || 3), 0) / results.length;
+    if (avgScore >= 4.5) return 'Rất cao';
+    if (avgScore >= 3.5) return 'Cao';
+    if (avgScore >= 2.5) return 'Trung bình';
+    return 'Thấp';
+}
+
+function displayMajorDetails(results) {
+    const container = document.getElementById('majorDetails');
+    if (!container) {
+        console.error("❌ Không tìm thấy container majorDetails");
+        return;
+    }
+    
+    container.innerHTML = '';
+    console.log(`📋 Hiển thị chi tiết ${results.length} ngành`);
+
+    results.forEach((major, index) => {
+        const card = document.createElement('div');
+        card.className = 'col-md-6 col-lg-4 mb-4';
+
+        let badgeColor = 'secondary';
+        let badgeText = 'Phù hợp';
+
+        if (major.finalMatch >= 90) {
+            badgeColor = 'success';
+            badgeText = 'Xuất sắc';
+        } else if (major.finalMatch >= 80) {
+            badgeColor = 'info';
+            badgeText = 'Rất tốt';
+        } else if (major.finalMatch >= 70) {
+            badgeColor = 'warning';
+            badgeText = 'Khá tốt';
+        }
+
+        card.innerHTML = `
+            <div class="card major-card h-100">
+                <div class="card-header bg-${badgeColor} text-white d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">${index + 1}. ${major.name}</h6>
+                    <span class="badge bg-light text-dark">${badgeText}</span>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <div class="match-score">${major.finalMatch}%</div>
+                        <div class="match-label">Độ phù hợp</div>
+                    </div>
+                    <div class="major-info">
+                        <div class="info-item"><span>🎯 Điểm chuẩn:</span> <b>${major.score}</b></div>
+                        <div class="info-item"><span>💰 Lương khởi điểm:</span> <b>${major.salary}</b></div>
+                        <div class="info-item"><span>📈 Triển vọng:</span> <b>${major.growth}</b></div>
+                        <div class="info-item"><span>🔥 Nhu cầu:</span> <b>${major.demand}</b></div>
+                    </div>
+                    <hr>
+                    <div><strong>🛠️ Kỹ năng:</strong><br>${major.skills.map(s => `<span class="skill-tag">${s}</span>`).join(' ')}</div>
+                    <div class="mt-2"><strong>🧠 Tính cách:</strong><br>${major.personality.map(p => `<span class="personality-tag">${p}</span>`).join(' ')}</div>
+                    <p class="mt-3 text-muted">${major.description}</p>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+    
+    console.log("✅ Đã hiển thị chi tiết ngành học");
+}
+
+function displayUniversityRecommendations(results) {
+    const tableBody = document.getElementById('universityTableBody');
+    if (!tableBody) {
+        console.error("❌ Không tìm thấy bảng trường đề xuất");
+        return;
+    }
+
+    tableBody.innerHTML = '';
+    let index = 1;
+
+    results.forEach(major => {
+        if (major.universities && major.universities.length > 0) {
+            major.universities.forEach(uni => {
+                const row = document.createElement('tr');
+
+                let stars = '';
+                for (let i = 0; i < 5; i++) {
+                    stars += i < uni.rating ? '<i class="bi bi-star-fill text-warning"></i>' : '<i class="bi bi-star text-secondary"></i>';
+                }
+
+                row.innerHTML = `
+                    <td>${index++}</td>
+                    <td><b>${uni.name}</b></td>
+                    <td>${major.name}</td>
+                    <td><span class="badge bg-primary">${uni.score}</span></td>
+                    <td>${uni.tuition}/năm</td>
+                    <td>${stars}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+    });
+
+    if (tableBody.innerHTML === '') {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center text-muted">
+                    <i class="bi bi-info-circle"></i> Không có dữ liệu trường đề xuất
+                </td>
+            </tr>
+        `;
+    }
+    
+    console.log("✅ Đã hiển thị danh sách trường đề xuất");
+}
+
+// ==================== HÀM TIỆN ÍCH ====================
+function showNotification(message, type = 'info') {
+    const alertClass = {
+        success: 'alert-success',
+        danger: 'alert-danger',
+        warning: 'alert-warning',
+        info: 'alert-info'
+    }[type] || 'alert-info';
+
+    const oldAlerts = document.querySelectorAll('.alert.position-fixed');
+    oldAlerts.forEach(alert => alert.remove());
+
+    const alertBox = document.createElement('div');
+    alertBox.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+    alertBox.style.cssText = `
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    `;
+    alertBox.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alertBox);
+
+    setTimeout(() => {
+        if (alertBox.parentNode) {
+            alertBox.remove();
+        }
+    }, 5000);
+}
+
+function downloadChart(chartId) {
+    const canvas = document.getElementById(chartId);
+    if (!canvas) {
+        showNotification('⚠️ Không tìm thấy biểu đồ để tải xuống!', 'warning');
+        return;
+    }
+
+    const link = document.createElement('a');
+    link.download = `${chartId}-${new Date().toISOString().split('T')[0]}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+
+    showNotification('📊 Đã tải xuống biểu đồ thành công!', 'success');
+}
+
+function saveCareerProfile() {
+    const data = collectUserData();
+    if (data) {
+        localStorage.setItem('careerProfile', JSON.stringify(data));
+        showNotification('💾 Đã lưu hồ sơ hướng nghiệp!', 'success');
+    } else {
+        showNotification('❌ Không thể lưu hồ sơ!', 'danger');
+    }
+}
+
+function exportCareerResults() {
+    showNotification('📄 Đang tạo tệp PDF kết quả...', 'info');
+    setTimeout(() => {
+        showNotification('✅ Xuất kết quả thành công!', 'success');
+    }, 1500);
+}
+
+function retakeAssessment() {
+    if (confirm('Bạn có chắc muốn làm lại bài đánh giá không? Tất cả dữ liệu hiện tại sẽ bị mất.')) {
+        document.getElementById('careerBlock').value = '';
+        document.getElementById('expectedScore').value = '';
+        document.getElementById('preferredRegion').value = 'all';
+        document.getElementById('budget').value = 'all';
+        
+        const checkboxes = document.querySelectorAll('#interestsContainer input[type="checkbox"]');
+        checkboxes.forEach(checkbox => checkbox.checked = false);
+        
+        const sliders = document.querySelectorAll('.skill-slider');
+        sliders.forEach(slider => {
+            slider.value = 5;
+            const valueSpan = document.getElementById(slider.id + 'Value');
+            if (valueSpan) valueSpan.textContent = '5';
+        });
+        
+        document.getElementById('careerGoal').value = '';
+        document.getElementById('workEnvironment').value = 'any';
+        document.getElementById('competitionLevel').value = 'medium';
+        document.getElementById('trainingDuration').value = 'any';
+        
+        const personalitySliders = document.querySelectorAll('.personality-slider');
+        personalitySliders.forEach(slider => slider.value = 5);
+        
+        showStep(1);
+        showNotification('🔄 Đã đặt lại bài đánh giá!', 'info');
+    }
+}
+
+function shareResults() {
+    showNotification('📤 Tính năng chia sẻ đang được phát triển!', 'info');
+}
+
+function showDetailedReport() {
+    showNotification('📊 Đang tạo báo cáo chi tiết...', 'info');
+    setTimeout(() => {
+        showNotification('✅ Báo cáo chi tiết đã sẵn sàng!', 'success');
+    }, 2000);
+}
+</script>
+
+<style>
+/* ==================== GIAO DIỆN HƯỚNG NGHIỆP ==================== */
+
+/* Progress bar */
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.progress-steps::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #dee2e6;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e9ecef;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    border: 3px solid white;
+}
+
+.step.active .step-number {
+    background: #28a745;
+    color: white;
+    transform: scale(1.1);
+}
+
+.step.completed .step-number {
+    background: #198754;
+    color: white;
+}
+
+.step-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* Career Step */
+.career-step {
+    padding: 2rem;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    background: #f8f9fa;
+    animation: fadeIn 0.4s ease-in-out;
+}
+.career-step.active {
+    border-color: #28a745;
+    background: #f9fff9;
+    box-shadow: 0 4px 15px rgba(40,167,69,0.1);
+}
+
+/* Major cards */
+.major-card {
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+.major-card:hover {
+    transform: translateY(-5px);
+    border-color: #28a745;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+.match-score {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #28a745;
+}
+.match-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+.skill-tag, .personality-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    margin: 2px;
+}
+.skill-tag {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+.personality-tag {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Lưới sở thích */
+.interests-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.interest-item {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.interest-item:hover {
+    border-color: #28a745;
+    background-color: #f8fff9;
+}
+
+.interest-checkbox {
+    display: none;
+}
+
+.interest-checkbox:checked + .interest-label {
+    background-color: #d4edda;
+    border-color: #28a745;
+}
+
+.interest-label {
+    display: block;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.interest-emoji {
+    font-size: 1.5em;
+    margin-right: 10px;
+}
+
+.interest-name {
+    font-weight: bold;
+    display: block;
+}
+
+.interest-desc {
+    font-size: 0.8em;
+    color: #6c757d;
+    display: block;
+}
+
+/* Đánh giá kỹ năng */
+.skill-item {
+    margin-bottom: 20px;
+}
+
+.skill-value {
+    min-width: 30px;
+    font-weight: bold;
+    color: #28a745;
+}
+
+/* Đánh giá tính cách */
+.personality-item {
+    margin-bottom: 25px;
+}
+
+.personality-slider {
+    margin: 10px 0;
+}
+
+/* Thẻ thông tin */
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* ==================== GIAO DIỆN SO SÁNH NGÀNH HỌC ==================== */
+
+.major-comparison-details {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.major-preview {
+    text-align: center;
+}
+
+.major-info-small .info-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.major-desc-small {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 10px;
+}
+
+.vs-badge {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.comparison-evaluation {
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: #e9ecef;
+}
+
+.recommendation-content ul {
+    margin-bottom: 0;
+}
+
+.recommendation-content li {
+    margin-bottom: 5px;
+}
+
+/* Notification animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Chart sizing */
+canvas {
+    width: 100% !important;
+    height: 320px !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .progress-steps { flex-direction: column; align-items: center; }
+    .career-step { padding: 1rem; }
+    .btn { width: 100%; margin-bottom: 0.5rem; }
+    .chart-actions { flex-direction: column; }
+    .interests-grid { grid-template-columns: 1fr; }
+    .skills-assessment .row,
+    .personality-assessment .row { flex-direction: column; }
+    
+    /* Responsive cho so sánh */
+    .major-comparison-details {
+        min-height: 150px;
+    }
+    
+    .vs-badge {
+        font-size: 1rem;
+        padding: 5px 10px;
+    }
+    
+    /* Responsive cho bộ lọc */
+    .filter-info {
+        font-size: 0.8rem;
+    }
+}
+
+/* Fix lỗi phông chữ số */
+.match-score, .skill-value, .step-number,
+.badge, .form-control, .form-select,
+.card-body h3, .card-body h6 {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+}
+
+/* Đảm bảo số hiển thị đúng */
+.match-score {
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+}
+
+.skill-value, .step-number {
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+}
+
+/* Fix cho các thẻ số */
+.card-body h3 {
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+}
+
+/* Đảm bảo số trong bảng hiển thị đúng */
+.table td, .table th {
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+}
+</style>
+{% endblock %}

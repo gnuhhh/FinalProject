@@ -26,7 +26,7 @@ incremental==24.7.2
 jiter==0.11.0
 joblib==1.4.2
 mysqlclient==2.2.7
-numpy==1.23.5
+numpy==1.26.4
 openai==2.3.0
 pandas==2.2.3
 pillow==11.2.1
@@ -55,3 +55,5 @@ typing_extensions==4.15.0
 tzdata==2025.1
 urllib3==2.5.0
 zope.interface==8.0.1
+SpeechRecognition==3.10.0
+pyaudio==0.2.11

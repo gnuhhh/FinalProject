@@ -1,0 +1,49 @@
+<!-- Voice/templates/voice_search.html -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Voice Search Demo</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+</head>
+
+<body>
+    <div style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
+        <h1>🎤 Hệ Thống Tìm Kiếm Bằng Giọng Nói</h1>
+        <p>Thử nói các câu như:</p>
+        <ul>
+            <li>"Tìm kiếm ngành công nghệ thông tin"</li>
+            <li>"Trường đại học bách khoa hà nội"</li>
+            <li>"Khối A00 ở miền Bắc"</li>
+            <li>"Tìm ngành y khoa"</li>
+        </ul>
+
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+            <h3>🚀 Voice Search Đã Sẵn Sàng!</h3>
+            <p>Hệ thống sẽ hiển thị kết quả ngay tại đây khi bạn sử dụng voice search.</p>
+            <p>Nhìn xuống góc <strong>phải dưới</strong> sẽ thấy nút 🎤</p>
+        </div>
+
+        <!-- Kết quả sẽ hiển thị ở đây -->
+        <div id="search-results">
+            <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; text-align: center;">
+                <p>🎯 Kết quả tìm kiếm bằng giọng nói sẽ xuất hiện ở đây</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include voice search JS -->
+    <script src="{% static 'assets/js/voice-search.js' %}"></script>
+    <script src="{% static 'assets/js/voice-search-independent.js' %}"></script>
+
+    <script>
+        console.log('🔍 Voice Search Demo loaded');
+        console.log('VoiceSearch global:', typeof window.voiceSearch);
+        console.log('Voice button:', document.getElementById('voice-search-btn'));
+        console.log('Safe voice button:', document.getElementById('safe-voice-btn'));
+    </script>
+</body>
+
+</html>

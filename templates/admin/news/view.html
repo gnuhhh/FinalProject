@@ -493,10 +493,13 @@
                                 </td>
                                 <td>
                                     <a href="{% url 'news_update' news.id %}" class="btn btn-sm update">Sửa</a>
+                                    {% if request.user.groups.all.0.name == 'manager' %}
                                     <a href="{% url 'news_delete' news.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa tin này?')">Xóa</a>
                                     {% if not news.is_active %}
                                     <a href="{% url 'news_activate' news.id %}" class="btn btn-sm btn-outline-success">Duyệt</a>
                                     {% endif %}
+                                    {% endif %}
+                                    
                                 </td>
                             </tr>
                             {% empty %}
@@ -509,13 +512,7 @@
                 </div>
                 {% include 'components/notification.html' %}
                 
-                <div class="pagination">
-                    <div class="page-item"><i class="bi bi-chevron-left"></i></div>
-                    <div class="page-item active">1</div>
-                    <div class="page-item">2</div>
-                    <div class="page-item">3</div>
-                    <div class="page-item"><i class="bi bi-chevron-right"></i></div>
-                </div>
+                {% include 'admin/components/paginator.html' with page_obj=news_list%}
             </div>
         </div>
     </div>

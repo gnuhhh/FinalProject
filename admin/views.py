@@ -1,16 +1,21 @@
+import email
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseForbidden
 from django.contrib import auth, messages
 from school.models import School
 from news.models import News
 from user_profile.models import Member
+from django.core.paginator import Paginator
 from homepage.models import Expert
 from django.utils.html import strip_tags
-from django.contrib.auth.models import User, Group, Permission
-from advise.models import WorkShift, WorkSchedule, Appointment
+from django.contrib.auth.models import User, Group
+from advise.models import WorkShift, WorkSchedule, Appointment, Invoice
 from datetime import datetime, date
 from django.contrib.auth.decorators import login_required
+from django.db.models import Subquery, OuterRef, Sum, Count, Q
+from django.db.models.functions import TruncMonth
 import calendar
+import json
 
 # Create your views here.
 def loginadmin(request):
@@ -38,16 +43,77 @@ def loginadmin(request):
 def dashboard(request):
     if request.user.is_authenticated:
         if request.user.is_staff == True:
-            return render(request, 'dashboard.html', {'user':request.user})
+            # Thống kê tổng số cuộc hẹn đã xong
+            total_completed_appointments = Appointment.objects.filter(status='Y').count()
+            
+            # Thống kê tổng số tiền từ tất cả invoice (hoặc chỉ đã thanh toán)
+            total_revenue = Invoice.objects.filter(status='Y').aggregate(
+                total=Sum('price')
+            )['total']*1000 or 0
+            
+            # Thống kê theo tháng (12 tháng gần nhất)
+            from django.utils import timezone
+            from datetime import timedelta
+            from collections import OrderedDict
+            
+            # Lấy dữ liệu 12 tháng gần nhất
+            monthly_stats = []
+            monthly_revenue = []
+            labels = []
+            
+            for i in range(11, -1, -1):  # 12 tháng gần nhất
+                month_date = timezone.now() - timedelta(days=30*i)
+                month_start = month_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+                if i == 0:
+                    month_end = timezone.now()
+                else:
+                    next_month = month_start + timedelta(days=32)
+                    month_end = next_month.replace(day=1) - timedelta(days=1)
+                
+                # Đếm cuộc hẹn đã xong trong tháng
+                appointments_count = Appointment.objects.filter(
+                    status='Y',
+                    work_schedule__date__gte=month_start.date(),
+                    work_schedule__date__lte=month_end.date()
+                ).count()
+                
+                # Tính tổng tiền trong tháng
+                revenue = Invoice.objects.filter(
+                    status='Y',
+                    appointment__work_schedule__date__gte=month_start.date(),
+                    appointment__work_schedule__date__lte=month_end.date()
+                ).aggregate(total=Sum('price'))['total'] or 0
+                
+                month_label = month_start.strftime('%m/%Y')
+                labels.append(month_label)
+                monthly_stats.append(appointments_count)
+                monthly_revenue.append(float(revenue))
+            
+            context = {
+                'user': request.user,
+                'total_completed_appointments': total_completed_appointments,
+                'total_revenue': float(total_revenue),
+                'monthly_labels': json.dumps(labels),
+                'monthly_appointments': json.dumps(monthly_stats),
+                'monthly_revenue': json.dumps(monthly_revenue),
+            }
+            return render(request, 'dashboard.html', context)
         else:
             messages.error(request, 'Bạn không có quyền truy cập')
             return redirect('admin')
     else:
         return render(request, 'loginadmin.html')
 
+def paginate(request, obj):
+    paginator = Paginator(obj, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return page_obj
+
 @login_required(login_url='admin')
 def information(request):
     schools = School.objects.all()
+    schools = paginate(request, schools)
     return render(request, 'admin/information/view.html', {'schools':schools})
 
 @login_required(login_url='admin')
@@ -106,6 +172,7 @@ def news(request):
     else:
         author = request.user.first_name + ' ' + request.user.last_name
         news_list = News.objects.filter(author=author).order_by('id')
+    news_list = paginate(request, news_list)
     return render(request, 'admin/news/view.html', {'news_list':news_list})
 
 @login_required(login_url='admin')
@@ -162,7 +229,8 @@ def news_activate(request, id):
 def accounts(request):
     if request.user.groups.first().name != 'admin':
         return HttpResponseForbidden("Bạn không có quyền truy cập trang này.")
-    users = User.objects.all()
+    first_group_name = Group.objects.filter(user=OuterRef('pk')).values('name')[:1]
+    users = User.objects.annotate(group_name=Subquery(first_group_name))
     return render(request, 'admin/account/view.html', {'users':users})
 
 @login_required(login_url='admin')
@@ -174,7 +242,32 @@ def accounts_delete(request, id):
 
 @login_required(login_url='admin')
 def accounts_create(request):
-    return render(request, 'admin/account/update_create.html')
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        firstname = request.POST.get('firstname')
+        lastname = request.POST.get('lastname')
+        email = request.POST.get('email')
+        role = request.POST.get('role')
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Tên đăng nhập đã được sử dụng!')
+            return redirect('register')
+            
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'Email đã được sử dụng!')
+            return redirect('register')
+            
+        try:
+            user = User.objects.create_user(username=username, email=email, password=password, first_name = firstname, last_name = lastname)
+            member.save()
+            messages.success(request, 'Đăng ký thành công!')
+            return redirect('accounts')  
+            
+        except Exception as e:
+            messages.error(request, f'Lỗi: {str(e)}')
+            return redirect('accounts_create')
+    else:
+        return render(request, 'admin/account/create.html', {'title':'Thêm tài khoản'})
 
 @login_required(login_url='admin')
 def schedule_assignment(request):
@@ -182,16 +275,12 @@ def schedule_assignment(request):
         selected_date_str = request.POST.get('date')
         shift_id = request.POST.get('shift_id')
         try:
-            # Lấy expert từ user hiện tại
             expert = Expert.objects.get(id=request.user.id)                                                     
             
-            # Lấy work_shift từ shift_id
             work_shift = WorkShift.objects.get(id=shift_id)
-            
-            # Chuyển đổi ngày
+           
             schedule_date = datetime.strptime(selected_date_str, '%Y-%m-%d').date()
             
-            # Kiểm tra xem ca đã được đặt chưa
             existing_schedule = WorkSchedule.objects.filter(
                 expert=expert,
                 work_shift=work_shift,
@@ -203,7 +292,6 @@ def schedule_assignment(request):
                 messages.warning(request, 'Ca này đã được đặt rồi!')
                 return redirect('schedule')
             
-            # Tạo lịch mới
             WorkSchedule.objects.create(
                 expert=expert,
                 work_shift=work_shift,
@@ -221,15 +309,12 @@ def schedule_assignment(request):
             messages.error(request, f'Có lỗi xảy ra: {str(e)}')
             return redirect('schedule')
     else:
-        # Determine current view month/year
         today = date.today()
         try:
             year = int(request.GET.get('year', today.year))
             month = int(request.GET.get('month', today.month))
         except ValueError:
             year, month = today.year, today.month
-
-        # Selected date (within the shown month ideally)
         selected_date_str = request.GET.get('selected_date')
         try:
             selected_date = (
@@ -240,22 +325,18 @@ def schedule_assignment(request):
         except Exception:
             selected_date = today
 
-        # Build calendar matrix (weeks -> days)
-        cal = calendar.Calendar(firstweekday=0)  # Monday=0? In Python, Monday=0; Sunday=6
+        cal = calendar.Calendar(firstweekday=0)  
         month_days = list(cal.itermonthdates(year, month))
-        # Group into weeks of 7 days
         weeks = []
         for i in range(0, len(month_days), 7):
             weeks.append(month_days[i:i + 7])
 
-        # Shifts and booked info for selected date
         work_shifts = list(WorkShift.objects.all().order_by('start_time'))
         booked_shift_ids = set(
             WorkSchedule.objects.filter(date=selected_date, is_booked=True)
             .values_list('work_shift_id', flat=True)
         )
 
-        # Navigation months
         prev_month_date = date(year, month, 1) - date.resolution
         prev_month_year = (prev_month_date.replace(day=1)).year
         prev_month = (prev_month_date.replace(day=1)).month
@@ -282,18 +363,19 @@ def schedule_assignment(request):
 def schedule(request):
     if request.user.groups.first().name == 'expert':
         expert = Expert.objects.get(id=request.user.id)
-        schedule = WorkSchedule.objects.filter(expert=expert)
-        return render(request, 'admin/schedule/schedule.html', {'schedule':schedule})
+        schedule = WorkSchedule.objects.filter(expert=expert).order_by('-date', '-work_shift__start_time')
     else:
-        schedule = WorkSchedule.objects.all()
-        return render(request, 'admin/schedule/schedule.html', {'schedule':schedule})
+        schedule = WorkSchedule.objects.all().order_by('-date', '-work_shift__start_time')
+    schedule = paginate(request, schedule)
+    return render(request, 'admin/schedule/schedule.html', {'schedule':schedule})
 
 @login_required(login_url='admin')
 def schedule_customer(request):
     if request.user.groups.first().name == 'manager':
-        appointments = Appointment.objects.filter(invoices__status='Y')
+        appointments = Appointment.objects.filter(invoices__status='Y').order_by('-work_schedule__date', '-work_schedule__work_shift__start_time')
     else:
-        appointments = Appointment.objects.filter(invoices__status='Y', work_schedule__expert__id=request.user.id)
+        appointments = Appointment.objects.filter(invoices__status='Y', work_schedule__expert__id=request.user.id).order_by('-work_schedule__date', '-work_schedule__work_shift__start_time')
+    appointments = paginate(request, appointments)
     return render(request, 'admin/schedule/schedule_customer.html', {'appointments':appointments})
 
 @login_required(login_url='admin')
@@ -303,6 +385,13 @@ def schedule_customer_complete(request, id):
     appointment.zoom_room.is_used = False
     appointment.save()
     appointment.zoom_room.save()
+    messages.success(request, 'Cập nhật thành công')
+    return redirect('schedule_customer')
+
+def schedule_customer_update(request, id):
+    appointment = Appointment.objects.get(id=id)
+    appointment.status = 'P'
+    appointment.save()
     messages.success(request, 'Cập nhật thành công')
     return redirect('schedule_customer')
 
@@ -322,8 +411,9 @@ def schedule_cancel_approve(request, id):
 
 @login_required(login_url='admin')
 def expert_view(request):
-    expert = Expert.objects.all()
-    return render(request, 'admin/expert/view.html', {'expert':expert})
+    experts = Expert.objects.all()
+    experts = paginate(request, experts)
+    return render(request, 'admin/expert/view.html', {'experts':experts})
 
 @login_required(login_url='admin')
 def expert_delete(request, id):
@@ -373,6 +463,7 @@ def expert_update(request, id):
 @login_required(login_url='admin')
 def member_view(request):
     members = Member.objects.all()
+    members = paginate(request, members)
     return render(request, 'admin/member/view.html', {'members':members})
 
 @login_required(login_url='admin')

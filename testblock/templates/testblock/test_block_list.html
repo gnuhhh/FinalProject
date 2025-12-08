@@ -2,7 +2,10 @@
 
 {% block title %}Test Khối Thi Đại Học - Cổng thông tin tuyển sinh{% endblock %}
 
-{% block content %}
+{% block testblock_content %}
+<!-- THÊM FONTAWESOME CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <div class="row">
     <div class="col-12">
         <!-- Nút quay lại trang chủ -->
@@ -14,7 +17,7 @@
 
         <div class="system-header">
             <h1 class="text-center mb-3">HỆ THỐNG TEST KHỐI THI ĐẠI HỌC</h1>
-            <p class="text-center mb-0">Ôn tập và kiểm tra kiến thức theo khối thi truyền thống</p>
+            <p class="text-center mb-0"><i class="fas fa-graduation-cap me-2"></i>Ôn tập và kiểm tra kiến thức theo khối thi truyền thống</p>
         </div>
         
         <div class="container mt-4">
@@ -34,29 +37,31 @@
                         </div>
                         <div class="search-suggestions mt-2">
                             <small class="text-muted">
-                                <i class="fas fa-lightbulb"></i> Gợi ý: "A", "Toán", "Anh", "Tự nhiên", "Xã hội"
+                                <i class="fas fa-lightbulb me-1"></i>Gợi ý: "A", "Toán", "Anh", "Tự nhiên", "Xã hội"
                             </small>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <h2 class="text-center mb-4">Chọn Khối Thi</h2>
+            <h2 class="text-center mb-4"><i class="fas fa-layer-group me-2"></i>Chọn Khối Thi</h2>
             
             <div class="row g-4" id="blocksContainer">
                 <!-- Khối A -->
                 <div class="col-md-6 col-lg-3 block-item" data-name="Khối A" data-subjects="Toán Vật lí Hóa học Tự nhiên">
                     <a href="{% url 'testblock:subject_test_list' 'khoi-A' %}" class="card subject-card subject-card-link h-100">
                         <div class="card-body text-center">
-                            <div class="subject-icon">🔬</div>
+                            <div class="subject-icon mb-3">
+                                <i class="fas fa-atom fa-3x text-primary"></i>
+                            </div>
                             <h5 class="card-title">Khối A</h5>
                             <p class="card-text">Khối tự nhiên truyền thống</p>
                             <div class="subjects-list">
                                 <small class="text-muted">
-                                    <strong>Môn học:</strong><br>
-                                    📊 Toán học<br>
-                                    ⚡ Vật lí<br>
-                                    🧪 Hóa học
+                                    <strong><i class="fas fa-book me-1"></i>Môn học:</strong><br>
+                                    <i class="fas fa-calculator me-1 text-success"></i>Toán học<br>
+                                    <i class="fas fa-bolt me-1 text-warning"></i>Vật lí<br>
+                                    <i class="fas fa-flask me-1 text-danger"></i>Hóa học
                                 </small>
                             </div>
                         </div>
@@ -67,15 +72,17 @@
                 <div class="col-md-6 col-lg-3 block-item" data-name="Khối B" data-subjects="Toán Hóa học Sinh học Tự nhiên Sức khỏe">
                     <a href="{% url 'testblock:subject_test_list' 'khoi-B' %}" class="card subject-card subject-card-link h-100">
                         <div class="card-body text-center">
-                            <div class="subject-icon">🧬</div>
+                            <div class="subject-icon mb-3">
+                                <i class="fas fa-dna fa-3x text-success"></i>
+                            </div>
                             <h5 class="card-title">Khối B</h5>
                             <p class="card-text">Khối khoa học sức khỏe</p>
                             <div class="subjects-list">
                                 <small class="text-muted">
-                                    <strong>Môn học:</strong><br>
-                                    📊 Toán học<br>
-                                    🧪 Hóa học<br>
-                                    🔬 Sinh học
+                                    <strong><i class="fas fa-book me-1"></i>Môn học:</strong><br>
+                                    <i class="fas fa-calculator me-1 text-success"></i>Toán học<br>
+                                    <i class="fas fa-flask me-1 text-danger"></i>Hóa học<br>
+                                    <i class="fas fa-microscope me-1 text-info"></i>Sinh học
                                 </small>
                             </div>
                         </div>
@@ -86,15 +93,17 @@
                 <div class="col-md-6 col-lg-3 block-item" data-name="Khối C" data-subjects="Ngữ văn Lịch sử Địa lí Xã hội">
                     <a href="{% url 'testblock:subject_test_list' 'khoi-C' %}" class="card subject-card subject-card-link h-100">
                         <div class="card-body text-center">
-                            <div class="subject-icon">📚</div>
+                            <div class="subject-icon mb-3">
+                                <i class="fas fa-landmark fa-3x text-warning"></i>
+                            </div>
                             <h5 class="card-title">Khối C</h5>
                             <p class="card-text">Khối khoa học xã hội</p>
                             <div class="subjects-list">
                                 <small class="text-muted">
-                                    <strong>Môn học:</strong><br>
-                                    📝 Ngữ văn<br>
-                                    📜 Lịch sử<br>
-                                    🗺️ Địa lí
+                                    <strong><i class="fas fa-book me-1"></i>Môn học:</strong><br>
+                                    <i class="fas fa-book-open me-1 text-danger"></i>Ngữ văn<br>
+                                    <i class="fas fa-monument me-1 text-secondary"></i>Lịch sử<br>
+                                    <i class="fas fa-globe-asia me-1 text-success"></i>Địa lí
                                 </small>
                             </div>
                         </div>
@@ -105,15 +114,17 @@
                 <div class="col-md-6 col-lg-3 block-item" data-name="Khối D" data-subjects="Toán Ngữ văn Tiếng Anh Tổng hợp">
                     <a href="{% url 'testblock:subject_test_list' 'khoi-D' %}" class="card subject-card subject-card-link h-100">
                         <div class="card-body text-center">
-                            <div class="subject-icon">🌍</div>
+                            <div class="subject-icon mb-3">
+                                <i class="fas fa-language fa-3x text-info"></i>
+                            </div>
                             <h5 class="card-title">Khối D</h5>
                             <p class="card-text">Khối tổng hợp cơ bản</p>
                             <div class="subjects-list">
                                 <small class="text-muted">
-                                    <strong>Môn học:</strong><br>
-                                    📊 Toán học<br>
-                                    📝 Ngữ văn<br>
-                                    🇬🇧 Tiếng Anh
+                                    <strong><i class="fas fa-book me-1"></i>Môn học:</strong><br>
+                                    <i class="fas fa-calculator me-1 text-success"></i>Toán học<br>
+                                    <i class="fas fa-book-open me-1 text-danger"></i>Ngữ văn<br>
+                                    <i class="fas fa-flag-usa me-1 text-primary"></i>Tiếng Anh
                                 </small>
                             </div>
                         </div>
@@ -124,15 +135,17 @@
                 <div class="col-md-6 col-lg-3 block-item" data-name="Khối A01" data-subjects="Toán Vật lí Tiếng Anh Kỹ thuật Công nghệ">
                     <a href="{% url 'testblock:subject_test_list' 'khoi-A01' %}" class="card subject-card subject-card-link h-100">
                         <div class="card-body text-center">
-                            <div class="subject-icon">💡</div>
+                            <div class="subject-icon mb-3">
+                                <i class="fas fa-laptop-code fa-3x text-primary"></i>
+                            </div>
                             <h5 class="card-title">Khối A01</h5>
                             <p class="card-text">Khối kỹ thuật - công nghệ</p>
                             <div class="subjects-list">
                                 <small class="text-muted">
-                                    <strong>Môn học:</strong><br>
-                                    📊 Toán học<br>
-                                    ⚡ Vật lí<br>
-                                    🇬🇧 Tiếng Anh
+                                    <strong><i class="fas fa-book me-1"></i>Môn học:</strong><br>
+                                    <i class="fas fa-calculator me-1 text-success"></i>Toán học<br>
+                                    <i class="fas fa-bolt me-1 text-warning"></i>Vật lí<br>
+                                    <i class="fas fa-flag-usa me-1 text-info"></i>Tiếng Anh
                                 </small>
                             </div>
                         </div>
@@ -143,15 +156,17 @@
                 <div class="col-md-6 col-lg-3 block-item" data-name="Khối B01" data-subjects="Toán Hóa học Tiếng Anh Y Sinh Tự nhiên">
                     <a href="{% url 'testblock:subject_test_list' 'khoi-B01' %}" class="card subject-card subject-card-link h-100">
                         <div class="card-body text-center">
-                            <div class="subject-icon">🧬</div>
+                            <div class="subject-icon mb-3">
+                                <i class="fas fa-stethoscope fa-3x text-success"></i>
+                            </div>
                             <h5 class="card-title">Khối B01</h5>
                             <p class="card-text">Khối Khoa học Tự nhiên - Y Sinh</p>
                             <div class="subjects-list">
                                 <small class="text-muted">
-                                    <strong>Môn học:</strong><br>
-                                    📊 Toán học<br>
-                                    ⚗️ Hóa học<br>
-                                    🇬🇧 Tiếng Anh
+                                    <strong><i class="fas fa-book me-1"></i>Môn học:</strong><br>
+                                    <i class="fas fa-calculator me-1 text-success"></i>Toán học<br>
+                                    <i class="fas fa-flask me-1 text-danger"></i>Hóa học<br>
+                                    <i class="fas fa-flag-usa me-1 text-info"></i>Tiếng Anh
                                 </small>
                             </div>
                         </div>
@@ -162,15 +177,17 @@
                 <div class="col-md-6 col-lg-3 block-item" data-name="Khối D07" data-subjects="Toán Hóa học Tiếng Anh Kinh tế Công nghệ">
                     <a href="{% url 'testblock:subject_test_list' 'khoi-D07' %}" class="card subject-card subject-card-link h-100">
                         <div class="card-body text-center">
-                            <div class="subject-icon">🌐</div>
+                            <div class="subject-icon mb-3">
+                                <i class="fas fa-chart-line fa-3x text-info"></i>
+                            </div>
                             <h5 class="card-title">Khối D07</h5>
                             <p class="card-text">Khối Ngoại ngữ - Kinh tế - Công nghệ</p>
                             <div class="subjects-list">
                                 <small class="text-muted">
-                                    <strong>Môn học:</strong><br>
-                                    📊 Toán học<br>
-                                    ⚗️ Hóa học<br>
-                                    🇬🇧 Tiếng Anh
+                                    <strong><i class="fas fa-book me-1"></i>Môn học:</strong><br>
+                                    <i class="fas fa-calculator me-1 text-success"></i>Toán học<br>
+                                    <i class="fas fa-flask me-1 text-danger"></i>Hóa học<br>
+                                    <i class="fas fa-flag-usa me-1 text-primary"></i>Tiếng Anh
                                 </small>
                             </div>
                         </div>
@@ -181,15 +198,17 @@
                 <div class="col-md-6 col-lg-3 block-item" data-name="Khối B02" data-subjects="Toán Sinh học Vật lí Tự nhiên">
                     <a href="{% url 'testblock:subject_test_list' 'khoi-B02' %}" class="card subject-card subject-card-link h-100">
                         <div class="card-body text-center">
-                            <div class="subject-icon">🧫</div>
+                            <div class="subject-icon mb-3">
+                                <i class="fas fa-seedling fa-3x text-success"></i>
+                            </div>
                             <h5 class="card-title">Khối B02</h5>
                             <p class="card-text">Khối Khoa học Tự nhiên - Sinh học</p>
                             <div class="subjects-list">
                                 <small class="text-muted">
-                                    <strong>Môn học:</strong><br>
-                                    📊 Toán học<br>
-                                    🌿 Sinh học<br>
-                                    ⚡ Vật lí
+                                    <strong><i class="fas fa-book me-1"></i>Môn học:</strong><br>
+                                    <i class="fas fa-calculator me-1 text-success"></i>Toán học<br>
+                                    <i class="fas fa-microscope me-1 text-info"></i>Sinh học<br>
+                                    <i class="fas fa-bolt me-1 text-warning"></i>Vật lí
                                 </small>
                             </div>
                         </div>
@@ -200,15 +219,17 @@
                 <div class="col-md-6 col-lg-3 block-item" data-name="Khối C01" data-subjects="Toán Lịch sử Tiếng Anh Xã hội Tổng hợp">
                     <a href="{% url 'testblock:subject_test_list' 'khoi-C01' %}" class="card subject-card subject-card-link h-100">
                         <div class="card-body text-center">
-                            <div class="subject-icon">📚</div>
+                            <div class="subject-icon mb-3">
+                                <i class="fas fa-balance-scale fa-3x text-warning"></i>
+                            </div>
                             <h5 class="card-title">Khối C01</h5>
                             <p class="card-text">Khối Xã hội tổng hợp</p>
                             <div class="subjects-list">
                                 <small class="text-muted">
-                                    <strong>Môn học:</strong><br>
-                                    📊 Toán học<br>
-                                    📜 Lịch sử<br>
-                                    🇬🇧 Tiếng Anh
+                                    <strong><i class="fas fa-book me-1"></i>Môn học:</strong><br>
+                                    <i class="fas fa-calculator me-1 text-success"></i>Toán học<br>
+                                    <i class="fas fa-monument me-1 text-secondary"></i>Lịch sử<br>
+                                    <i class="fas fa-flag-usa me-1 text-info"></i>Tiếng Anh
                                 </small>
                             </div>
                         </div>
@@ -219,15 +240,17 @@
                 <div class="col-md-6 col-lg-3 block-item" data-name="Khối D14" data-subjects="Ngữ văn Lịch sử Tiếng Anh Xã hội Ngôn ngữ">
                     <a href="{% url 'testblock:subject_test_list' 'khoi-D14' %}" class="card subject-card subject-card-link h-100">
                         <div class="card-body text-center">
-                            <div class="subject-icon">🏛️</div>
+                            <div class="subject-icon mb-3">
+                                <i class="fas fa-university fa-3x text-info"></i>
+                            </div>
                             <h5 class="card-title">Khối D14</h5>
                             <p class="card-text">Khối Ngôn ngữ - Xã hội</p>
                             <div class="subjects-list">
                                 <small class="text-muted">
-                                    <strong>Môn học:</strong><br>
-                                    ✍️ Ngữ văn<br>
-                                    📜 Lịch sử<br>
-                                    🇬🇧 Tiếng Anh
+                                    <strong><i class="fas fa-book me-1"></i>Môn học:</strong><br>
+                                    <i class="fas fa-book-open me-1 text-danger"></i>Ngữ văn<br>
+                                    <i class="fas fa-monument me-1 text-secondary"></i>Lịch sử<br>
+                                    <i class="fas fa-flag-usa me-1 text-primary"></i>Tiếng Anh
                                 </small>
                             </div>
                         </div>
@@ -238,15 +261,17 @@
                 <div class="col-md-6 col-lg-3 block-item" data-name="Khối D15" data-subjects="Ngữ văn Địa lý Tiếng Anh Xã hội Ngôn ngữ">
                     <a href="{% url 'testblock:subject_test_list' 'khoi-D15' %}" class="card subject-card subject-card-link h-100">
                         <div class="card-body text-center">
-                            <div class="subject-icon">🌍</div>
+                            <div class="subject-icon mb-3">
+                                <i class="fas fa-map-marked-alt fa-3x text-success"></i>
+                            </div>
                             <h5 class="card-title">Khối D15</h5>
                             <p class="card-text">Khối Ngôn ngữ - Địa lý</p>
                             <div class="subjects-list">
                                 <small class="text-muted">
-                                    <strong>Môn học:</strong><br>
-                                    ✍️ Ngữ văn<br>
-                                    🗺️ Địa lý<br>
-                                    🇬🇧 Tiếng Anh
+                                    <strong><i class="fas fa-book me-1"></i>Môn học:</strong><br>
+                                    <i class="fas fa-book-open me-1 text-danger"></i>Ngữ văn<br>
+                                    <i class="fas fa-globe-asia me-1 text-success"></i>Địa lý<br>
+                                    <i class="fas fa-flag-usa me-1 text-info"></i>Tiếng Anh
                                 </small>
                             </div>
                         </div>
@@ -332,7 +357,6 @@
     color: inherit;
 }
 .subject-icon {
-    font-size: 3em;
     margin-bottom: 15px;
 }
 .subjects-list {
@@ -356,6 +380,12 @@
 }
 .block-item.hidden {
     display: none;
+}
+
+/* Đảm bảo FontAwesome hiển thị */
+.fas, .far, .fab {
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
 }
 </style>
 

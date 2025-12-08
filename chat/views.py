@@ -1,13 +1,15 @@
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+from advise.models import Appointment
 from .models import *
 # Create your views here.
 @login_required(login_url='login')
-def chat_view(request):
-    chat_group = get_object_or_404(ChatGroup, group_name='test-group2')
+def chat_view(request, id):
+    chat_group = get_object_or_404(ChatGroup, appointment__id=id)
     chat_messages = chat_group.message.all().order_by('created_at')
-    chat_messages_sender = GroupMessage.objects.exclude(sender=request.user)
+    chat_messages_sender = GroupMessage.objects.exclude(sender=request.user).first()
+    appointment = Appointment.objects.filter(member__in=[chat_messages_sender.sender.id, request.user.id]).first()
     if request.method == 'POST':
         message_content = request.POST.get('message')
         if message_content:
@@ -16,4 +18,4 @@ def chat_view(request):
         # if request.htmx:
         #     return render(request, 'chat/partials/chat_message_p.html', {'message': group_message, 'user': request.user})
     else:    
-        return render(request, 'chat/chat.html', {'chat_messages': chat_messages, 'chat_messages_sender': chat_messages_sender})
+        return render(request, 'chat/chat.html', {'chat_messages': chat_messages, 'chat_messages_sender': chat_messages_sender, 'appointment': appointment})

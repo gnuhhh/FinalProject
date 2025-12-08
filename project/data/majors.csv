@@ -1,0 +1,528 @@
+﻿major_name,major_code,university_code,field
+Khoa học Máy tính,7480101,HUST,CNTT
+Kỹ thuật Máy tính,7480102,HUST,CNTT
+Cơ điện tử,7520114,HUST,Kỹ thuật
+Kỹ thuật Ô tô,7520103,HUST,Kỹ thuật
+Kỹ thuật Điện,7520201,HUST,Kỹ thuật
+Kỹ thuật Điện tử - Viễn thông,7520207,HUST,Kỹ thuật
+Kỹ thuật Hóa học,7520301,HUST,Kỹ thuật
+Kỹ thuật Cơ khí,7520103,HUST,Kỹ thuật
+Khoa học Dữ liệu,7480108,HUST,CNTT
+Tự động hóa,7520216,HUST,Kỹ thuật
+
+Kinh tế Quốc tế,7310106,FTU,Kinh tế
+Quản trị Kinh doanh,7340101,FTU,Kinh tế
+Marketing,7340115,FTU,Kinh tế
+Tài chính Quốc tế,7340202,FTU,Kinh tế
+Kinh doanh Thương mại,7340122,FTU,Kinh tế
+Thương mại Quốc tế,7340120,FTU,Kinh tế
+Kế toán,7340301,FTU,Kinh tế
+Luật Kinh tế,7380107,FTU,Luật
+Ngôn ngữ Anh Thương mại,7220201,FTU,Ngôn ngữ
+Quan hệ Quốc tế,7310206,FTU,Xã hội
+
+Kinh tế Quốc dân,7310101,NEU,Kinh tế
+Quản trị Kinh doanh,7340101,NEU,Kinh tế
+Kế toán,7340301,NEU,Kinh tế
+Tài chính - Ngân hàng,7340201,NEU,Kinh tế
+Marketing,7340115,NEU,Kinh tế
+Thương mại điện tử,7340122,NEU,Kinh tế
+Kinh tế Đầu tư,7310104,NEU,Kinh tế
+Kinh tế Phát triển,7310105,NEU,Kinh tế
+Thống kê Kinh tế,7310107,NEU,Kinh tế
+Quản trị Nhân lực,7340404,NEU,Kinh tế
+
+Khoa học Máy tính,7480101,VNU,CNTT
+Công nghệ Sinh học,7420201,VNU,Khoa học
+Hóa học,7440101,VNU,Khoa học
+Vật lý,7440102,VNU,Khoa học
+Toán học,7460101,VNU,Khoa học
+Ngôn ngữ Anh,7220201,VNU,Ngôn ngữ
+Kinh tế,7310101,VNU,Kinh tế
+Luật,7380101,VNU,Luật
+Truyền thông,7320104,VNU,Xã hội
+Quản trị Du lịch,7810103,VNU,Du lịch
+
+Y khoa,7720101,HMU,Y dược
+Răng Hàm Mặt,7720501,HMU,Y dược
+Dược học,7720201,HMU,Y dược
+Điều dưỡng,7720301,HMU,Y dược
+Kỹ thuật Xét nghiệm Y học,7720601,HMU,Y dược
+Y học cổ truyền,7720115,HMU,Y dược
+Hộ sinh,7720401,HMU,Y dược
+Y tế công cộng,7720701,HMU,Y dược
+Dinh dưỡng,7720402,HMU,Y dược
+Vật lý trị liệu,7720302,HMU,Y dược
+
+Sư phạm Toán học,7140209,HNUE,Giáo dục
+Sư phạm Hóa học,7140212,HNUE,Giáo dục
+Sư phạm Vật lý,7140211,HNUE,Giáo dục
+Sư phạm Ngữ văn,7140217,HNUE,Giáo dục
+Sư phạm Lịch sử,7140218,HNUE,Giáo dục
+Sư phạm Tiếng Anh,7140231,HNUE,Giáo dục
+Giáo dục Tiểu học,7140202,HNUE,Giáo dục
+Giáo dục Mầm non,7140201,HNUE,Giáo dục
+Tâm lý học,7310401,HNUE,Xã hội
+Ngôn ngữ Pháp,7220203,HNUE,Ngôn ngữ
+
+Kế toán,7340301,TMU,Kinh tế
+Tài chính - Ngân hàng,7340201,TMU,Kinh tế
+Quản trị Kinh doanh,7340101,TMU,Kinh tế
+Marketing,7340115,TMU,Kinh tế
+Thương mại điện tử,7340122,TMU,Kinh tế
+Kinh tế,7310101,TMU,Kinh tế
+Logistics,7510605,TMU,Kinh tế
+Kinh doanh Quốc tế,7340120,TMU,Kinh tế
+Luật Kinh tế,7380107,TMU,Luật
+Kinh tế Đầu tư,7310104,TMU,Kinh tế
+
+Kỹ thuật Cơ khí,7520103,HAUI,Kỹ thuật
+Cơ điện tử,7520114,HAUI,Kỹ thuật
+Kỹ thuật Điện,7520201,HAUI,Kỹ thuật
+Kỹ thuật Điện tử - Truyền thông,7520207,HAUI,Kỹ thuật
+Tự động hóa,7520216,HAUI,Kỹ thuật
+Công nghệ Thông tin,7480201,HAUI,CNTT
+Công nghệ Thực phẩm,7540101,HAUI,Công nghệ
+Kế toán,7340301,HAUI,Kinh tế
+Quản trị Kinh doanh,7340101,HAUI,Kinh tế
+Logistics và Quản lý Chuỗi cung ứng,7510605,HAUI,Kinh tế
+
+Khai thác Mỏ,7520601,HUMG,Kỹ thuật
+Địa chất học,7440201,HUMG,Khoa học
+Kỹ thuật Dầu khí,7520501,HUMG,Kỹ thuật
+Kỹ thuật Xây dựng,7580201,HUMG,Kỹ thuật
+Công nghệ Thông tin,7480201,HUMG,CNTT
+Kỹ thuật Trắc địa,7520502,HUMG,Kỹ thuật
+Kinh tế Tài nguyên,7310108,HUMG,Kinh tế
+Quản lý Đất đai,7850103,HUMG,Khoa học
+Kỹ thuật Môi trường,7520320,HUMG,Kỹ thuật
+Địa tin học,7480105,HUMG,CNTT
+
+Kỹ thuật Giao thông,7580205,UTC,Kỹ thuật
+Kỹ thuật Cầu đường,7580201,UTC,Kỹ thuật
+Công nghệ Thông tin,7480201,UTC,CNTT
+Logistics,7510605,UTC,Kinh tế
+Kỹ thuật Ô tô,7520103,UTC,Kỹ thuật
+Quản lý Xây dựng,7580302,UTC,Kỹ thuật
+Kinh tế Vận tải,7340121,UTC,Kinh tế
+Kỹ thuật Cơ khí,7520103,UTC,Kỹ thuật
+Kỹ thuật Điện tử,7520207,UTC,Kỹ thuật
+Tự động hóa,7520216,UTC,Kỹ thuật
+
+Kiến trúc,7580101,HAU,Nghệ thuật
+Thiết kế Nội thất,7580108,HAU,Nghệ thuật
+Quy hoạch Vùng và Đô thị,7580105,HAU,Kỹ thuật
+Công nghệ Thông tin,7480201,HAU,CNTT
+Kỹ thuật Xây dựng,7580201,HAU,Kỹ thuật
+Kinh tế Xây dựng,7580301,HAU,Kinh tế
+Quản lý Đô thị,7580106,HAU,Kỹ thuật
+Thiết kế Công nghiệp,7210402,HAU,Nghệ thuật
+Quản trị Kinh doanh,7340101,HAU,Kinh tế
+Marketing,7340115,HAU,Kinh tế
+
+Công nghệ Năng lượng,7520602,EPU,Kỹ thuật
+Kỹ thuật Điện,7520201,EPU,Kỹ thuật
+Kỹ thuật Điều khiển & Tự động hóa,7520216,EPU,Kỹ thuật
+Công nghệ Thông tin,7480201,EPU,CNTT
+Kỹ thuật Điện tử - Viễn thông,7520207,EPU,Kỹ thuật
+Kinh tế Năng lượng,7310109,EPU,Kinh tế
+Kỹ thuật Môi trường,7520320,EPU,Kỹ thuật
+Quản trị Kinh doanh,7340101,EPU,Kinh tế
+Tài chính - Ngân hàng,7340201,EPU,Kinh tế
+Kế toán,7340301,EPU,Kinh tế
+
+Nông học,7620109,HUAF,Nông nghiệp
+Công nghệ Sinh học,7420201,HUAF,Khoa học
+Thú y,7640101,HUAF,Y dược
+Kinh tế Nông nghiệp,7620114,HUAF,Kinh tế
+Công nghệ Thực phẩm,7540101,HUAF,Công nghệ
+Lâm học,7620201,HUAF,Nông nghiệp
+Quản lý Đất đai,7850103,HUAF,Khoa học
+Môi trường,7440301,HUAF,Khoa học
+Công nghệ Sau thu hoạch,7540106,HUAF,Công nghệ
+Khoa học Cây trồng,7620110,HUAF,Nông nghiệp
+
+Kỹ thuật Môi trường,7520320,HUNRE,Kỹ thuật
+Quản lý Tài nguyên và Môi trường,7850101,HUNRE,Khoa học
+Công nghệ Thông tin,7480201,HUNRE,CNTT
+Khoa học Môi trường,7440301,HUNRE,Khoa học
+Kinh tế Tài nguyên,7310108,HUNRE,Kinh tế
+Quản lý Đất đai,7850103,HUNRE,Khoa học
+Kỹ thuật Xây dựng,7580201,HUNRE,Kỹ thuật
+Kỹ thuật Trắc địa,7520502,HUNRE,Kỹ thuật
+Địa tin học,7480105,HUNRE,CNTT
+Quản trị Kinh doanh,7340101,HUNRE,Kinh tế
+
+Quản trị Kinh doanh,7340101,HUBT,Kinh tế
+Kế toán,7340301,HUBT,Kinh tế
+Tài chính - Ngân hàng,7340201,HUBT,Kinh tế
+Luật,7380101,HUBT,Luật
+Công nghệ Thông tin,7480201,HUBT,CNTT
+Ngôn ngữ Anh,7220201,HUBT,Ngôn ngữ
+Marketing,7340115,HUBT,Kinh tế
+Quản trị Dịch vụ Du lịch,7810103,HUBT,Du lịch
+Kỹ thuật Phần mềm,7480103,HUBT,CNTT
+Thương mại điện tử,7340122,HUBT,Kinh tế
+
+Công nghệ Thông tin,7480201,UTT,CNTT
+Kỹ thuật Ô tô,7520103,UTT,Kỹ thuật
+Kỹ thuật Cơ khí,7520103,UTT,Kỹ thuật
+Kỹ thuật Điện,7520201,UTT,Kỹ thuật
+Logistics và Quản lý Chuỗi cung ứng,7510605,UTT,Kinh tế
+Kỹ thuật Xây dựng,7580201,UTT,Kỹ thuật
+Kỹ thuật Giao thông,7580205,UTT,Kỹ thuật
+Kế toán,7340301,UTT,Kinh tế
+Quản trị Kinh doanh,7340101,UTT,Kinh tế
+Tự động hóa,7520216,UTT,Kỹ thuật
+
+Công nghệ Thông tin,7480201,UNETI,CNTT
+Kế toán,7340301,UNETI,Kinh tế
+Quản trị Kinh doanh,7340101,UNETI,Kinh tế
+Tài chính - Ngân hàng,7340201,UNETI,Kinh tế
+Thương mại điện tử,7340122,UNETI,Kinh tế
+Công nghệ Kỹ thuật Điện,7510301,UNETI,Kỹ thuật
+Công nghệ Kỹ thuật Cơ khí,7510201,UNETI,Kỹ thuật
+Kỹ thuật Ô tô,7520103,UNETI,Kỹ thuật
+Kỹ thuật Điện tử - Truyền thông,7520207,UNETI,Kỹ thuật
+Công nghệ May,7540204,UNETI,Công nghệ
+
+Kỹ thuật Cơ khí,7520103,HCMUT,Kỹ thuật
+Kỹ thuật Ô tô,7520103,HCMUT,Kỹ thuật
+Công nghệ Thông tin,7480201,HCMUT,CNTT
+Kỹ thuật Máy tính,7480102,HCMUT,CNTT
+Kỹ thuật Điện,7520201,HCMUT,Kỹ thuật
+Kỹ thuật Điện tử - Viễn thông,7520207,HCMUT,Kỹ thuật
+Cơ điện tử,7520114,HCMUT,Kỹ thuật
+Kỹ thuật Xây dựng,7580201,HCMUT,Kỹ thuật
+Kỹ thuật Nhiệt,7520115,HCMUT,Kỹ thuật
+Khoa học Dữ liệu,7480108,HCMUT,CNTT
+
+Công nghệ Sinh học,7420201,HCMUS,Khoa học
+Khoa học Máy tính,7480101,HCMUS,CNTT
+Trí tuệ Nhân tạo,7480108,HCMUS,CNTT
+Công nghệ Thông tin,7480201,HCMUS,CNTT
+Khoa học Môi trường,7440301,HCMUS,Khoa học
+Hóa học,7440101,HCMUS,Khoa học
+Vật lý học,7440102,HCMUS,Khoa học
+Toán học,7460101,HCMUS,Khoa học
+Công nghệ Sinh học Ứng dụng,7420202,HCMUS,Khoa học
+Công nghệ Nano,7520309,HCMUS,Khoa học
+
+Quản trị Kinh doanh,7340101,UEH,Kinh tế
+Marketing,7340115,UEH,Kinh tế
+Kế toán,7340301,UEH,Kinh tế
+Tài chính - Ngân hàng,7340201,UEH,Kinh tế
+Kinh tế Quốc tế,7310106,UEH,Kinh tế
+Luật Kinh tế,7380107,UEH,Luật
+Thương mại điện tử,7340122,UEH,Kinh tế
+Kinh doanh Quốc tế,7340120,UEH,Kinh tế
+Logistics và Quản lý Chuỗi cung ứng,7510605,UEH,Kinh tế
+Quản trị Nhân lực,7340404,UEH,Kinh tế
+
+Sư phạm Toán học,7140209,HCMUE,Giáo dục
+Sư phạm Ngữ văn,7140217,HCMUE,Giáo dục
+Sư phạm Lịch sử,7140218,HCMUE,Giáo dục
+Sư phạm Hóa học,7140212,HCMUE,Giáo dục
+Sư phạm Vật lý,7140211,HCMUE,Giáo dục
+Sư phạm Tiếng Anh,7140231,HCMUE,Giáo dục
+Giáo dục Tiểu học,7140202,HCMUE,Giáo dục
+Giáo dục Mầm non,7140201,HCMUE,Giáo dục
+Ngôn ngữ Anh,7220201,HCMUE,Ngôn ngữ
+Ngôn ngữ Trung Quốc,7220204,HCMUE,Ngôn ngữ
+
+Y khoa,7720101,UMP,Y dược
+Răng Hàm Mặt,7720501,UMP,Y dược
+Dược học,7720201,UMP,Y dược
+Điều dưỡng,7720301,UMP,Y dược
+Kỹ thuật Xét nghiệm Y học,7720601,UMP,Y dược
+Hộ sinh,7720401,UMP,Y dược
+Y học cổ truyền,7720115,UMP,Y dược
+Vật lý trị liệu,7720302,UMP,Y dược
+Dinh dưỡng,7720402,UMP,Y dược
+Y tế công cộng,7720701,UMP,Y dược
+
+Công nghệ Thông tin,7480201,SGU,CNTT
+Ngôn ngữ Anh,7220201,SGU,Ngôn ngữ
+Ngôn ngữ Nhật,7220209,SGU,Ngôn ngữ
+Ngôn ngữ Hàn,7220210,SGU,Ngôn ngữ
+Sư phạm Toán học,7140209,SGU,Giáo dục
+Sư phạm Tiếng Anh,7140231,SGU,Giáo dục
+Giáo dục Tiểu học,7140202,SGU,Giáo dục
+Giáo dục Mầm non,7140201,SGU,Giáo dục
+Quản trị Kinh doanh,7340101,SGU,Kinh tế
+Kế toán,7340301,SGU,Kinh tế
+
+Công nghệ Thông tin,7480201,HUTECH,CNTT
+Kỹ thuật Ô tô,7520103,HUTECH,Kỹ thuật
+Kỹ thuật Cơ khí,7520103,HUTECH,Kỹ thuật
+Kỹ thuật Điện tử,7520207,HUTECH,Kỹ thuật
+Công nghệ Sinh học,7420201,HUTECH,Khoa học
+Quản trị Kinh doanh,7340101,HUTECH,Kinh tế
+Tài chính - Ngân hàng,7340201,HUTECH,Kinh tế
+Marketing,7340115,HUTECH,Kinh tế
+Luật Kinh tế,7380107,HUTECH,Luật
+Thiết kế Đồ họa,7210403,HUTECH,Nghệ thuật
+
+Kế toán,7340301,UEF,Kinh tế
+Tài chính - Ngân hàng,7340201,UEF,Kinh tế
+Quản trị Kinh doanh,7340101,UEF,Kinh tế
+Marketing,7340115,UEF,Kinh tế
+Thương mại điện tử,7340122,UEF,Kinh tế
+Ngôn ngữ Anh,7220201,UEF,Ngôn ngữ
+Ngôn ngữ Nhật,7220209,UEF,Ngôn ngữ
+Quan hệ Quốc tế,7310206,UEF,Xã hội
+Luật Kinh tế,7380107,UEF,Luật
+Công nghệ Thông tin,7480201,UEF,CNTT
+
+Quản trị Kinh doanh,7340101,TDTU,Kinh tế
+Kế toán,7340301,TDTU,Kinh tế
+Tài chính - Ngân hàng,7340201,TDTU,Kinh tế
+Marketing,7340115,TDTU,Kinh tế
+Logistics và Chuỗi cung ứng,7510605,TDTU,Kinh tế
+Công nghệ Thông tin,7480201,TDTU,CNTT
+Kỹ thuật Phần mềm,7480103,TDTU,CNTT
+Thiết kế Đồ họa,7210403,TDTU,Nghệ thuật
+Thiết kế Nội thất,7580108,TDTU,Nghệ thuật
+Luật,7380101,TDTU,Luật
+
+Ngân hàng,7340202,BUH,Kinh tế
+Tài chính,7340201,BUH,Kinh tế
+Kế toán,7340301,BUH,Kinh tế
+Quản trị Kinh doanh,7340101,BUH,Kinh tế
+Marketing,7340115,BUH,Kinh tế
+Thương mại điện tử,7340122,BUH,Kinh tế
+Công nghệ Thông tin,7480201,BUH,CNTT
+Luật Kinh tế,7380107,BUH,Luật
+Kinh tế Quốc tế,7310106,BUH,Kinh tế
+Ngôn ngữ Anh,7220201,BUH,Ngôn ngữ
+
+Kinh tế,7310101,OU,Kinh tế
+Quản trị Kinh doanh,7340101,OU,Kinh tế
+Tài chính - Ngân hàng,7340201,OU,Kinh tế
+Luật,7380101,OU,Luật
+Ngôn ngữ Anh,7220201,OU,Ngôn ngữ
+Xã hội học,7310301,OU,Xã hội
+Truyền thông,7320104,OU,Xã hội
+Công nghệ Thông tin,7480201,OU,CNTT
+Kế toán,7340301,OU,Kinh tế
+Marketing,7340115,OU,Kinh tế
+
+Kỹ thuật Hàng hải,7520401,HCMUTR,Kỹ thuật
+Kinh tế Vận tải,7340121,HCMUTR,Kinh tế
+Kỹ thuật Giao thông,7580205,HCMUTR,Kỹ thuật
+Logistics,7510605,HCMUTR,Kinh tế
+Kỹ thuật Cơ khí,7520103,HCMUTR,Kỹ thuật
+Kỹ thuật Ô tô,7520103,HCMUTR,Kỹ thuật
+Quản trị Kinh doanh,7340101,HCMUTR,Kinh tế
+Kỹ thuật Điện,7520201,HCMUTR,Kỹ thuật
+Điện tử - Viễn thông,7520207,HCMUTR,Kỹ thuật
+Tài chính - Ngân hàng,7340201,HCMUTR,Kinh tế
+
+Công nghệ Thực phẩm,7540101,HUFI,Công nghệ
+Quản trị Kinh doanh,7340101,HUFI,Kinh tế
+Kế toán,7340301,HUFI,Kinh tế
+Tài chính - Ngân hàng,7340201,HUFI,Kinh tế
+Công nghệ Sinh học,7420201,HUFI,Khoa học
+Công nghệ Thông tin,7480201,HUFI,CNTT
+Công nghệ Hóa học,7520301,HUFI,Kỹ thuật
+Công nghệ Sau thu hoạch,7540106,HUFI,Công nghệ
+Công nghệ Kỹ thuật Môi trường,7510406,HUFI,Kỹ thuật
+Quản trị Dịch vụ Du lịch,7810103,HUFI,Du lịch
+
+Thiết kế Đồ họa,7210403,VLH,Nghệ thuật
+Kiến trúc,7580101,VLH,Kỹ thuật
+Quản trị Kinh doanh,7340101,VLH,Kinh tế
+Marketing,7340115,VLH,Kinh tế
+Tài chính - Ngân hàng,7340201,VLH,Kinh tế
+Ngôn ngữ Anh,7220201,VLH,Ngôn ngữ
+Quan hệ Công chúng,7320108,VLH,Xã hội
+Công nghệ Thông tin,7480201,VLH,CNTT
+Luật Kinh tế,7380107,VLH,Luật
+Thiết kế Thời trang,7210404,VLH,Nghệ thuật
+
+Quản trị Kinh doanh,7340101,NTTU,Kinh tế
+Marketing,7340115,NTTU,Kinh tế
+Kế toán,7340301,NTTU,Kinh tế
+Tài chính - Ngân hàng,7340201,NTTU,Kinh tế
+Luật Kinh tế,7380107,NTTU,Luật
+Công nghệ Thông tin,7480201,NTTU,CNTT
+Kỹ thuật Ô tô,7520103,NTTU,Kỹ thuật
+Công nghệ Sinh học,7420201,NTTU,Khoa học
+Ngôn ngữ Anh,7220201,NTTU,Ngôn ngữ
+Quản trị Dịch vụ Du lịch,7810103,NTTU,Du lịch
+
+Kỹ thuật Cơ khí,7520103,UDN,Kỹ thuật
+Kỹ thuật Xây dựng,7580201,UDN,Kỹ thuật
+Kỹ thuật Ô tô,7520103,UDN,Kỹ thuật
+Công nghệ Thông tin,7480201,UDN,CNTT
+Kỹ thuật Điện tử - Viễn thông,7520207,UDN,Kỹ thuật
+Quản trị Kinh doanh,7340101,UDN,Kinh tế
+Kế toán,7340301,UDN,Kinh tế
+Marketing,7340115,UDN,Kinh tế
+Tài chính - Ngân hàng,7340201,UDN,Kinh tế
+Kỹ thuật Môi trường,7520320,UDN,Kỹ thuật
+
+Kỹ thuật Xây dựng,7580201,UDBK,Kỹ thuật
+Công nghệ Thông tin,7480201,UDBK,CNTT
+Kỹ thuật Điện,7520201,UDBK,Kỹ thuật
+Kỹ thuật Cơ khí,7520103,UDBK,Kỹ thuật
+Kỹ thuật Ô tô,7520103,UDBK,Kỹ thuật
+Kỹ thuật Cơ điện tử,7520114,UDBK,Kỹ thuật
+Kỹ thuật Nhiệt,7520115,UDBK,Kỹ thuật
+Công nghệ Vật liệu,7520309,UDBK,Kỹ thuật
+Kiến trúc,7580101,UDBK,Kỹ thuật
+Quản lý Xây dựng,7580302,UDBK,Kỹ thuật
+
+Kinh tế,7310101,UDKT,Kinh tế
+Kế toán,7340301,UDKT,Kinh tế
+Tài chính - Ngân hàng,7340201,UDKT,Kinh tế
+Quản trị Kinh doanh,7340101,UDKT,Kinh tế
+Marketing,7340115,UDKT,Kinh tế
+Thương mại điện tử,7340122,UDKT,Kinh tế
+Luật Kinh tế,7380107,UDKT,Luật
+Logistics và Chuỗi cung ứng,7510605,UDKT,Kinh tế
+Quản trị Nhân lực,7340404,UDKT,Kinh tế
+Kinh tế Đầu tư,7310104,UDKT,Kinh tế
+
+Sư phạm Toán học,7140209,UDSP,Giáo dục
+Sư phạm Vật lý,7140211,UDSP,Giáo dục
+Sư phạm Hóa học,7140212,UDSP,Giáo dục
+Sư phạm Sinh học,7140213,UDSP,Giáo dục
+Sư phạm Ngữ văn,7140217,UDSP,Giáo dục
+Sư phạm Lịch sử,7140218,UDSP,Giáo dục
+Sư phạm Địa lý,7140219,UDSP,Giáo dục
+Giáo dục Tiểu học,7140202,UDSP,Giáo dục
+Giáo dục Mầm non,7140201,UDSP,Giáo dục
+Tâm lý học,7310401,UDSP,Xã hội
+
+Ngôn ngữ Anh,7220201,UDNN,Ngôn ngữ
+Ngôn ngữ Nhật,7220209,UDNN,Ngôn ngữ
+Ngôn ngữ Hàn,7220210,UDNN,Ngôn ngữ
+Ngôn ngữ Trung Quốc,7220204,UDNN,Ngôn ngữ
+Ngôn ngữ Pháp,7220203,UDNN,Ngôn ngữ
+Ngôn ngữ Nga,7220202,UDNN,Ngôn ngữ
+Biên - Phiên dịch,7220215,UDNN,Ngôn ngữ
+Giảng dạy Tiếng Anh,7140231,UDNN,Giáo dục
+Quản trị Du lịch,7810103,UDNN,Du lịch
+Truyền thông,7320104,UDNN,Xã hội
+
+Y khoa,7720101,HUE,Y dược
+Răng Hàm Mặt,7720501,HUE,Y dược
+Dược học,7720201,HUE,Y dược
+Điều dưỡng,7720301,HUE,Y dược
+Kỹ thuật Xét nghiệm Y học,7720601,HUE,Y dược
+Y học cổ truyền,7720115,HUE,Y dược
+Y tế công cộng,7720701,HUE,Y dược
+Hộ sinh,7720401,HUE,Y dược
+Dinh dưỡng,7720402,HUE,Y dược
+Vật lý trị liệu,7720302,HUE,Y dược
+
+Công nghệ Thông tin,7480201,HUSC,CNTT
+Công nghệ Sinh học,7420201,HUSC,Khoa học
+Hóa học,7440101,HUSC,Khoa học
+Vật lý,7440102,HUSC,Khoa học
+Toán học,7460101,HUSC,Khoa học
+Khoa học Môi trường,7440301,HUSC,Khoa học
+Kỹ thuật Phần mềm,7480103,HUSC,CNTT
+Khoa học Dữ liệu,7480108,HUSC,CNTT
+Ngôn ngữ Anh,7220201,HUSC,Ngôn ngữ
+Công nghệ Nano,7520309,HUSC,Kỹ thuật
+
+Quản trị Kinh doanh,7340101,HUEdu,Kinh tế
+Kế toán,7340301,HUEdu,Kinh tế
+Tài chính - Ngân hàng,7340201,HUEdu,Kinh tế
+Sư phạm Toán học,7140209,HUEdu,Giáo dục
+Sư phạm Ngữ văn,7140217,HUEdu,Giáo dục
+Sư phạm Tiếng Anh,7140231,HUEdu,Giáo dục
+Giáo dục Tiểu học,7140202,HUEdu,Giáo dục
+Giáo dục Mầm non,7140201,HUEdu,Giáo dục
+Tâm lý học,7310401,HUEdu,Xã hội
+Công tác Xã hội,7760101,HUEdu,Xã hội
+
+Công nghệ Sinh học,7420201,HUF,Khoa học
+Nông học,7620109,HUF,Nông nghiệp
+Lâm học,7620201,HUF,Nông nghiệp
+Thú y,7640101,HUF,Y dược
+Công nghệ Thực phẩm,7540101,HUF,Công nghệ
+Quản lý Đất đai,7850103,HUF,Khoa học
+Môi trường,7440301,HUF,Khoa học
+Kinh tế Nông nghiệp,7620114,HUF,Kinh tế
+Khoa học Cây trồng,7620110,HUF,Nông nghiệp
+Công nghệ Sau thu hoạch,7540106,HUF,Công nghệ
+
+Kinh tế,7310101,HCE,Kinh tế
+Kế toán,7340301,HCE,Kinh tế
+Tài chính - Ngân hàng,7340201,HCE,Kinh tế
+Quản trị Kinh doanh,7340101,HCE,Kinh tế
+Marketing,7340115,HCE,Kinh tế
+Kinh tế Quốc tế,7310106,HCE,Kinh tế
+Luật Kinh tế,7380107,HCE,Luật
+Thương mại điện tử,7340122,HCE,Kinh tế
+Kinh tế Phát triển,7310105,HCE,Kinh tế
+Kinh tế Đầu tư,7310104,HCE,Kinh tế
+
+Công nghệ Thông tin,7480201,DTU,CNTT
+Kỹ thuật Xây dựng,7580201,DTU,Kỹ thuật
+Kiến trúc,7580101,DTU,Nghệ thuật
+Kế toán,7340301,DTU,Kinh tế
+Quản trị Kinh doanh,7340101,DTU,Kinh tế
+Du lịch,7810103,DTU,Du lịch
+Công nghệ Sinh học,7420201,DTU,Khoa học
+Dược học,7720201,DTU,Y dược
+Điều dưỡng,7720301,DTU,Y dược
+Ngôn ngữ Anh,7220201,DTU,Ngôn ngữ
+
+Công nghệ Kỹ thuật Ô tô,7520103,DAU,Kỹ thuật
+Công nghệ Thông tin,7480201,DAU,CNTT
+Quản trị Kinh doanh,7340101,DAU,Kinh tế
+Kế toán,7340301,DAU,Kinh tế
+Marketing,7340115,DAU,Kinh tế
+Tài chính - Ngân hàng,7340201,DAU,Kinh tế
+Luật Kinh tế,7380107,DAU,Luật
+Kỹ thuật Điện,7520201,DAU,Kỹ thuật
+Kỹ thuật Xây dựng,7580201,DAU,Kỹ thuật
+Ngôn ngữ Anh,7220201,DAU,Ngôn ngữ
+
+Y khoa,7720101,PCTU,Y dược
+Điều dưỡng,7720301,PCTU,Y dược
+Kỹ thuật Xét nghiệm Y học,7720601,PCTU,Y dược
+Dược học,7720201,PCTU,Y dược
+Răng Hàm Mặt,7720501,PCTU,Y dược
+Vật lý trị liệu,7720302,PCTU,Y dược
+Hộ sinh,7720401,PCTU,Y dược
+Dinh dưỡng,7720402,PCTU,Y dược
+Y tế công cộng,7720701,PCTU,Y dược
+Quản lý Y tế,7720801,PCTU,Y dược
+
+Công nghệ Thông tin,7480201,QNU,CNTT
+Sư phạm Toán học,7140209,QNU,Giáo dục
+Sư phạm Hóa học,7140212,QNU,Giáo dục
+Sư phạm Vật lý,7140211,QNU,Giáo dục
+Sư phạm Ngữ văn,7140217,QNU,Giáo dục
+Sư phạm Lịch sử,7140218,QNU,Giáo dục
+Ngôn ngữ Anh,7220201,QNU,Ngôn ngữ
+Quản trị Kinh doanh,7340101,QNU,Kinh tế
+Kế toán,7340301,QNU,Kinh tế
+Tài chính - Ngân hàng,7340201,QNU,Kinh tế
+
+Công nghệ Thực phẩm,7540101,NTU,Công nghệ
+Công nghệ Kỹ thuật Ô tô,7520103,NTU,Kỹ thuật
+Kỹ thuật Xây dựng,7580201,NTU,Kỹ thuật
+Nuôi trồng Thủy sản,7620301,NTU,Nông nghiệp
+Công nghệ Sinh học,7420201,NTU,Khoa học
+Kinh tế,7310101,NTU,Kinh tế
+Quản trị Kinh doanh,7340101,NTU,Kinh tế
+Kế toán,7340301,NTU,Kinh tế
+Tài chính - Ngân hàng,7340201,NTU,Kinh tế
+Du lịch và Lữ hành,7810103,NTU,Du lịch
+
+Công nghệ Thông tin,7480201,TNU,CNTT
+Nông học,7620109,TNU,Nông nghiệp
+Thú y,7640101,TNU,Y dược
+Lâm học,7620201,TNU,Nông nghiệp
+Công nghệ Sinh học,7420201,TNU,Khoa học
+Kế toán,7340301,TNU,Kinh tế
+Quản trị Kinh doanh,7340101,TNU,Kinh tế
+Tài chính - Ngân hàng,7340201,TNU,Kinh tế
+Công nghệ Thực phẩm,7540101,TNU,Công nghệ
+Khoa học Môi trường,7440301,TNU,Khoa học

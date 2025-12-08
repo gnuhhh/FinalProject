@@ -446,23 +446,23 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for e in expert %}
+                            {% for expert in experts %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>
-                                    {% if e.avatar %}
-                                    <img src="{{ e.avatar.url }}" alt="" class="news-image">
+                                    {% if expert.avatar %}
+                                    <img src="{{ expert.avatar.url }}" alt="" class="news-image">
                                     {% else %}
                                     <img src="{% static 'images/no-image.jpg' %}" alt="No image" class="news-image">
                                     {% endif %}
                                 </td>
-                                <td>{{ e.first_name }}</td>
-                                <td>{{ e.last_name }}</td>
-                                <td>{{ e.birthdate|date:"d/m/Y" }}</td>
-                                <td>{{ e.description }}</td>
+                                <td>{{ expert.first_name }}</td>
+                                <td>{{ expert.last_name }}</td>
+                                <td>{{ expert.birthdate|date:"d/m/Y" }}</td>
+                                <td>{{ expert.description }}</td>
                                 <td>
-                                    <a href="{% url 'expert_update' e.id %}" class="btn btn-sm update" style="border-color: #0072bc; color: #0072bc;">Sửa</a>
-                                    <a href="{% url 'expert_delete' e.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa chuyên gia này?')">Xóa</a>
+                                    <a href="{% url 'expert_update' expert.id %}" class="btn btn-sm update" style="border-color: #0072bc; color: #0072bc;">Sửa</a>
+                                    <a href="{% url 'expert_delete' expert.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa chuyên gia này?')">Xóa</a>
                                 </td>
                             </tr>
                             {% empty %}
@@ -474,13 +474,7 @@
                     </table>
                 </div>
                 
-                <div class="pagination">
-                    <div class="page-item"><i class="bi bi-chevron-left"></i></div>
-                    <div class="page-item active">1</div>
-                    <div class="page-item">2</div>
-                    <div class="page-item">3</div>
-                    <div class="page-item"><i class="bi bi-chevron-right"></i></div>
-                </div>
+                {% include 'admin/components/paginator.html' with page_obj=experts%}
             </div>
         </div>
     </div>

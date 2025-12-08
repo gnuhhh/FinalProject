@@ -1,327 +1,452 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ title }}</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<style>
+    .result-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .result-header {
+        text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+    }
+    
+    .result-header h1 {
+        font-size: 2.8rem;
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+    
+    .result-header p {
+        font-size: 1.2rem;
+        color: #7f8c8d;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+    
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #f8f9fa;
+        color: #495057;
+        text-decoration: none;
+        padding: 12px 25px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        margin-bottom: 30px;
+        border: 1px solid #e9ecef;
+    }
+    
+    .back-btn:hover {
+        background: #e9ecef;
+        color: #2c3e50;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        text-decoration: none;
+    }
+    
+    .comparison-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-top: 20px;
+    }
+    
+    .university-card {
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        padding: 30px;
+        background: white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .university-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+    
+    .university-header {
+        text-align: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f8f9fa;
+    }
+    
+    .university-header h3 {
+        color: #2c3e50;
+        font-size: 1.6em;
+        margin-bottom: 5px;
+    }
+    
+    .university-header .code {
+        color: #6c757d;
+        font-size: 1.1em;
+    }
+    
+    .comparison-item {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #f8f9fa;
+    }
+    
+    .comparison-item:last-child {
+        border-bottom: none;
+    }
+    
+    .comparison-item strong {
+        color: #2c3e50;
+        display: block;
+        margin-bottom: 8px;
+        font-size: 1.1em;
+    }
+    
+    .majors-section {
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 2px solid #f8f9fa;
+    }
+    
+    .majors-section h4 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-size: 1.2em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .major-item {
+        background: #f8f9fa;
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.2s ease;
+    }
+    
+    .major-item:hover {
+        background: #e9ecef;
+        transform: translateX(5px);
+    }
+    
+    .major-name {
+        font-weight: 500;
+        flex: 1;
+    }
+    
+    .major-score {
+        background: #6c757d;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        font-weight: bold;
+        min-width: 60px;
+        text-align: center;
+    }
+    
+    .website-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #6c757d;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        margin-top: 15px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+    
+    .website-link:hover {
+        background: #495057;
+        color: white;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .stats-highlight {
+        display: flex;
+        justify-content: space-around;
+        margin: 15px 0;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+    
+    .stat-item {
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 1.4em;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+    
+    .stat-label {
+        font-size: 0.9em;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+    
+    .employment-rate {
+        color: #28a745 !important;
+    }
+    
+    .avg-score {
+        color: #dc3545 !important;
+    }
+    
+    .comparison-summary {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-top: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border: 1px solid #e9ecef;
+    }
+    
+    .summary-header {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-size: 1.4rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .summary-content {
+        color: #495057;
+        line-height: 1.6;
+    }
+    
+    .advantage-list {
+        margin-top: 15px;
+        padding-left: 20px;
+    }
+    
+    .advantage-list li {
+        margin-bottom: 8px;
+        color: #495057;
+    }
+    
+    @media (max-width: 968px) {
+        .comparison-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
         }
         
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+        .stats-highlight {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .result-header h1 {
+            font-size: 2.2rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .university-card {
             padding: 20px;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #2c3e50, #34495e);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-        
-        .header h1 {
-            font-size: 2.2em;
-            margin-bottom: 10px;
-        }
-        
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-        
-        .content {
-            padding: 40px;
-        }
-        
-        .home-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-decoration: none;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            margin-bottom: 25px;
-        }
-        
-        .home-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-            color: white;
-            text-decoration: none;
-        }
-        
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-top: 20px;
-        }
-        
-        .university-card {
-            border: 2px solid #e9ecef;
-            border-radius: 15px;
-            padding: 30px;
-            background: white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .university-header {
-            text-align: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f8f9fa;
-        }
-        
-        .university-header h3 {
-            color: #2c3e50;
-            font-size: 1.6em;
-            margin-bottom: 5px;
-        }
-        
-        .university-header .code {
-            color: #6c757d;
-            font-size: 1.1em;
-        }
-        
-        .comparison-item {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #f8f9fa;
-        }
-        
-        .comparison-item:last-child {
-            border-bottom: none;
-        }
-        
-        .comparison-item strong {
-            color: #2c3e50;
-            display: block;
-            margin-bottom: 8px;
-            font-size: 1.1em;
-        }
-        
-        .majors-section {
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 2px solid #f8f9fa;
-        }
-        
-        .majors-section h4 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.2em;
-        }
-        
         .major-item {
-            background: #f8f9fa;
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .major-name {
-            font-weight: 500;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
         }
         
         .major-score {
-            background: #007bff;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 15px;
-            font-size: 0.9em;
-            font-weight: bold;
+            align-self: flex-end;
         }
-        
-        .website-link {
-            display: inline-block;
-            background: #007bff;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 5px;
-            text-decoration: none;
-            margin-top: 10px;
-        }
-        
-        .website-link:hover {
-            background: #0056b3;
-            color: white;
-            text-decoration: none;
-        }
-        
-        @media (max-width: 768px) {
-            .comparison-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
+    }
+</style>
+
+<div class="result-container">
+    <div class="result-header">
+        <h1>📊 Kết Quả So Sánh</h1>
+        <p>Chi tiết so sánh giữa hai trường đại học</p>
+    </div>
+
+    <a href="{% url 'daihoc_compare:compare_universities' %}" class="back-btn">
+        <span style="font-size: 18px;">←</span>
+        So sánh trường khác
+    </a>
+
+    <div class="comparison-grid">
+        <!-- Trường 1 -->
+        <div class="university-card">
+            <div class="university-header">
+                <h3>{{ uni1.name }}</h3>
+                <div class="code">{{ uni1.code }}</div>
+            </div>
             
-            .content {
-                padding: 20px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>{{ title }}</h1>
-            <p>Kết quả so sánh chi tiết giữa hai trường</p>
-        </div>
-
-        <div class="content">
-            <a href="{% url 'daihoc_compare:compare_universities' %}" class="home-btn">
-                <span style="font-size: 18px;">←</span>
-                So sánh trường khác
-            </a>
-
-            <div class="comparison-grid">
-                <!-- Trường 1 -->
-                <div class="university-card">
-                    <div class="university-header">
-                        <h3>{{ uni1.name }}</h3>
-                        <div class="code">{{ uni1.code }}</div>
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <strong>📍 Địa điểm:</strong>
-                        {{ uni1.location }}
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <strong>🎯 Loại hình:</strong>
-                        {{ uni1.type }}
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <strong>💰 Học phí:</strong>
-                        {{ uni1.tuition }}
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <strong>🏫 Cơ sở vật chất:</strong>
-                        {{ uni1.facilities }}
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <strong>🌍 Các cơ sở:</strong>
-                        {{ uni1.campuses }}
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <strong>📈 Tỉ lệ có việc làm:</strong>
-                        <span style="color: #28a745; font-weight: bold;">{{ uni1.employment_rate }}%</span>
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <strong>🎓 Học bổng:</strong>
-                        {{ uni1.scholarships }}
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <strong>📊 Điểm trung bình đậu:</strong>
-                        <span style="color: #dc3545; font-weight: bold;">{{ uni1.avg_score }} điểm</span>
-                    </div>
-
-                    <div class="majors-section">
-                        <h4>🎯 Các ngành nổi bật:</h4>
-                        {% for major in uni1_majors %}
-                        <div class="major-item">
-                            <span class="major-name">{{ major.name }}</span>
-                            <span class="major-score">{{ major.benchmark_2024 }}</span>
-                        </div>
-                        {% endfor %}
-                    </div>
-
-                    <a href="{{ uni1.website }}" class="website-link" target="_blank">
-                        🌐 Website chính thức
-                    </a>
+            <div class="stats-highlight">
+                <div class="stat-item">
+                    <div class="stat-value employment-rate">{{ uni1.employment_rate }}%</div>
+                    <div class="stat-label">Việc làm</div>
                 </div>
-
-                <!-- Trường 2 -->
-                <div class="university-card">
-                    <div class="university-header">
-                        <h3>{{ uni2.name }}</h3>
-                        <div class="code">{{ uni2.code }}</div>
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <strong>📍 Địa điểm:</strong>
-                        {{ uni2.location }}
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <strong>🎯 Loại hình:</strong>
-                        {{ uni2.type }}
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <strong>💰 Học phí:</strong>
-                        {{ uni2.tuition }}
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <strong>🏫 Cơ sở vật chất:</strong>
-                        {{ uni2.facilities }}
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <strong>🌍 Các cơ sở:</strong>
-                        {{ uni2.campuses }}
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <strong>📈 Tỉ lệ có việc làm:</strong>
-                        <span style="color: #28a745; font-weight: bold;">{{ uni2.employment_rate }}%</span>
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <strong>🎓 Học bổng:</strong>
-                        {{ uni2.scholarships }}
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <strong>📊 Điểm trung bình đậu:</strong>
-                        <span style="color: #dc3545; font-weight: bold;">{{ uni2.avg_score }} điểm</span>
-                    </div>
-
-                    <div class="majors-section">
-                        <h4>🎯 Các ngành nổi bật:</h4>
-                        {% for major in uni2_majors %}
-                        <div class="major-item">
-                            <span class="major-name">{{ major.name }}</span>
-                            <span class="major-score">{{ major.benchmark_2024 }}</span>
-                        </div>
-                        {% endfor %}
-                    </div>
-
-                    <a href="{{ uni2.website }}" class="website-link" target="_blank">
-                        🌐 Website chính thức
-                    </a>
+                <div class="stat-item">
+                    <div class="stat-value avg-score">{{ uni1.avg_score }}</div>
+                    <div class="stat-label">Điểm TB</div>
                 </div>
             </div>
+            
+            <div class="comparison-item">
+                <strong>📍 Địa điểm:</strong>
+                {{ uni1.location }}
+            </div>
+            
+            <div class="comparison-item">
+                <strong>🎯 Loại hình:</strong>
+                {{ uni1.type }}
+            </div>
+            
+            <div class="comparison-item">
+                <strong>💰 Học phí:</strong>
+                {{ uni1.tuition }}
+            </div>
+            
+            <div class="comparison-item">
+                <strong>🏫 Cơ sở vật chất:</strong>
+                {{ uni1.facilities }}
+            </div>
+            
+            <div class="comparison-item">
+                <strong>🌍 Các cơ sở:</strong>
+                {{ uni1.campuses }}
+            </div>
+            
+            <div class="comparison-item">
+                <strong>🎓 Học bổng:</strong>
+                {{ uni1.scholarships }}
+            </div>
+
+            <div class="majors-section">
+                <h4>🎯 Các ngành nổi bật:</h4>
+                {% for major in uni1_majors %}
+                <div class="major-item">
+                    <span class="major-name">{{ major.name }}</span>
+                    <span class="major-score">{{ major.benchmark_2024 }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <a href="{{ uni1.website }}" class="website-link" target="_blank">
+                <span>🌐</span> Website chính thức
+            </a>
+        </div>
+
+        <!-- Trường 2 -->
+        <div class="university-card">
+            <div class="university-header">
+                <h3>{{ uni2.name }}</h3>
+                <div class="code">{{ uni2.code }}</div>
+            </div>
+            
+            <div class="stats-highlight">
+                <div class="stat-item">
+                    <div class="stat-value employment-rate">{{ uni2.employment_rate }}%</div>
+                    <div class="stat-label">Việc làm</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value avg-score">{{ uni2.avg_score }}</div>
+                    <div class="stat-label">Điểm TB</div>
+                </div>
+            </div>
+            
+            <div class="comparison-item">
+                <strong>📍 Địa điểm:</strong>
+                {{ uni2.location }}
+            </div>
+            
+            <div class="comparison-item">
+                <strong>🎯 Loại hình:</strong>
+                {{ uni2.type }}
+            </div>
+            
+            <div class="comparison-item">
+                <strong>💰 Học phí:</strong>
+                {{ uni2.tuition }}
+            </div>
+            
+            <div class="comparison-item">
+                <strong>🏫 Cơ sở vật chất:</strong>
+                {{ uni2.facilities }}
+            </div>
+            
+            <div class="comparison-item">
+                <strong>🌍 Các cơ sở:</strong>
+                {{ uni2.campuses }}
+            </div>
+            
+            <div class="comparison-item">
+                <strong>🎓 Học bổng:</strong>
+                {{ uni2.scholarships }}
+            </div>
+
+            <div class="majors-section">
+                <h4>🎯 Các ngành nổi bật:</h4>
+                {% for major in uni2_majors %}
+                <div class="major-item">
+                    <span class="major-name">{{ major.name }}</span>
+                    <span class="major-score">{{ major.benchmark_2024 }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <a href="{{ uni2.website }}" class="website-link" target="_blank">
+                <span>🌐</span> Website chính thức
+            </a>
         </div>
     </div>
-</body>
-</html>
+
+    <div class="comparison-summary">
+        <h3 class="summary-header">📈 Tổng quan so sánh</h3>
+        <div class="summary-content">
+            <p>Dựa trên các tiêu chí so sánh, đây là một số điểm nổi bật:</p>
+            <ul class="advantage-list">
+                <li><strong>Tỉ lệ việc làm:</strong> 
+                    {% if uni1.employment_rate > uni2.employment_rate %}
+                    {{ uni1.name }} có tỉ lệ việc làm cao hơn {{ uni2.name }}
+                    {% elif uni2.employment_rate > uni1.employment_rate %}
+                    {{ uni2.name }} có tỉ lệ việc làm cao hơn {{ uni1.name }}
+                    {% else %}
+                    Cả hai trường có tỉ lệ việc làm tương đương
+                    {% endif %}
+                </li>
+                <li><strong>Điểm trung bình:</strong> 
+                    {% if uni1.avg_score > uni2.avg_score %}
+                    {{ uni1.name }} có điểm chuẩn cao hơn {{ uni2.name }}
+                    {% elif uni2.avg_score > uni1.avg_score %}
+                    {{ uni2.name }} có điểm chuẩn cao hơn {{ uni1.name }}
+                    {% else %}
+                    Điểm chuẩn hai trường tương đương
+                    {% endif %}
+                </li>
+                <li><strong>Số ngành nổi bật:</strong> 
+                    {{ uni1.name }} có {{ uni1_majors|length }} ngành, 
+                    {{ uni2.name }} có {{ uni2_majors|length }} ngành
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

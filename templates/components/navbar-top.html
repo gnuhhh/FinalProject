@@ -9,7 +9,7 @@
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="{% url 'index' %}" class="{% if request.path == '/'%}active{% endif %}">Trang chủ<br></a></li>
-          <li><a href="{% url 'news_homepage' %}" class="{% if 'news' in request.path %}active{% endif %}">Tin nổi bật<br></a></li>
+          <li><a href="{% url 'news_user' %}" class="{% if 'news' in request.path %}active{% endif %}">Tin nổi bật<br></a></li>
           <li class="dropdown"><a href="{% url 'school' %}" class="{% if request.path == '/school/' or request.path == '/school/hanoi/' or request.path == '/school/tphcm/'%}active{% endif %}"><span>Tuyển sinh</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
             <ul>
               <li><a href="{% url 'school_hanoi' %}">Hà Nội</a></li>
@@ -53,6 +53,15 @@
                 <li><a href="{% url 'admission_predictor:predict_admission' %}" class="nav-link">Dự đoán đại học</a></li>
                 <li><a href="{% url 'daihoc_compare:compare_universities' %}" class="nav-link">So sánh trường đại học</a></li>
                 <li><a href="{% url 'question' %}" class="{% if request.path == '/question'%}active{% endif %}">Câu hỏi định hướng</a></li>
+                <li class="dropdown">
+                    <a href="{% url 'prediction:prediction_home' %}">
+                        <span>Dự Đoán Chỉ Tiêu</span> <i class="bi bi-chevron-right toggle-dropdown"></i>
+                    </a>
+                    <ul>
+                        <li><a href="{% url 'prediction:prediction_home' %}">Dự đoán chỉ tiêu 2025</a></li>
+                        <li><a href="{% url 'prediction:statistics_dashboard' %}">Thống kê toàn quốc</a></li>
+                    </ul>
+                </li>
             </li>
             </ul>
         </li>
@@ -60,6 +69,7 @@
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
+      {% include 'components/voice-search.html' %}
       {% if user.is_authenticated %}
       <div class="dropdown text-end">
         <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">

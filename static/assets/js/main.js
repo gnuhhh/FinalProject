@@ -6,7 +6,7 @@
 * License: https://bootstrapmade.com/license/
 */
 
-(function() {
+(function () {
   "use strict";
 
   /**
@@ -50,7 +50,7 @@
    * Toggle mobile nav dropdowns
    */
   document.querySelectorAll('.navmenu .toggle-dropdown').forEach(navmenu => {
-    navmenu.addEventListener('click', function(e) {
+    navmenu.addEventListener('click', function (e) {
       e.preventDefault();
       this.parentNode.classList.toggle('active');
       this.parentNode.nextElementSibling.classList.toggle('dropdown-active');
@@ -97,7 +97,7 @@
    * Init swiper sliders
    */
   function initSwiper() {
-    document.querySelectorAll(".init-swiper").forEach(function(swiperElement) {
+    document.querySelectorAll(".init-swiper").forEach(function (swiperElement) {
       let config = JSON.parse(
         swiperElement.querySelector(".swiper-config").innerHTML.trim()
       );
@@ -122,7 +122,7 @@
     if (parts.length === 2) return parts.pop().split(';').shift();
   }
 
-  window.addEventListener('load', function() {
+  window.addEventListener('load', function () {
     const chatbotToggle = document.getElementById('chatbot-toggle');
     const chatbotWindow = document.getElementById('chatbot-window');
     const chatbotClose = document.getElementById('chatbot-close');
@@ -170,7 +170,7 @@
     chatbotToggle.addEventListener('click', () => toggleChatbot(true));
     chatbotClose && chatbotClose.addEventListener('click', () => toggleChatbot(false));
 
-    chatbotForm && chatbotForm.addEventListener('submit', async function(e) {
+    chatbotForm && chatbotForm.addEventListener('submit', async function (e) {
       e.preventDefault();
       const message = chatbotInput.value.trim();
       if (!message) return;

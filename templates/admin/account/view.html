@@ -446,7 +446,7 @@
                 <div class="table-header">
                     <div class="table-title">Danh sách tài khoản</div>
                     <div class="table-actions">
-                        <a href="#" class="table-btn">
+                        <a href="{% url 'accounts_create' %}" class="table-btn">
                             <i class="bi bi-plus"></i>
                             Thêm tài khoản
                         </a>
@@ -472,28 +472,23 @@
                                 <td>{{ user.username }}</td>
                                 <td>{{ user.password }}</td>
                                 <td>{{ user.email }}</td>
-                                <td>{{ user.groups.all.0.name }}</td>
+                                <td>{% if user.group_name is None %}Thành viên{% else %}{{ user.group_name }}{% endif %}</td>
                                 <td>
                                     <a href="#" class="btn btn-sm update">Sửa</a>
-                                    <a href="{% url 'accounts_delete' user.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?')">Hủy</a>
+                                    <a href="{% url 'accounts_delete' user.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?')">Xóa</a>
                                 </td>
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="8" class="text-center">Không có tin tức nào</td>
+                                <td colspan="8" class="text-center">Không có tài khoản nào</td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
                 
-                <div class="pagination">
-                    <div class="page-item"><i class="bi bi-chevron-left"></i></div>
-                    <div class="page-item active">1</div>
-                    <div class="page-item">2</div>
-                    <div class="page-item">3</div>
-                    <div class="page-item"><i class="bi bi-chevron-right"></i></div>
-                </div>
+                {% include 'admin/components/paginator.html' with page_obj=users %}
+                {% include 'components/notification.html' %}
             </div>
         </div>
     </div>

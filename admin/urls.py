@@ -26,6 +26,7 @@ urlpatterns = [
     path('schedule_assignment/', views.schedule_assignment, name='schedule_assignment'),
     path('schedule_customer', views.schedule_customer, name='schedule_customer'),
     path('schedule_customer_complete/<str:id>', views.schedule_customer_complete, name='schedule_customer_complete'),
+    path('schedule_customer_update/<str:id>', views.schedule_customer_update, name='schedule_customer_update'),
     path('schedule', views.schedule, name='schedule'),
     path('schedule_cancel_approve/<str:id>', views.schedule_cancel_approve, name='schedule_cancel_approve'),
     #Quản lý chuyên gia

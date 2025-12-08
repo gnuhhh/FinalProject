@@ -1,0 +1,618 @@
+<!-- templates/components/voice-search.html -->
+<!-- VOICE SEARCH COMPONENT - PHIÊN BẢN HỆ THỐNG MỚI -->
+
+<!-- ==================== VOICE SEARCH COMPACT ==================== -->
+<div class="voice-search-compact me-3">
+    <div class="dropdown">
+        <button class="btn btn-outline-primary btn-sm dropdown-toggle d-flex align-items-center" 
+                type="button" id="voiceSearchDropdown" data-bs-toggle="dropdown" 
+                aria-expanded="false" title="Tìm kiếm bằng giọng nói hoặc text">
+            <i class="bi bi-mic me-1"></i>
+            <span class="d-none d-md-inline">Tìm kiếm</span>
+        </button>
+        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 350px;">
+            <!-- Voice Search Widget Compact -->
+            <div class="voice-search-widget-compact">
+                <h6 class="mb-3 text-center">
+                    <i class="bi bi-search me-2 text-primary"></i>
+                    Tìm Kiếm Thông Minh
+                </h6>
+                
+                <!-- Search Input - CẢ VOICE VÀ TEXT -->
+                <div class="mb-3">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" id="voiceSearchInputHeader" 
+                               placeholder="Nhấn mic và nói, hoặc gõ tên trường...">
+                        <button class="btn btn-outline-primary" type="button" id="voiceSearchBtnHeader" title="Tìm kiếm bằng giọng nói">
+                            <i class="bi bi-mic"></i>
+                        </button>
+                        <button class="btn btn-success" type="button" id="textSearchBtnHeader" title="Tìm kiếm bằng text" style="display: none;">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                    <div class="form-text">
+                        <small>Ví dụ: "trang chủ", "đăng nhập", "tư vấn", "bách khoa hà nội"</small>
+                    </div>
+                </div>
+
+                <!-- Voice Status -->
+                <div class="text-center mb-2">
+                    <div id="voiceStatusHeader" class="text-muted small">
+                        <i class="bi bi-mic"></i> Sẵn sàng nhận giọng nói
+                    </div>
+                    <div class="voice-visualizer mt-2" id="voiceVisualizerHeader" style="display: none;">
+                        <div class="voice-bar"></div>
+                        <div class="voice-bar"></div>
+                        <div class="voice-bar"></div>
+                        <div class="voice-bar"></div>
+                        <div class="voice-bar"></div>
+                    </div>
+                </div>
+
+                <!-- Quick Commands -->
+                <div class="mt-3">
+                    <h6 class="text-muted mb-2 small">Lệnh nhanh:</h6>
+                    <div class="d-flex flex-wrap gap-1 justify-content-center">
+                        <button class="btn btn-sm btn-outline-success quick-command-header" 
+                                data-command="trang chủ" title="Về trang chủ">
+                            🏠 Trang chủ
+                        </button>
+                        <button class="btn btn-sm btn-outline-success quick-command-header" 
+                                data-command="đăng nhập" title="Đăng nhập">
+                            🔐 Đăng nhập
+                        </button>
+                        <button class="btn btn-sm btn-outline-success quick-command-header" 
+                                data-command="tư vấn" title="Tư vấn">
+                            💬 Tư vấn
+                        </button>
+                    </div>
+                    
+                    <h6 class="text-muted mb-2 small mt-2">Trường học:</h6>
+                    <div class="d-flex flex-wrap gap-1 justify-content-center">
+                        <button class="btn btn-sm btn-outline-info quick-command-header" 
+                                data-command="bách khoa hà nội" title="Đại học Bách Khoa Hà Nội">
+                            🎓 Bách Khoa
+                        </button>
+                        <button class="btn btn-sm btn-outline-info quick-command-header" 
+                                data-command="công nghiệp" title="Đại học Công nghiệp">
+                            🏭 Công nghiệp
+                        </button>
+                        <button class="btn btn-sm btn-outline-info quick-command-header" 
+                                data-command="y hà nội" title="Đại học Y Hà Nội">
+                            ⚕️ Y Hà Nội
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Voice Search Styles -->
+<style>
+.voice-search-compact {
+    position: relative;
+}
+
+.voice-visualizer {
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    height: 30px;
+    gap: 2px;
+}
+
+.voice-bar {
+    width: 3px;
+    background: #28a745;
+    border-radius: 1px;
+    animation: voicePulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes voicePulse {
+    0% { transform: scaleY(0.3); opacity: 0.7; }
+    100% { transform: scaleY(1); opacity: 1; }
+}
+
+.voice-bar:nth-child(1) { animation-delay: 0.1s; height: 10px; }
+.voice-bar:nth-child(2) { animation-delay: 0.2s; height: 15px; }
+.voice-bar:nth-child(3) { animation-delay: 0.3s; height: 20px; }
+.voice-bar:nth-child(4) { animation-delay: 0.4s; height: 15px; }
+.voice-bar:nth-child(5) { animation-delay: 0.5s; height: 10px; }
+
+.listening .voice-status {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.quick-command-header {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+}
+
+/* Dropdown menu styling */
+.dropdown-menu {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure voice search dropdown stays on top */
+.voice-search-compact .dropdown-menu {
+    z-index: 1060;
+}
+
+/* Text search button animation */
+#textSearchBtnHeader {
+    transition: all 0.3s ease;
+}
+
+/* Alert notifications */
+.voice-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 300px;
+}
+</style>
+
+<!-- Voice Search Script - HỆ THỐNG MỚI -->
+<script>
+class VoiceSearchHeader {
+    constructor() {
+        this.isListening = false;
+        this.recognition = null;
+        console.log('🎯 VoiceSearchHeader - HỆ THỐNG VOICE SEARCH THÔNG MINH MỚI');
+        this.initializeElements();
+        this.setupEventListeners();
+    }
+
+    initializeElements() {
+        this.voiceBtn = document.getElementById('voiceSearchBtnHeader');
+        this.textSearchBtn = document.getElementById('textSearchBtnHeader');
+        this.voiceInput = document.getElementById('voiceSearchInputHeader');
+        this.voiceStatus = document.getElementById('voiceStatusHeader');
+        this.voiceVisualizer = document.getElementById('voiceVisualizerHeader');
+    }
+
+    setupEventListeners() {
+        // Voice button
+        this.voiceBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.startVoiceSearch();
+        });
+        
+        // Text search button
+        this.textSearchBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.performTextSearch();
+        });
+        
+        // Input events
+        this.voiceInput.addEventListener('input', () => {
+            this.toggleTextSearchButton();
+        });
+        
+        this.voiceInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.performTextSearch();
+            }
+        });
+
+        // Quick commands
+        document.querySelectorAll('.quick-command-header').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const command = e.target.dataset.command;
+                this.processQuickCommand(command);
+            });
+        });
+
+        // Prevent dropdown from closing when interacting with voice search
+        const dropdown = document.getElementById('voiceSearchDropdown');
+        const dropdownMenu = dropdown.nextElementSibling;
+        
+        dropdownMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    }
+
+    toggleTextSearchButton() {
+        if (this.voiceInput.value.trim().length > 0) {
+            this.textSearchBtn.style.display = 'block';
+            this.voiceBtn.style.display = 'none';
+        } else {
+            this.textSearchBtn.style.display = 'none';
+            this.voiceBtn.style.display = 'block';
+        }
+    }
+
+    async performTextSearch() {
+        const searchText = this.voiceInput.value.trim();
+        
+        if (!searchText) {
+            this.showNotification('Vui lòng nhập tên trường hoặc lệnh để tìm kiếm', 'warning');
+            return;
+        }
+
+        console.log('🔍 Performing text search:', searchText);
+        this.showNotification(`🔍 Đang tìm: ${searchText}`, 'info');
+
+        try {
+            // THỬ SỬ DỤNG HỆ THỐNG VOICE SEARCH THÔNG MINH CHO TEXT
+            const response = await fetch('/Voice/api/voice-search/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken(),
+                },
+                body: JSON.stringify({
+                    query: searchText,
+                    search_type: 'general',
+                    filters: {}
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('🎯 Kết quả xử lý thông minh:', data);
+
+            if (data.status === 'success' && data.redirect) {
+                // CHUYỂN HƯỚNG THÔNG MINH
+                this.showNotification(`📍 ${data.message}`, 'success');
+                
+                // Đóng dropdown
+                const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('voiceSearchDropdown'));
+                if (dropdown) {
+                    dropdown.hide();
+                }
+                
+                setTimeout(() => {
+                    console.log(`🔄 Chuyển hướng đến: ${data.redirect_url}`);
+                    window.location.href = data.redirect_url;
+                }, 1500);
+                
+            } else {
+                // KHÔNG CHUYỂN HƯỚNG, THỰC HIỆN TÌM KIẾM TRƯỜNG HỌC THÔNG THƯỜNG
+                this.performSchoolSearch(searchText);
+            }
+
+        } catch (error) {
+            console.error('❌ Smart search error:', error);
+            // Fallback: tìm kiếm trường học thông thường
+            this.performSchoolSearch(searchText);
+        }
+    }
+
+    async performSchoolSearch(searchText) {
+        try {
+            // Gọi API để tìm trường học từ text
+            const response = await fetch(`/school/api/search/?name=${encodeURIComponent(searchText)}`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('📊 School Search API response:', data);
+
+            if (data.results && data.results.length > 0) {
+                const school = data.results[0];
+                this.showNotification(`🎓 Đang chuyển đến ${school.schoolName}...`, 'success');
+                
+                // Đóng dropdown
+                const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('voiceSearchDropdown'));
+                if (dropdown) {
+                    dropdown.hide();
+                }
+                
+                setTimeout(() => {
+                    window.location.href = `/school/${school.id}/`;
+                }, 1500);
+            } else {
+                this.showNotification('Không tìm thấy trường học phù hợp.', 'warning');
+            }
+
+        } catch (error) {
+            console.error('❌ School search error:', error);
+            this.showNotification('Lỗi tìm kiếm. Vui lòng thử lại.', 'error');
+        }
+    }
+
+    async startVoiceSearch() {
+        try {
+            if (this.isListening) {
+                return;
+            }
+
+            console.log('🎤 Starting SMART voice search với hệ thống mới...');
+            this.isListening = true;
+            this.updateUI(true);
+            this.showNotification('🎤 Đang nghe... Hãy nói lệnh của bạn', 'info');
+
+            // SỬ DỤNG WEB SPEECH API TRỰC TIẾP - HỆ THỐNG MỚI
+            await this.startSpeechRecognition();
+
+        } catch (error) {
+            console.error('❌ Smart voice search error:', error);
+            this.showNotification('Lỗi khởi động voice. Vui lòng thử lại.', 'error');
+            this.stopListening();
+        }
+    }
+
+    startSpeechRecognition() {
+        return new Promise((resolve, reject) => {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                this.showNotification('Trình duyệt không hỗ trợ nhận diện giọng nói', 'error');
+                reject(new Error('Browser not supported'));
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            this.recognition = new SpeechRecognition();
+
+            this.recognition.continuous = false;
+            this.recognition.interimResults = false;
+            this.recognition.lang = 'vi-VN';
+
+            this.recognition.onstart = () => {
+                console.log('🎤 Speech recognition started');
+                this.showNotification('🎤 Đang nghe... Hãy nói lệnh của bạn', 'info');
+            };
+
+            this.recognition.onresult = async (event) => {
+                const transcript = event.results[0][0].transcript;
+                console.log('🎯 Nhận diện được:', transcript);
+                
+                // XỬ LÝ VOICE COMMAND THÔNG MINH VỚI ENDPOINT MỚI
+                await this.processSmartVoiceCommand(transcript);
+                resolve(transcript);
+            };
+
+            this.recognition.onerror = (event) => {
+                console.error('❌ Speech recognition error:', event.error);
+                
+                let errorMessage = 'Lỗi nhận diện giọng nói';
+                if (event.error === 'not-allowed') {
+                    errorMessage = 'Vui lòng cho phép sử dụng microphone';
+                } else if (event.error === 'no-speech') {
+                    errorMessage = 'Không phát hiện giọng nói';
+                }
+                
+                this.showNotification(errorMessage, 'error');
+                reject(new Error(event.error));
+                this.stopListening();
+            };
+
+            this.recognition.onend = () => {
+                console.log('⏹️ Speech recognition ended');
+                this.stopListening();
+            };
+
+            this.recognition.start();
+        });
+    }
+
+    async processSmartVoiceCommand(transcript) {
+        try {
+            console.log(`🔄 Xử lý voice command thông minh: "${transcript}"`);
+            
+            this.showNotification(`🔍 Đang xử lý: "${transcript}"`, 'info');
+            this.voiceInput.value = transcript;
+
+            // GỬI ĐẾN ENDPOINT MỚI
+            const response = await fetch('/Voice/api/voice-search/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken(),
+                },
+                body: JSON.stringify({
+                    query: transcript,
+                    search_type: 'general',
+                    filters: {}
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('🎯 Kết quả xử lý thông minh:', data);
+
+            if (data.status === 'success' && data.redirect) {
+                // CHUYỂN HƯỚNG THÔNG MINH
+                this.showNotification(`📍 ${data.message}`, 'success');
+                
+                // Đóng dropdown
+                const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('voiceSearchDropdown'));
+                if (dropdown) {
+                    dropdown.hide();
+                }
+                
+                this.stopListening();
+                
+                setTimeout(() => {
+                    console.log(`🔄 Chuyển hướng đến: ${data.redirect_url}`);
+                    window.location.href = data.redirect_url;
+                }, 1500);
+                
+            } else {
+                // KHÔNG CHUYỂN HƯỚNG, THỰC HIỆN TÌM KIẾM THÔNG THƯỜNG
+                this.showNotification(`🔍 Tìm kiếm: "${transcript}"`, 'info');
+                this.performTextSearch();
+                this.stopListening();
+            }
+
+        } catch (error) {
+            console.error('❌ Lỗi xử lý voice command:', error);
+            this.showNotification('Lỗi xử lý lệnh thoại', 'error');
+            this.stopListening();
+        }
+    }
+
+    async processQuickCommand(command) {
+        console.log('⚡ Quick command:', command);
+        
+        this.voiceInput.value = command;
+        this.showNotification(`🔍 Đang xử lý: ${command}`, 'info');
+
+        // Sử dụng hệ thống thông minh cho quick commands
+        const response = await fetch('/Voice/api/voice-search/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': this.getCSRFToken(),
+            },
+            body: JSON.stringify({
+                query: command,
+                search_type: 'general',
+                filters: {}
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            if (data.status === 'success' && data.redirect) {
+                this.showNotification(`📍 ${data.message}`, 'success');
+                
+                const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('voiceSearchDropdown'));
+                if (dropdown) dropdown.hide();
+                
+                setTimeout(() => {
+                    window.location.href = data.redirect_url;
+                }, 1500);
+                return;
+            }
+        }
+
+        // Fallback: tìm kiếm thông thường
+        await this.performTextSearch();
+    }
+
+    stopListening() {
+        try {
+            console.log('⏹️ Dừng voice search...');
+            
+            this.isListening = false;
+            this.updateUI(false);
+
+            // Dừng recognition nếu đang chạy
+            if (this.recognition) {
+                this.recognition.stop();
+            }
+
+        } catch (error) {
+            console.error('Lỗi trong stopListening:', error);
+        }
+    }
+
+    updateUI(listening) {
+        if (listening) {
+            this.voiceBtn.innerHTML = '<i class="bi bi-mic-fill"></i>';
+            this.voiceBtn.classList.remove('btn-outline-primary');
+            this.voiceBtn.classList.add('btn-danger');
+            this.voiceStatus.innerHTML = '<i class="bi bi-mic-fill me-2"></i>Đang nghe...';
+            this.voiceStatus.classList.add('listening');
+            if (this.voiceVisualizer) {
+                this.voiceVisualizer.style.display = 'flex';
+            }
+        } else {
+            this.voiceBtn.innerHTML = '<i class="bi bi-mic"></i>';
+            this.voiceBtn.classList.remove('btn-danger');
+            this.voiceBtn.classList.add('btn-outline-primary');
+            this.voiceStatus.innerHTML = '<i class="bi bi-mic me-2"></i>Sẵn sàng nhận giọng nói';
+            this.voiceStatus.classList.remove('listening');
+            if (this.voiceVisualizer) {
+                this.voiceVisualizer.style.display = 'none';
+            }
+        }
+    }
+
+    getCSRFToken() {
+        try {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+            if (csrfToken) {
+                return csrfToken.value;
+            }
+            
+            const cookieValue = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('csrftoken='))
+                ?.split('=')[1];
+            
+            return cookieValue || '';
+        } catch (error) {
+            console.error('❌ Lỗi lấy CSRF token:', error);
+            return '';
+        }
+    }
+
+    showNotification(message, type = 'info') {
+        // Xóa thông báo cũ
+        const oldAlert = document.querySelector('.voice-alert');
+        if (oldAlert) {
+            oldAlert.remove();
+        }
+
+        // Tạo alert notification
+        const alert = document.createElement('div');
+        alert.className = `alert ${this.getAlertClass(type)} alert-dismissible fade show voice-alert`;
+        alert.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+
+        document.body.appendChild(alert);
+
+        setTimeout(() => {
+            if (alert.parentNode) {
+                alert.remove();
+            }
+        }, 4000);
+    }
+
+    getAlertClass(type) {
+        const classes = {
+            'info': 'alert-info',
+            'success': 'alert-success',
+            'error': 'alert-danger',
+            'warning': 'alert-warning'
+        };
+        return classes[type] || 'alert-info';
+    }
+}
+
+// Khởi tạo voice search header khi trang load
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 Initializing VoiceSearchHeader - HỆ THỐNG MỚI...');
+    window.voiceSearchHeader = new VoiceSearchHeader();
+});
+
+// Test functions
+window.testSmartVoiceHeader = function(command = "trang chủ") {
+    console.log('🧪 TEST Smart Voice Header với lệnh:', command);
+    if (window.voiceSearchHeader) {
+        window.voiceSearchHeader.processSmartVoiceCommand(command);
+    } else {
+        console.error('VoiceSearchHeader chưa được khởi tạo');
+    }
+};
+
+window.testVoiceRedirect = function() {
+    console.log('🧪 TEST: Redirecting to school 1');
+    window.location.href = '/school/1/';
+};
+
+console.log('✅ Voice Search Header - HỆ THỐNG MỚI đã sẵn sàng!');
+console.log('🔧 Gõ testSmartVoiceHeader("trang chủ") để test hệ thống mới');
+console.log('🔧 Gõ testVoiceRedirect() để test chuyển hướng');
+</script>

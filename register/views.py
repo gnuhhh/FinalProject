@@ -36,3 +36,35 @@ def register(request):
             return redirect('register')
     else:   
         return render(request, 'register.html')
+    # if request.method == 'POST':
+    #     form = RegisterForm(request.POST)
+        
+    #     if form.is_valid():
+    #         firstname = form.cleaned_data["firstname"]
+    #         lastname = form.cleaned_data["lastname"]
+    #         username = form.cleaned_data["username"]
+    #         email = form.cleaned_data["email"]
+    #         password = form.cleaned_data["password"]
+            
+    #         if User.objects.filter(username=username).exists():
+    #             messages.error(request, 'Tên đăng nhập đã được sử dụng!')
+    #             return redirect('register')
+                
+    #         if User.objects.filter(email=email).exists():
+    #             messages.error(request, 'Email đã được sử dụng!')
+    #             return redirect('register')
+            
+    #         member = Member.objects.create_user(
+    #             username=username,
+    #             email=email,
+    #             password=password,
+    #             first_name=firstname,
+    #             last_name=lastname
+    #         )
+    #         member.save()
+    #         messages.success(request, "Đăng ký tài khoản thành công!")
+    #         return redirect("login")
+    #     else:
+    #         return render(request, 'register.html', {'form': form})
+    # form = RegisterForm()
+    # return render(request, 'register.html', {'form': form})

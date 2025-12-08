@@ -1,0 +1,470 @@
+<!-- prediction/templates/prediction/prediction_result.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Kết quả dự đoán{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Kết quả dự đoán chỉ tiêu 2025</h2>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Thông tin ngành học</h4>
+            <p><strong>Ngành:</strong> {{ major.name }}</p>
+            <p><strong>Mã ngành:</strong> {{ major.code }}</p>
+            <p><strong>Trường:</strong> {{ major.university.name }}</p>
+            <p><strong>Nhóm ngành:</strong> {{ major.major_group.name }}</p>
+        </div>
+        
+        <div class="col-md-6">
+            <h4>Kết quả dự đoán</h4>
+            <div class="alert alert-info">
+                <h5>Năm 2025</h5>
+                <p><strong>Chỉ tiêu tuyển sinh:</strong> 
+                    <span class="badge bg-primary">{{ prediction.predicted_quota }} sinh viên</span>
+                </p>
+                <p><strong>Điểm chuẩn dự kiến:</strong> 
+                    <span class="badge bg-success">{{ prediction.predicted_score }} điểm</span>
+                </p>
+                <p><strong>Độ tin cậy dự đoán:</strong> 
+                    {% if prediction.confidence == 'high' %}
+                    <span class="badge bg-success">Cao</span>
+                    {% elif prediction.confidence == 'medium' %}
+                    <span class="badge bg-warning">Trung bình</span>
+                    {% else %}
+                    <span class="badge bg-danger">Thấp</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phần xu hướng -->
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h6>Xu hướng chỉ tiêu</h6>
+                    {% if prediction.quota_trend == 'increasing' %}
+                    <span class="badge bg-success">📈 Đang tăng</span>
+                    {% elif prediction.quota_trend == 'decreasing' %}
+                    <span class="badge bg-danger">📉 Đang giảm</span>
+                    {% else %}
+                    <span class="badge bg-secondary">➡️ Ổn định</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h6>Xu hướng điểm chuẩn</h6>
+                    {% if prediction.score_trend == 'increasing' %}
+                    <span class="badge bg-danger">📈 Đang tăng</span>
+                    {% elif prediction.score_trend == 'decreasing' %}
+                    <span class="badge bg-success">📉 Đang giảm</span>
+                    {% else %}
+                    <span class="badge bg-secondary">➡️ Ổn định</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biểu đồ cải tiến -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h4>📊 Biểu đồ phân tích xu hướng</h4>
+            
+            <!-- Tab chuyển đổi giữa các loại biểu đồ -->
+            <ul class="nav nav-tabs" id="chartTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="combined-tab" data-bs-toggle="tab" data-bs-target="#combined" type="button" role="tab">
+                        📈 Tổng quan
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="quota-tab" data-bs-toggle="tab" data-bs-target="#quota" type="button" role="tab">
+                        👥 Chỉ tiêu
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="score-tab" data-bs-toggle="tab" data-bs-target="#score" type="button" role="tab">
+                        🎯 Điểm chuẩn
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="comparison-tab" data-bs-toggle="tab" data-bs-target="#comparison" type="button" role="tab">
+                        ⚖️ So sánh
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content mt-3">
+                <!-- Tab 1: Biểu đồ kết hợp -->
+                <div class="tab-pane fade show active" id="combined" role="tabpanel">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>Xu hướng chỉ tiêu và điểm chuẩn</h6>
+                            <canvas id="combinedChart" width="400" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Biểu đồ chỉ tiêu -->
+                <div class="tab-pane fade" id="quota" role="tabpanel">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>Xu hướng chỉ tiêu tuyển sinh</h6>
+                            <canvas id="quotaChart" width="400" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Biểu đồ điểm chuẩn -->
+                <div class="tab-pane fade" id="score" role="tabpanel">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>Xu hướng điểm chuẩn</h6>
+                            <canvas id="scoreChart" width="400" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 4: Biểu đồ so sánh -->
+                <div class="tab-pane fade" id="comparison" role="tabpanel">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>So sánh tỷ lệ chỉ tiêu/điểm chuẩn</h6>
+                            <canvas id="comparisonChart" width="400" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h4>Dữ liệu lịch sử tuyển sinh</h4>
+            {% if criteria %}
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Năm</th>
+                            <th>Chỉ tiêu</th>
+                            <th>Điểm chuẩn</th>
+                            <th>Các khối xét tuyển</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in criteria %}
+                        <tr>
+                            <td><strong>{{ data.year }}</strong></td>
+                            <td>{{ data.quota }}</td>
+                            <td><span class="badge bg-info">{{ data.benchmark_score }}</span></td>
+                            <td><small>{{ data.combination }}</small></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle"></i>
+                Không tìm thấy dữ liệu lịch sử tuyển sinh.
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-6">
+            <h4>Thông tin dự đoán</h4>
+            <div class="card">
+                <div class="card-body">
+                    <h6>Phương pháp dự đoán</h6>
+                    <p><small>
+                        {% if prediction.algorithm == 'polynomial_regression' %}
+                        📊 Sử dụng hồi quy đa thức
+                        {% elif prediction.algorithm == 'linear_regression' %}
+                        📈 Sử dụng hồi quy tuyến tính
+                        {% elif prediction.algorithm == 'weighted_average' %}
+                        ⚖️ Sử dụng trung bình có trọng số
+                        {% else %}
+                        🔍 Phân tích dữ liệu lịch sử
+                        {% endif %}
+                    </small></p>
+
+                    <h6>Đánh giá độ tin cậy</h6>
+                    <p><small>
+                        {% if prediction.confidence == 'high' %}
+                        ✅ Dự đoán có độ tin cậy cao
+                        {% elif prediction.confidence == 'medium' %}
+                        ⚠️ Dự đoán có độ tin cậy trung bình
+                        {% else %}
+                        🔻 Dự đoán có độ tin cậy thấp (cần thêm dữ liệu)
+                        {% endif %}
+                    </small></p>
+
+                    {% if prediction.message %}
+                    <div class="alert alert-warning mt-2">
+                        <small><i class="bi bi-info-circle"></i> {{ prediction.message }}</small>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 text-center">
+        <a href="{% url 'prediction:prediction_home' %}" class="btn btn-primary btn-lg">
+            🔄 Thực hiện dự đoán mới
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Dữ liệu từ Django template
+    const historicalData = [
+        {% for data in criteria %}
+        {
+            year: {{ data.year }},
+            quota: {{ data.quota }},
+            score: {{ data.benchmark_score }}
+        },
+        {% endfor %}
+    ];
+
+    // Thêm dữ liệu dự đoán 2025
+    const predictionData = {
+        year: 2025,
+        quota: {{ prediction.predicted_quota }},
+        score: {{ prediction.predicted_score }},
+        isPrediction: true
+    };
+
+    // Chuẩn bị dữ liệu
+    const years = historicalData.map(data => data.year);
+    const quotas = historicalData.map(data => data.quota);
+    const scores = historicalData.map(data => data.score);
+
+    // Thêm dữ liệu dự đoán
+    const allYears = [...years, 2025];
+    const allQuotas = [...quotas, {{ prediction.predicted_quota }}];
+    const allScores = [...scores, {{ prediction.predicted_score }}];
+
+    // Màu sắc
+    const colors = {
+        quota: {
+            line: 'rgb(54, 162, 235)',
+            area: 'rgba(54, 162, 235, 0.1)',
+            bar: 'rgba(54, 162, 235, 0.7)'
+        },
+        score: {
+            line: 'rgb(75, 192, 192)',
+            area: 'rgba(75, 192, 192, 0.1)',
+            bar: 'rgba(75, 192, 192, 0.7)'
+        },
+        prediction: 'rgb(255, 99, 132)'
+    };
+
+    // 1. Biểu đồ kết hợp (Dual Y-axis)
+    new Chart(document.getElementById('combinedChart'), {
+        type: 'line',
+        data: {
+            labels: allYears,
+            datasets: [
+                {
+                    label: 'Chỉ tiêu tuyển sinh',
+                    data: allQuotas,
+                    borderColor: colors.quota.line,
+                    backgroundColor: colors.quota.area,
+                    yAxisID: 'y',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: allYears.map((year, index) => 
+                        year === 2025 ? colors.prediction : colors.quota.line
+                    ),
+                    pointRadius: allYears.map((year, index) => 
+                        year === 2025 ? 6 : 4
+                    )
+                },
+                {
+                    label: 'Điểm chuẩn',
+                    data: allScores,
+                    borderColor: colors.score.line,
+                    backgroundColor: colors.score.area,
+                    yAxisID: 'y1',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: allYears.map((year, index) => 
+                        year === 2025 ? colors.prediction : colors.score.line
+                    ),
+                    pointRadius: allYears.map((year, index) => 
+                        year === 2025 ? 6 : 4
+                    )
+                }
+            ]
+        },
+        options: getCombinedChartOptions('Xu hướng chỉ tiêu và điểm chuẩn')
+    });
+
+    // 2. Biểu đồ chỉ tiêu (Area chart)
+    new Chart(document.getElementById('quotaChart'), {
+        type: 'line',
+        data: {
+            labels: allYears,
+            datasets: [{
+                label: 'Chỉ tiêu tuyển sinh',
+                data: allQuotas,
+                borderColor: colors.quota.line,
+                backgroundColor: colors.quota.area,
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: allYears.map((year, index) => 
+                    year === 2025 ? colors.prediction : colors.quota.line
+                ),
+                pointRadius: allYears.map((year, index) => 
+                    year === 2025 ? 6 : 4
+                )
+            }]
+        },
+        options: getSingleChartOptions('Chỉ tiêu tuyển sinh', 'sinh viên')
+    });
+
+    // 3. Biểu đồ điểm chuẩn (Line chart)
+    new Chart(document.getElementById('scoreChart'), {
+        type: 'line',
+        data: {
+            labels: allYears,
+            datasets: [{
+                label: 'Điểm chuẩn',
+                data: allScores,
+                borderColor: colors.score.line,
+                backgroundColor: colors.score.area,
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: allYears.map((year, index) => 
+                    year === 2025 ? colors.prediction : colors.score.line
+                ),
+                pointRadius: allYears.map((year, index) => 
+                    year === 2025 ? 6 : 4
+                )
+            }]
+        },
+        options: getSingleChartOptions('Điểm chuẩn', 'điểm')
+    });
+
+    // 4. Biểu đồ so sánh (Bar chart)
+    new Chart(document.getElementById('comparisonChart'), {
+        type: 'bar',
+        data: {
+            labels: allYears,
+            datasets: [
+                {
+                    label: 'Chỉ tiêu',
+                    data: allQuotas,
+                    backgroundColor: allYears.map(year => 
+                        year === 2025 ? colors.prediction : colors.quota.bar
+                    ),
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Điểm chuẩn',
+                    data: allScores,
+                    backgroundColor: allYears.map(year => 
+                        year === 2025 ? colors.prediction : colors.score.bar
+                    ),
+                    type: 'line',
+                    borderColor: colors.score.line,
+                    yAxisID: 'y1'
+                }
+            ]
+        },
+        options: getCombinedChartOptions('So sánh chỉ tiêu và điểm chuẩn')
+    });
+
+    // Hàm cấu hình cho biểu đồ kết hợp
+    function getCombinedChartOptions(title) {
+        return {
+            responsive: true,
+            interaction: { mode: 'index', intersect: false },
+            scales: {
+                x: { title: { display: true, text: 'Năm' } },
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: { display: true, text: 'Chỉ tiêu (sinh viên)' },
+                    min: 0
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    title: { display: true, text: 'Điểm chuẩn' },
+                    min: Math.min(...allScores) - 1,
+                    max: Math.max(...allScores) + 1,
+                    grid: { drawOnChartArea: false }
+                }
+            },
+            plugins: {
+                title: { display: true, text: title },
+                tooltip: getTooltipOptions(),
+                legend: { display: true }
+            }
+        };
+    }
+
+    // Hàm cấu hình cho biểu đồ đơn
+    function getSingleChartOptions(title, unit) {
+        return {
+            responsive: true,
+            scales: {
+                x: { title: { display: true, text: 'Năm' } },
+                y: {
+                    title: { display: true, text: unit },
+                    min: 0
+                }
+            },
+            plugins: {
+                title: { display: true, text: title },
+                tooltip: getTooltipOptions(unit),
+                legend: { display: true }
+            }
+        };
+    }
+
+    // Hàm cấu hình tooltip
+    function getTooltipOptions(unit = null) {
+        return {
+            callbacks: {
+                label: function(context) {
+                    let label = context.dataset.label || '';
+                    if (label) label += ': ';
+                    if (context.parsed.y !== null) {
+                        if (unit === 'điểm' || context.dataset.label === 'Điểm chuẩn') {
+                            label += context.parsed.y.toFixed(2) + ' điểm';
+                        } else {
+                            label += context.parsed.y + ' sinh viên';
+                        }
+                        
+                        if (context.dataIndex === context.dataset.data.length - 1) {
+                            label += ' (Dự đoán 2025)';
+                        }
+                    }
+                    return label;
+                }
+            }
+        };
+    }
+});
+</script>
+{% endblock %}
