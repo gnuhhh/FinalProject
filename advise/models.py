@@ -28,7 +28,7 @@ class WorkSchedule(models.Model):
             return True
         if self.date == today:
             now = datetime.now().time()
-            if self.work_shift.start_time >= now :
+            if self.work_shift.start_time <= now :
                 return True
         return False
     

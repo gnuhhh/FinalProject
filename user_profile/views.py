@@ -29,6 +29,7 @@ def show_info(request):
 def cancel_appointment(request, id):
     appointment = Appointment.objects.get(id=id)
     appointment.status = 'C'
+    appointment.is_booked = False
     appointment.save()
     messages.success(request, "Hủy lịch hẹn thành công")
     return redirect('user_profile')

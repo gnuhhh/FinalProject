@@ -170,7 +170,7 @@ def payment(request):
         # chat_group = ChatGroup.objects.get(group_name = 'test-group')
         chat_group = ChatGroup.objects.filter(message__sender__in = [member, work_schedule.expert]).first()
         if not chat_group:
-            chat_group = ChatGroup.objects.create(group_name = 'test-group')
+            chat_group = ChatGroup.objects.create(group_name = 'test-group3')
         appointment = Appointment.objects.create(
             member=member,
             work_schedule=work_schedule,
