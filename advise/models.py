@@ -50,6 +50,9 @@ class Appointment(models.Model):
         default='N'
     )
 
+    def __str__(self):
+        return str(self.id) + str(self.member) + ' - ' + str(self.work_schedule) + str(self.chat_group) 
+
     @property
     def is_greater_than_3hours(self):
         now = timezone.localtime()

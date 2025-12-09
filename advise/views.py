@@ -166,11 +166,13 @@ def payment(request):
             work_schedule = WorkSchedule.objects.get(id=schedule_id)
         except WorkSchedule.DoesNotExist:
             return HttpResponseBadRequest('Invalid schedule_id')
-        
-        # chat_group = ChatGroup.objects.get(group_name = 'test-group')
-        chat_group = ChatGroup.objects.filter(message__sender__in = [member, work_schedule.expert]).first()
-        if not chat_group:
-            chat_group = ChatGroup.objects.create(group_name = 'test-group3')
+        # appointment = Appointment.objects.filter(member=member, work_schedule__expert=work_schedule.expert).first()
+        # chat_group = ChatGroup.objects.filter(message__sender__in = [member, work_schedule.expert]).first()
+        chat_group = ChatGroup.objects.filter(appointment__member=member, appointment__work_schedule__expert=work_schedule.expert).first()
+        if chat_group is None:
+            group_name = f'chat-group-{member.id}-{work_schedule.expert.id}-{int(datetime.now().timestamp())}'
+            chat_group = ChatGroup.objects.create(group_name = group_name)
+        # chat_group = ChatGroup.objects.create(group_name = 'test-group3')
         appointment = Appointment.objects.create(
             member=member,
             work_schedule=work_schedule,

@@ -10,7 +10,7 @@ def chat_view(request, id):
     chat_messages = chat_group.message.all().order_by('created_at')
     chat_messages_sender = GroupMessage.objects.exclude(sender=request.user).first()
     appointment = Appointment.objects.get(id=id)
-    # appointment = Appointment.objects.filter(member = request.user.id, work_schedule__expert = chat_messages_sender).last()
+    # chat_messages_sender = appointment.work_schedule.expert
     if request.method == 'POST':
         message_content = request.POST.get('message')
         if message_content:
@@ -19,4 +19,4 @@ def chat_view(request, id):
         # if request.htmx:
         #     return render(request, 'chat/partials/chat_message_p.html', {'message': group_message, 'user': request.user})
     else:    
-        return render(request, 'chat/chat.html', {'chat_messages': chat_messages, 'chat_messages_sender': chat_messages_sender, 'appointment': appointment})
+        return render(request, 'chat/chat.html', {'chat_messages': chat_messages, 'chat_messages_sender': chat_messages_sender, 'appointment': appointment, 'chat_group': chat_group})

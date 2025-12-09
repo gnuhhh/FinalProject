@@ -53,9 +53,9 @@
         <div class="chat-page" data-expert-id="{{ expert_id|default:1 }}">
           <div class="chat-card">
             <div class="chat-header">
-              <img class="expert-avatar" src="{% if request.user.groups.0.name == 'Expert' %}{{ chat_messages_sender.sender.member.avatar.url }}{% else %}{{ chat_messages_sender.sender.expert.avatar.url }}{% endif %}" alt="Chuyên gia" />
+              <img class="expert-avatar" src="{% if request.user.groups.all.0.name == 'expert' %}{{ appointment.member.avatar.url }}{% else %}{{ appointment.work_schedule.expert.avatar.url }}{% endif %}" alt="Chuyên gia" />
               <div>
-                <div class="expert-name">{{ chat_messages_sender.sender.first_name}} {{ chat_messages_sender.sender.last_name}}</div>
+                <div class="expert-name">{% if request.user.groups.all.0.name == 'expert' %}{{ appointment.member.first_name}} {{ appointment.member.last_name}}{% else %}{{ appointment.work_schedule.expert.first_name }} {{ appointment.work_schedule.expert.last_name }}{% endif %}</div>
                 {% comment %} <div class="expert-sub">Phản hồi nhanh</div> {% endcomment %}
               </div>
             </div>
@@ -66,12 +66,14 @@
                 {% include 'chat/chat_message.html' with chat_message=chat_message user=request.user %}
                 {% endfor %}
               {% else %}
+                <!-- {% if request.user.groups.all.0.name != 'expert' %} -->
                 <div class="msg-row">
                   <div class="msg-bubble other">
                     <div>Chào bạn! Mình là {{ expert_name|default:"chuyên gia" }}. Bạn cần hỗ trợ gì?</div>
                     <span class="msg-meta">Vừa xong</span>
                   </div>
                 </div>
+                <!-- {% endif %} -->
               {% endif %}
             </div>
             {% if appointment.status == 'P' %}
@@ -105,7 +107,7 @@
       const form = document.getElementById('chatForm');
       const input = document.getElementById('chatInput');
       const sendBtn = document.getElementById('sendBtn');
-      const roomName = 'test-group2';
+      const roomName = '{{ chat_group.group_name }}';
       const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
       const wsUrl = `${protocol}://${window.location.host}/ws/chatroom/${roomName}/`;
       let socket;

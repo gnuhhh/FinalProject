@@ -376,9 +376,7 @@ def schedule_customer(request):
 def schedule_customer_complete(request, id):
     appointment = Appointment.objects.get(id=id)
     appointment.status = 'Y'
-    appointment.zoom_room.is_used = False
     appointment.save()
-    appointment.zoom_room.save()
     messages.success(request, 'Cập nhật thành công')
     return redirect('schedule_customer')
 
