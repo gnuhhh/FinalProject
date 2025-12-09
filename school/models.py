@@ -14,6 +14,7 @@ class School(models.Model):
     numberOfMajor = models.IntegerField(default=50, null=True)
     phoneNumber = models.CharField(max_length=20, default='028.3722.5724', null=True)
     email = models.CharField(max_length=50, default='tuyensinh@edu.vn', null=True)
+    website = models.CharField(max_length=100, default='www.iuh.edu.vn', null=True)
     
     def __str__(self):
         return self.schoolName

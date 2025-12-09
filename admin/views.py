@@ -43,25 +43,21 @@ def loginadmin(request):
 def dashboard(request):
     if request.user.is_authenticated:
         if request.user.is_staff == True:
-            # Thống kê tổng số cuộc hẹn đã xong
             total_completed_appointments = Appointment.objects.filter(status='Y').count()
             
-            # Thống kê tổng số tiền từ tất cả invoice (hoặc chỉ đã thanh toán)
             total_revenue = Invoice.objects.filter(status='Y').aggregate(
                 total=Sum('price')
             )['total']*1000 or 0
             
-            # Thống kê theo tháng (12 tháng gần nhất)
             from django.utils import timezone
             from datetime import timedelta
             from collections import OrderedDict
             
-            # Lấy dữ liệu 12 tháng gần nhất
             monthly_stats = []
             monthly_revenue = []
             labels = []
             
-            for i in range(11, -1, -1):  # 12 tháng gần nhất
+            for i in range(11, -1, -1): 
                 month_date = timezone.now() - timedelta(days=30*i)
                 month_start = month_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
                 if i == 0:
@@ -70,14 +66,12 @@ def dashboard(request):
                     next_month = month_start + timedelta(days=32)
                     month_end = next_month.replace(day=1) - timedelta(days=1)
                 
-                # Đếm cuộc hẹn đã xong trong tháng
                 appointments_count = Appointment.objects.filter(
                     status='Y',
                     work_schedule__date__gte=month_start.date(),
                     work_schedule__date__lte=month_end.date()
                 ).count()
                 
-                # Tính tổng tiền trong tháng
                 revenue = Invoice.objects.filter(
                     status='Y',
                     appointment__work_schedule__date__gte=month_start.date(),

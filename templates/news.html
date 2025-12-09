@@ -97,8 +97,7 @@
                     <!-- Sidebar -->
                     <div class="col-lg-4">
                         <div class="news-sidebar">
-                            <!-- Search Box -->
-                            <div class="sidebar-widget search-widget" data-aos="fade-up" data-aos-delay="100">
+                            {% comment %} <div class="sidebar-widget search-widget" data-aos="fade-up" data-aos-delay="100">
                                 <h4 class="widget-title">Tìm kiếm tin tức</h4>
                                 <form class="search-form" method="GET" action="{% url 'news' %}">
                                     <div class="input-group">
@@ -108,7 +107,7 @@
                                         </button>
                                     </div>
                                 </form>
-                            </div>
+                            </div> {% endcomment %}
 
                             <!-- Recent News -->
                             <div class="sidebar-widget recent-news-widget" data-aos="fade-up" data-aos-delay="200">

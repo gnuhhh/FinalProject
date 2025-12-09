@@ -9,7 +9,7 @@ def chat_view(request, id):
     chat_group = get_object_or_404(ChatGroup, appointment__id=id)
     chat_messages = chat_group.message.all().order_by('created_at')
     chat_messages_sender = GroupMessage.objects.exclude(sender=request.user).first()
-    appointment = Appointment.objects.filter(member__in=[chat_messages_sender.sender.id, request.user.id]).first()
+    appointment = Appointment.objects.filter(member__in = [request.user.id, chat_messages_sender.sender.id]).first()
     if request.method == 'POST':
         message_content = request.POST.get('message')
         if message_content:

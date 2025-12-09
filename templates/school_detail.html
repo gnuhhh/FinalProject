@@ -318,7 +318,6 @@
                 {{ school.content|safe }}
             </div>
 
-            <!-- Danh sách ngành tuyển sinh -->
             <div class="majors-section" data-aos="fade-up">
                 <h2 class="section-title">Danh sách ngành tuyển sinh</h2>
                 
@@ -374,28 +373,28 @@
                     <i class="bi bi-envelope"></i>
                     <p>{{ school.email }}</p>
                 </div>
+                <div class="contact-item">
+                    <i class="bi bi-browser-chrome"></i>
+                    <a href="{{ school.website }}">{{ school.website }}</a>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Vendor JS Files -->
     <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
     <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
     <script src="{% static 'assets/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
     <script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
 
-    <!-- Main JS File -->
     <script src="{% static 'assets/js/main.js' %}"></script>
 
     <script>
-        // Khởi tạo AOS animation
         AOS.init({
             duration: 1000,
             once: true
         });
 
-        // Bộ lọc danh sách ngành
         document.addEventListener('DOMContentLoaded', function() {
             const yearFilter = document.getElementById('year-filter');
             const programFilter = document.getElementById('program-filter');
@@ -414,12 +413,10 @@
                     
                     let showCard = true;
 
-                    // Lọc theo năm
                     if (selectedYear && cardYear !== selectedYear) {
                         showCard = false;
                     }
 
-                    // Lọc theo chương trình
                     if (selectedProgram && cardProgram !== selectedProgram) {
                         showCard = false;
                     }
@@ -432,7 +429,6 @@
                     }
                 });
 
-                // Hiển thị thông báo nếu không có kết quả
                 let noResultsMsg = document.querySelector('.no-results');
                 if (visibleCount === 0) {
                     if (!noResultsMsg) {
@@ -448,11 +444,9 @@
                 }
             }
 
-            // Xử lý sự kiện thay đổi bộ lọc
             yearFilter.addEventListener('change', filterMajors);
             programFilter.addEventListener('change', filterMajors);
 
-            // Xử lý nút xóa bộ lọc
             clearBtn.addEventListener('click', function() {
                 yearFilter.value = '';
                 programFilter.value = '';

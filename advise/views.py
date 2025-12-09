@@ -273,8 +273,6 @@ def payment_return(request):
                 invoice.appointment.save()
                 invoice.appointment.work_schedule.is_booked=True
                 invoice.appointment.work_schedule.save()
-                zoom_room.is_used=True
-                zoom_room.save()
                 return render(request, "payment_return.html", {"title": "Kết quả thanh toán",
                                                                "result": "Thành công", "order_id": order_id,
                                                                "amount": amount,

@@ -74,7 +74,7 @@
                 </div>
               {% endif %}
             </div>
-            {% if appointment.status == 'Y' or appointment.status == 'N'%}
+            {% if appointment.status == 'P' %}
             <form id="chatForm" class="chat-input" autocomplete="off">
               {% csrf_token %}
               <textarea name="message" id="chatInput" class="chat-textarea" rows="1" placeholder="Nhập tin nhắn... (Enter để gửi)" maxlength="1000"></textarea>
