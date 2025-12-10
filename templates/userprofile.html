@@ -41,6 +41,33 @@
             color: var(--hover-color)!important;
         }
         @media (max-width: 992px) { .container { flex-direction: column; } .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); } }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 8px;
+        }
+        .page-item {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .page-item.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .page-item:hover:not(.active) {
+            background: rgba(0, 114, 188, 0.1);
+        }
 
     </style>
 </head>
@@ -209,6 +236,7 @@
                         </tbody>
                     </table>
                 </div>
+                {% include 'admin/components/paginator.html' with page_obj=appointments %}
             </section>
 
             <section id="panel-invoices" class="data-table-container" style="display:none;">
@@ -238,6 +266,7 @@
                         </tbody>
                     </table>
                 </div>
+                {% include 'admin/components/paginator.html' with page_obj=invoices %}
             </section>
         </div>
     </div>

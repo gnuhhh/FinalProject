@@ -4,7 +4,14 @@ from advise.models import Appointment, Invoice
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.paginator import Paginator
 # Create your views here.
+def paginate(request, obj):
+    paginator = Paginator(obj, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return page_obj
+
 @login_required(login_url='login')
 def show_info(request):
     member = get_object_or_404(Member, id=request.user.id)
@@ -23,7 +30,9 @@ def show_info(request):
         return redirect('user_profile')
     else:
         appointments = Appointment.objects.filter(member=member, invoices__status='Y').order_by('-work_schedule__date', '-work_schedule__work_shift__start_time')
+        appointments = paginate(request, appointments)
         invoices = Invoice.objects.all().order_by('-invoice_id')
+        invoices = paginate(request, invoices)
         return render(request, 'userprofile.html', {'member':member, 'appointments':appointments, 'invoices':invoices})
     
 def cancel_appointment(request, id):
