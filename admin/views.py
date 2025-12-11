@@ -8,9 +8,10 @@ from user_profile.models import Member
 from django.core.paginator import Paginator
 from homepage.models import Expert
 from django.utils.html import strip_tags
+from django.utils import timezone
 from django.contrib.auth.models import User, Group
 from advise.models import WorkShift, WorkSchedule, Appointment, Invoice
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from django.contrib.auth.decorators import login_required
 from django.db.models import Subquery, OuterRef, Sum, Count, Q
 from django.db.models.functions import TruncMonth
@@ -43,15 +44,16 @@ def loginadmin(request):
 def dashboard(request):
     if request.user.is_authenticated:
         if request.user.is_staff == True:
-            total_completed_appointments = Appointment.objects.filter(status='Y').count()
-            
-            total_revenue = Invoice.objects.filter(status='Y').aggregate(
+            if request.user.groups.first().name == 'manager':
+                total_completed_appointments = Appointment.objects.filter(status='Y').count()
+                total_revenue = Invoice.objects.filter(status='Y').aggregate(
                 total=Sum('price')
-            )['total']*1000 or 0
-            
-            from django.utils import timezone
-            from datetime import timedelta
-            from collections import OrderedDict
+                )['total']*1000 or 0
+            else:
+                total_completed_appointments = Appointment.objects.filter(status='Y', work_schedule__expert = request.user).count() or 0
+                total_revenue = Invoice.objects.filter(status='Y', appointment__work_schedule__expert = request.user).aggregate(
+                    total=Sum('price')
+                )['total']*1000/2 or 0
             
             monthly_stats = []
             monthly_revenue = []

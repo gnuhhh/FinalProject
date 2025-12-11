@@ -51,7 +51,7 @@ class Appointment(models.Model):
     )
 
     def __str__(self):
-        return str(self.id) + str(self.member) + ' - ' + str(self.work_schedule) + str(self.chat_group) 
+        return str(self.id) + str(self.member) + ' - ' + str(self.work_schedule) + str(self.chat_group) + '-' + str(self.status)
 
     @property
     def is_greater_than_3hours(self):
