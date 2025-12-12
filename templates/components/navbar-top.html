@@ -26,14 +26,7 @@
                     <a href="{% url 'testblock:test_block_list' %}">
                         <span>Test khối thi</span> <i class="bi bi-chevron-right toggle-dropdown"></i>
                     </a>
-                    <ul>
-                        <li><a href="{% url 'testblock:test_block_list' %}">Tất cả khối thi</a></li>
-                        <li><a href="{% url 'testblock:test_block_detail' 1 %}">Khối A (Toán-Lý-Hóa)</a></li>
-                        <li><a href="{% url 'testblock:test_block_detail' 2 %}">Khối A1 (Toán-Lý-Anh)</a></li>
-                        <li><a href="{% url 'testblock:test_block_detail' 3 %}">Khối B (Toán-Hóa-Sinh)</a></li>
-                        <li><a href="{% url 'testblock:test_block_detail' 4 %}">Khối C (Văn-Sử-Địa)</a></li>
-                        <li><a href="{% url 'testblock:test_block_detail' 5 %}">Khối D (Toán-Văn-Anh)</a></li>
-                    </ul>
+                    
                 </li>
                 
                 <!-- Test Chuyên Ngành - Sử dụng URL thực tế từ testapp -->
@@ -41,14 +34,7 @@
                     <a href="{% url 'testapp:test_list' %}">
                         <span>Test chuyên ngành</span> <i class="bi bi-chevron-right toggle-dropdown"></i>
                     </a>
-                    <ul>
-                        <li><a href="{% url 'testapp:test_list' %}">Tất cả chuyên ngành</a></li>
-                        <li><a href="{% url 'testapp:test_detail' 1 %}">Công nghệ thông tin</a></li>
-                        <li><a href="{% url 'testapp:test_detail' 2 %}">Kinh tế - Tài chính</a></li>
-                        <li><a href="{% url 'testapp:test_detail' 3 %}">Marketing</a></li>
-                        <li><a href="{% url 'testapp:test_detail' 4 %}">Ngôn ngữ Anh</a></li>
-                        <li><a href="{% url 'testapp:test_detail' 5 %}">Luật</a></li>
-                    </ul>
+                    
                 </li>
                 <li><a href="{% url 'admission_predictor:predict_admission' %}" class="nav-link">Dự đoán đại học</a></li>
                 <li><a href="{% url 'daihoc_compare:compare_universities' %}" class="nav-link">So sánh trường đại học</a></li>
