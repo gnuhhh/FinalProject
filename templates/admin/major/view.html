@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý bài viết</title>
+    <title>Quản lý ngành học</title>
     {% include 'components/links.html' %}
     <style>
         * {
@@ -285,12 +285,8 @@
         }
 
         .table th:nth-child(1) { width: 10%; }
-        .table th:nth-child(2) { width: 10%; }
-        .table th:nth-child(3) { width: 35%; }
-        .table th:nth-child(4) { width: 10%; }
-        .table th:nth-child(5) { width: 13%; }
-        .table th:nth-child(6) { width: 10%; }
-        .table th:nth-child(7) { width: 17%; }
+        .table th:nth-child(2) { width: 70%; }
+        .table th:nth-child(3) { width: 20%; }
 
         .table tbody tr {
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -448,11 +444,11 @@
             <!-- Data Table -->
             <div class="data-table-container" data-aos="fade-up">
                 <div class="table-header">
-                    <div class="table-title">Danh sách bài viết</div>
+                    <div class="table-title">Danh sách ngành học</div>
                     <div class="table-actions">
-                        <a href="{% url 'news_create' %}" class="table-btn">
+                        <a href="{% url 'major_create' %}" class="table-btn">
                             <i class="bi bi-plus"></i>
-                            Thêm bài viết
+                            Thêm ngành học
                         </a>
                     </div>
                 </div>
@@ -462,48 +458,25 @@
                         <thead>
                             <tr>
                                 <th>STT</th>
-                                <th>Ảnh</th>
-                                <th>Tiêu đề</th>
-                                <th>Tác giả</th>
-                                <th>Ngày tạo</th>
-                                <th>Trạng thái</th>
+                                <th>Tên ngành</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for news in news_list %}
+                            {% for major in majors %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>
-                                    {% if news.image %}
-                                    <img src="{{ news.image.url }}" alt="{{ news.title }}" class="news-image">
-                                    {% else %}
-                                    <img src="{% static 'images/no-image.jpg' %}" alt="No image" class="news-image">
-                                    {% endif %}
-                                </td>
-                                <td>{{ news.title }}</td>
-                                <td>{{ news.author }}</td>
-                                <td>{{ news.created_at|date:"d/m/Y" }}</td>
-                                <td>
-                                    {% if news.is_active %}
-                                    <span class="status-badge status-published">Đã đăng</span>
-                                    {% else %}
-                                    <span class="status-badge status-draft">Bản nháp</span>
-                                    {% endif %}
+                                    {{ major.major_name }}
                                 </td>
                                 <td>
-                                    <a href="{% url 'news_update' news.id %}" class="btn btn-sm update">Sửa</a>
-                                    {% if request.user.groups.all.0.name == 'manager' %}
-                                    <a href="{% url 'news_delete' news.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa tin này?')">Xóa</a>
-                                    {% if not news.is_active %}
-                                    <a href="{% url 'news_activate' news.id %}" class="btn btn-sm btn-outline-success">Duyệt</a>
-                                    {% endif %}
-                                    {% endif %}
+                                    <a href="{% url 'major_update' major.id %}" class="btn btn-sm update">Sửa</a>
+                                    <a href="{% url 'major_delete' major.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa tin này?')">Xóa</a>
                                 </td>
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="8" class="text-center">Không có tin tức nào</td>
+                                <td colspan="8" class="text-center">Không có ngành học nào</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -511,7 +484,7 @@
                 </div>
                 {% include 'components/notification.html' %}
                 
-                {% include 'admin/components/paginator.html' with page_obj=news_list%}
+                {% include 'admin/components/paginator.html' with page_obj=majors%}
             </div>
         </div>
     </div>

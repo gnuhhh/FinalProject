@@ -43,7 +43,7 @@
 					</span>
 
 					<div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
-						<input class="input100" type="text" name="firstname" placeholder="Họ đệm" value="{{ form.firstname.value|default:'' }}" required>
+						<input class="input100" type="text" name="firstname" placeholder="Họ đệm" value="{{ request.POST.firstname }}" required>
 						<span class="focus-input100"></span>
 						{% comment %} {% if form.firstname.errors %}
 							<small class="text-danger">{{ form.firstname.errors.0 }}</small>
@@ -51,7 +51,7 @@
 					</div>
 
 					<div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
-						<input class="input100" type="text" name="lastname" placeholder="Tên" value="{{ form.lastname.value|default:'' }}" required>
+						<input class="input100" type="text" name="lastname" placeholder="Tên" value="{{ request.POST.lastname }}" required>
 						<span class="focus-input100"></span>
 						{% comment %} {% if form.lastname.errors %}
 						<small class="text-danger">{{ form.lastname.errors.0 }}</small>
@@ -59,7 +59,7 @@
 					</div>
 
                     <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter email">
-						<input class="input100" type="email" name="email" placeholder="Email" value="{{ form.email.value|default:'' }}" required>
+						<input class="input100" type="email" name="email" placeholder="Email" value="{{ request.POST.email }}" required>
 						<span class="focus-input100"></span>
 						{% comment %} {% if form.email.errors %}
 						<small class="text-danger">{{ form.email.errors.0 }}</small>
@@ -67,7 +67,7 @@
 					</div>
 						
 					<div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
-						<input class="input100" type="text" name="username" placeholder="Tên đăng nhập" value="{{ form.username.value|default:'' }}" required>
+						<input class="input100" type="text" name="username" placeholder="Tên đăng nhập" value="{{ request.POST.username }}" required>
 						<span class="focus-input100"></span>
 						{% comment %} {% if form.username.errors %}
 							<small class="text-danger">{{ form.username.errors.0 }}</small>

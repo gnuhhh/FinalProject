@@ -613,7 +613,7 @@
                         <tbody>
                             {% for school in schools %}
                             <tr>
-                                <td>{{ school.id }}</td>
+                                <td>{{ forloop.counter }}</td>
                                 <td>{{ school.schoolId }}</td>
                                 <td>{{ school.schoolName }}</td>
                                 <td><div class="content-cell">{{ school.content|truncatewords:20 }}</div></td>

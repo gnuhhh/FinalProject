@@ -15,6 +15,12 @@
                 <span>Quản lý bài viết</span>
             </a>
         </li>
+        <li class="sidebar-item">
+            <a href="{% url 'major' %}" class="menu-item">
+                <i class="bi bi-list-task"></i>
+                <span>Quản lý ngành học</span>
+            </a>
+        </li>
         {% endif %}
         {% if request.user.groups.all.0.name == 'expert'%}
         <li class="sidebar-item">
@@ -51,7 +57,7 @@
         <li class="sidebar-item">
             <a href="{% url 'permission' %}" class="menu-item">
                 <i class="bi bi-grid-fill"></i>
-                <span>Phân quyền</span>
+                <span>Quản lý vai trò</span>
             </a>
         </li>
         {% endif %}

@@ -2,7 +2,7 @@ import email
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseForbidden
 from django.contrib import auth, messages
-from school.models import School
+from school.models import School, Major
 from news.models import News
 from user_profile.models import Member
 from django.core.paginator import Paginator
@@ -44,51 +44,72 @@ def loginadmin(request):
 def dashboard(request):
     if request.user.is_authenticated:
         if request.user.is_staff == True:
-            if request.user.groups.first().name == 'manager':
-                total_completed_appointments = Appointment.objects.filter(status='Y').count()
-                total_revenue = Invoice.objects.filter(status='Y').aggregate(
-                total=Sum('price')
-                )['total']*1000 or 0
+            user_group = request.user.groups.first()
+            is_manager_or_admin = user_group and (user_group.name == 'manager' or user_group.name == 'admin')
+            
+            if is_manager_or_admin:
+                appointments_query = Appointment.objects.filter(status='Y')
+                invoices_query = Invoice.objects.filter(status='Y')
             else:
-                total_completed_appointments = Appointment.objects.filter(status='Y', work_schedule__expert = request.user).count() or 0
-                total_revenue = Invoice.objects.filter(status='Y', appointment__work_schedule__expert = request.user).aggregate(
-                    total=Sum('price')
-                )['total']*1000/2 or 0
+                appointments_query = Appointment.objects.filter(status='Y', work_schedule__expert=request.user)
+                invoices_query = Invoice.objects.filter(status='Y', appointment__work_schedule__expert=request.user)
+            
+            total_completed_appointments = appointments_query.count()
+            total_revenue_result = invoices_query.aggregate(total=Sum('price'))['total'] or 0
+            if is_manager_or_admin:
+                total_revenue = float(total_revenue_result) * 1000
+            else:
+                total_revenue = float(total_revenue_result) * 1000 / 2
             
             monthly_stats = []
             monthly_revenue = []
             labels = []
             
-            for i in range(11, -1, -1): 
-                month_date = timezone.now() - timedelta(days=30*i)
-                month_start = month_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-                if i == 0:
-                    month_end = timezone.now()
+            now = timezone.now()
+            current_year = now.year
+            current_month = now.month
+            
+            for i in range(11, -1, -1):
+                target_month = current_month - i
+                target_year = current_year
+                
+                while target_month < 1:
+                    target_month += 12
+                    target_year -= 1
+                
+                month_start = date(target_year, target_month, 1)
+                if target_month == 12:
+                    month_end = date(target_year + 1, 1, 1) - timedelta(days=1)
                 else:
-                    next_month = month_start + timedelta(days=32)
-                    month_end = next_month.replace(day=1) - timedelta(days=1)
+                    month_end = date(target_year, target_month + 1, 1) - timedelta(days=1)
                 
-                appointments_count = Appointment.objects.filter(
-                    status='Y',
-                    work_schedule__date__gte=month_start.date(),
-                    work_schedule__date__lte=month_end.date()
-                ).count()
+                if i == 0:
+                    month_end = min(month_end, now.date())
                 
-                revenue = Invoice.objects.filter(
-                    status='Y',
-                    appointment__work_schedule__date__gte=month_start.date(),
-                    appointment__work_schedule__date__lte=month_end.date()
-                ).aggregate(total=Sum('price'))['total'] or 0
+                monthly_appointments_query = appointments_query.filter(
+                    work_schedule__date__gte=month_start,
+                    work_schedule__date__lte=month_end
+                )
+                appointments_count = monthly_appointments_query.count()
+                
+                monthly_invoices_query = invoices_query.filter(
+                    appointment__work_schedule__date__gte=month_start,
+                    appointment__work_schedule__date__lte=month_end
+                )
+                revenue_result = monthly_invoices_query.aggregate(total=Sum('price'))['total'] or 0
+                if is_manager_or_admin:
+                    revenue = float(revenue_result) * 1000
+                else:
+                    revenue = float(revenue_result) * 1000 / 2
                 
                 month_label = month_start.strftime('%m/%Y')
                 labels.append(month_label)
                 monthly_stats.append(appointments_count)
-                monthly_revenue.append(float(revenue))
+                monthly_revenue.append(revenue)
             
             context = {
-                'user': request.user,
                 'total_completed_appointments': total_completed_appointments,
-                'total_revenue': float(total_revenue),
+                'total_revenue': total_revenue,
                 'monthly_labels': json.dumps(labels),
                 'monthly_appointments': json.dumps(monthly_stats),
                 'monthly_revenue': json.dumps(monthly_revenue),
@@ -254,9 +275,10 @@ def accounts_create(request):
             return redirect('register')
             
         try:
-            user = User.objects.create_user(username=username, email=email, password=password, first_name = firstname, last_name = lastname)
+            member = User.objects.create_user(username=username, email=email, password=password, first_name = firstname, last_name = lastname)
+            member.groups.add(Group.objects.get(name=role))
             member.save()
-            messages.success(request, 'Đăng ký thành công!')
+            messages.success(request, 'Thêm tài khoản thành công!')
             return redirect('accounts')  
             
         except Exception as e:
@@ -482,3 +504,35 @@ def expert_profile(request):
 def permission(request):
     groups = Group.objects.prefetch_related('permissions').all()
     return render(request, 'admin/permission/view.html', {'groups':groups})
+
+def major_view(request):
+    majors = Major.objects.all()
+    majors = paginate(request, majors)
+    return render(request, 'admin/major/view.html', {'majors':majors})
+
+def major_create(request):
+    if request.method == 'POST':
+        major_name = request.POST['major_name']
+        major = Major(major_name=major_name)
+        major.save()
+        messages.success(request, 'Thêm thành công')
+        return redirect('major')
+    else:
+        return render(request, 'admin/major/update_create.html', {'title':'Thêm ngành học'})
+
+def major_update(request, id):
+    major = Major.objects.get(id=id)
+    if request.method == 'POST':
+        major.major_name = request.POST['major_name']
+        major.save()
+        messages.success(request, 'Cập nhật thành công')
+        return redirect('major')
+    else:
+        return render(request, 'admin/major/update_create.html', {'major':major, 'title':'Cập nhật ngành học'})
+
+def major_delete(request, id):
+    major = Major.objects.get(id=id)
+    major.delete()
+    messages.success(request, 'Xóa thành công')
+    return redirect('major')
+    

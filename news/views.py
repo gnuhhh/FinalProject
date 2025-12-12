@@ -4,7 +4,6 @@ from django.db.models import Q
 from .models import News
 
 def news_list(request):
-    """Hiển thị danh sách tin tức với phân trang và tìm kiếm"""
     news_queryset = News.objects.filter(is_active=True).order_by('-created_at')
     
     search_query = request.GET.get('search', '')

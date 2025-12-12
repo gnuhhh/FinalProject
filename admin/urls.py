@@ -37,4 +37,9 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page='admin'), name = 'logout_admin'),
     #Thành viên
     path('member/', views.member_view, name='member'),
+    #Ngành học
+    path('major/', views.major_view, name='major'),
+    path('major/create/', views.major_create, name='major_create'),
+    path('major/update/<str:id>', views.major_update, name='major_update'),
+    path('major/delete/<str:id>', views.major_delete, name='major_delete'),
 ]
