@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from admission_predictor.models import University, Major
+from django.contrib.auth.decorators import login_required
 
+@login_required(login_url = 'login')
 def compare_universities(request):
     """Trang chọn trường để so sánh"""
     universities = University.objects.all().order_by('name')
@@ -11,6 +13,7 @@ def compare_universities(request):
     }
     return render(request, 'daihoc_compare/compare.html', context)
 
+@login_required(login_url='login')
 def compare_result(request):
     """Hiển thị kết quả so sánh"""
     if request.method == 'POST':

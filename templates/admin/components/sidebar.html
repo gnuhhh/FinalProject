@@ -8,6 +8,12 @@
                 <span>Quản lý thông tin trường</span>
             </a>
         </li>
+        <li class="sidebar-item">
+            <a href="{% url 'major' %}" class="menu-item">
+                <i class="bi bi-list-task"></i>
+                <span>Quản lý ngành học</span>
+            </a>
+        </li>
         {% endif %}
         <li class="sidebar-item">
             <a href="{% url 'news' %}" class="menu-item">
@@ -15,12 +21,7 @@
                 <span>Quản lý bài viết</span>
             </a>
         </li>
-        <li class="sidebar-item">
-            <a href="{% url 'major' %}" class="menu-item">
-                <i class="bi bi-list-task"></i>
-                <span>Quản lý ngành học</span>
-            </a>
-        </li>
+        
         {% endif %}
         {% if request.user.groups.all.0.name == 'expert'%}
         <li class="sidebar-item">

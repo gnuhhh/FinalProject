@@ -1,13 +1,16 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .models import Major
+from django.contrib.auth.decorators import login_required
 
+@login_required(login_url='login')  
 def predict_admission(request):
     """Trang chủ dự đoán khả năng đậu"""
     return render(request, 'admission_predictor/predict_admission.html', {
         'title': 'Dự đoán khả năng đậu Đại học'
     })
 
+@login_required(login_url='login')
 def predict_admission_result(request):
     """Xử lý và hiển thị kết quả dự đoán"""
     if request.method == 'POST':

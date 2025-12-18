@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.db.models import Q
 from django.db.models import Count, Avg, Max, Min, Sum
+from django.contrib.auth.decorators import login_required
 import numpy as np
 from .models import Region, University, Major, AdmissionCriteria
 import os
@@ -13,6 +14,7 @@ import pandas as pd
 # Import module ML mới
 from .ml import predict_quota_and_score_ml
 
+@login_required(login_url='login')
 def prediction_home(request):
     """Trang chủ dự đoán chỉ tiêu"""
     regions = Region.objects.all()
@@ -74,6 +76,7 @@ def get_majors_with_blocks(request):
     
     return JsonResponse(data, safe=False)
 
+@login_required(login_url='login')
 def prediction_result(request):
     """Hiển thị kết quả dự đoán sử dụng logic ML mới"""
     if request.method == 'GET':
@@ -192,6 +195,7 @@ def create_fallback_prediction(block, message):
         'historical_data': []
     }
 
+@login_required(login_url='login')
 def statistics_dashboard(request):
     """Trang thống kê tổng quan tuyển sinh"""
     

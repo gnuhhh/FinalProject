@@ -1,18 +1,54 @@
 from django.shortcuts import render, get_object_or_404
 from news.models import News
 from .models import Expert, ChatHistory
+from school.models import SchoolMajor
 import openai, os
 from django.http import JsonResponse   
 from django.middleware.csrf import get_token
 from django.contrib.auth.decorators import login_required
 # Create your views here.
+
+def get_admission_context():
+    records = (
+        SchoolMajor.objects
+        .select_related("school", "major")
+        .all()
+    )
+    context = ""
+    for r in records:
+        context += f"""
+                    - Trường: {r.school.schoolName}
+                    + Loại: {r.school.type}
+                    + Khu vực: {r.school.location}
+                    + Năm thành lập: {r.school.establishyear}
+                    - Ngành: {r.major.major_name}
+                    - Điểm chuẩn: {r.point}
+                    - Tổ hợp xét tuyển: {r.admission_combination}
+                    - Chỉ tiêu: {r.admission_targets}
+                    - Năm tuyển sinh: {r.admission_year}
+                    - Chương trình: {"Chất lượng cao" if r.is_high_quality else "Đại trà"}
+                    """
+    return context
+
 def asking_ai(message):
     openai.api_key = os.getenv("OPENAI_API_KEY")
+    admission_context = get_admission_context()
+    system_prompt = f"""
+                    Bạn là chuyên gia tư vấn tuyển sinh đại học với 10 năm kinh nghiệm.
+
+                    Hệ thống dữ liệu có các bảng:
+                    - School (thông tin trường)
+                    - Major (ngành học)
+                    - SchoolMajor (điểm chuẩn, tổ hợp, chỉ tiêu, năm tuyển sinh)
+
+                    Dữ liệu tuyển sinh hiện tại:
+                    {admission_context}
+                    """
     try:
         response = openai.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "Bạn là một chuyên gia tư vấn tuyển sinh với 10 năm kinh nghiệm trong lĩnh vực tuyển sinh"},
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": message}
             ]
         )
@@ -57,9 +93,8 @@ def index(request):
 
 @login_required
 def get_chat_history(request):
-    """API endpoint để lấy lịch sử chat của user"""
     if request.method == 'GET':
-        chat_history = ChatHistory.objects.filter(user=request.user).order_by('-created_at')[:10]
+        chat_history = ChatHistory.objects.filter(user=request.user).order_by('created_at')[:10]
         history_data = []
         for chat in chat_history:
             history_data.append({
